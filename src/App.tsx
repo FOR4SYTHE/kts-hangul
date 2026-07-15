@@ -201,7 +201,7 @@ const generateSingleDoodle = (idx: number, pass: number) => {
         </div>
       );
     } else {
-      // Directional Indicator Arrow
+      // DiModern Seoul Indicator Arrow
       return (
         <div key={seed} className={`absolute ${zClass} pointer-events-none drop-shadow-sm`} style={{ top: topPos, left: leftPos, transform: `rotate(${rotation * 2.5}deg)` }}>
           <svg width="65" height="65" viewBox="0 0 100 100" fill="none" stroke="#1A1A1A" strokeWidth="5.5" strokeLinecap="round" strokeLinejoin="round">
@@ -791,8 +791,8 @@ const PHFlag = ({ className = "" }: { className?: string }) => (
   </svg>
 );
 
-// --- SVGs for Baybayin Mode ---
-const TribalSun = () => (
+// --- SVGs for Hangul Mode ---
+const SejongSun = () => (
   <svg width="120" height="120" viewBox="0 0 100 100" className="opacity-80">
     <circle cx="50" cy="50" r="15" fill="none" stroke="currentColor" strokeWidth="4" />
     <circle cx="50" cy="50" r="8" fill="currentColor" />
@@ -802,7 +802,7 @@ const TribalSun = () => (
   </svg>
 );
 
-const TribalPetroglyph1 = () => (
+const SejongPetroglyph1 = () => (
   <svg width="100" height="150" viewBox="0 0 100 150" className="text-[#2C2825] opacity-15">
     {/* Wave & Sun Motif */}
     <path d="M 20 40 L 35 55 L 50 40 L 65 55 L 80 40 M 20 55 L 35 70 L 50 55 L 65 70 L 80 55" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
@@ -814,7 +814,7 @@ const TribalPetroglyph1 = () => (
   </svg>
 );
 
-const TribalPetroglyph2 = () => (
+const SejongPetroglyph2 = () => (
   <svg width="80" height="180" viewBox="0 0 80 180" className="text-[#2C2825] opacity-15">
     {/* Centipede (Alupihan) & Diamond Motif */}
     <path d="M 40 20 L 25 35 M 40 20 L 55 35 M 40 35 L 25 50 M 40 35 L 55 50 M 40 50 L 25 65 M 40 50 L 55 65 M 40 20 L 40 65" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
@@ -824,41 +824,17 @@ const TribalPetroglyph2 = () => (
   </svg>
 );
 
-// --- Baybayin Converter Logic ---
-const toBaybayin = (text: string) => {
+// --- Hangul Converter Logic ---
+const toHangul = (text: string) => {
   if (!text) return "";
-  let str = text.toLowerCase();
-  str = str.replace(/f/g, 'p').replace(/v/g, 'b').replace(/z/g, 's').replace(/j/g, 'dy').replace(/c/g, 'k').replace(/x/g, 'ks').replace(/q/g, 'k');
-  const vowels: Record<string, string> = { 'a': '\u1700', 'e': '\u1701', 'i': '\u1701', 'o': '\u1702', 'u': '\u1702' };
-  const consonants: Record<string, string> = { 'k': '\u1703', 'g': '\u1704', 'ng': '\u1705', 't': '\u1706', 'd': '\u1707', 'r': '\u1707', 'n': '\u1708', 'p': '\u1709', 'b': '\u170A', 'm': '\u170B', 'y': '\u170C', 'l': '\u170E', 'w': '\u170F', 's': '\u1710', 'h': '\u1711' };
-  let result = ""; let i = 0;
-  while (i < str.length) {
-    let char = str[i];
-    let nextChar = str[i + 1]; let twoChar = char + (nextChar || "");
-
-    if (twoChar === 'ng' && consonants['ng']) {
-      let third = str[i + 2];
-      if (vowels[third]) {
-        if (third === 'a') result += consonants['ng'];
-        else if (third === 'e' || third === 'i') result += consonants['ng'] + '\u1712';
-        else if (third === 'o' || third === 'u') result += consonants['ng'] + '\u1713';
-        i += 3;
-      } else { result += consonants['ng'] + '\u1714'; i += 2; }
-      continue;
-    }
-    if (consonants[char]) {
-      if (vowels[nextChar]) {
-        if (nextChar === 'a') result += consonants[char];
-        else if (nextChar === 'e' || nextChar === 'i') result += consonants[char] + '\u1712';
-        else if (nextChar === 'o' || nextChar === 'u') result += consonants[char] + '\u1713';
-        i += 2;
-      } else {
-        result += consonants[char] + '\u1714'; i += 1;
-      }
-    } else if (vowels[char]) {
-      result += vowels[char]; i += 1;
-    }
-    else { result += char; i += 1; }
+  let str = text.toUpperCase();
+  const charMap: Record<string, string> = {
+    'A': '아', 'B': '비', 'C': '씨', 'D': '디', 'E': '이', 'F': '에프', 'G': '지', 'H': '에이치', 'I': '아이', 'J': '제이', 'K': '케이', 'L': '엘', 'M': '엠', 'N': '엔', 'O': '오', 'P': '피', 'Q': '큐', 'R': '알', 'S': '에스', 'T': '티', 'U': '유', 'V': '브이', 'W': '더블유', 'X': '엑스', 'Y': '와이', 'Z': '제트'
+  };
+  let result = "";
+  for (let char of str) {
+    if (charMap[char]) result += charMap[char];
+    else result += char;
   }
   return result;
 };
@@ -881,9 +857,9 @@ const PhParticles = ({ triggerKey }: { triggerKey: string }) => (
 
 export default function App() {
   // App Mode State
-  const [appMode, setAppMode] = useState<'translator' | 'baybayin'>('translator');
+  const [appMode, setAppMode] = useState<'translator' | 'hangul'>('translator');
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [nextMode, setNextMode] = useState<'translator' | 'baybayin'>('translator');
+  const [nextMode, setNextMode] = useState<'translator' | 'hangul'>('translator');
 
   // Lens State (Added for Supreme Lens)
   const [isLensOpen, setIsLensOpen] = useState(false);
@@ -899,7 +875,7 @@ export default function App() {
   const [funFact, setFunFact] = useState<string | null>(null);
   const [isLoadingFunFact, setIsLoadingFunFact] = useState(false);
 
-  const [example, setExample] = useState<{ tagalogSentence?: string; englishTranslation?: string } | null>(null);
+  const [example, setExample] = useState<{ koreanSentence?: string; englishTranslation?: string } | null>(null);
   const [isLoadingExample, setIsLoadingExample] = useState(false);
 
   const [isRecording, setIsRecording] = useState(false);
@@ -909,35 +885,35 @@ export default function App() {
   const [isCopied, setIsCopied] = useState(false);
   const [isExampleCopied, setIsExampleCopied] = useState(false);
 
-  const [history, setHistory] = useState<{ english: string, tagalog: string, direction?: 'en-tl' | 'tl-en' }[]>([]);
+  const [history, setHistory] = useState<{ english: string, korean: string, direction?: 'en-ko' | 'ko-en' }[]>([]);
   const [showHistory, setShowHistory] = useState(false);
 
-  const [direction, setDirection] = useState<'en-tl' | 'tl-en'>('en-tl');
+  const [direction, setDirection] = useState<'en-ko' | 'ko-en'>('en-ko');
   const [inputMode, setInputMode] = useState<'word' | 'conversation'>('word');
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const [exampleCooldown, setExampleCooldown] = useState<number | null>(null);
 
-  // Baybayin States
-  const [baybayinMode, setBaybayinMode] = useState<'encode' | 'decode'>('encode');
-  const [decodeTarget, setDecodeTarget] = useState<'TL' | 'EN'>('TL');
+  // Hangul States
+  const [hangulMode, setHangulMode] = useState<'encode' | 'decode'>('encode');
+  const [decodeTarget, setDecodeTarget] = useState<'KO' | 'EN'>('KO');
   const [decodedCache, setDecodedCache] = useState<{ TL?: string, EN?: string }>({});
   const [isDecoding, setIsDecoding] = useState(false);
 
-  const [baybayinInput, setBaybayinInput] = useState('');
-  const [baybayinOutput, setBaybayinOutput] = useState('');
-  const [isBaybayinCopied, setIsBaybayinCopied] = useState(false);
+  const [hangulInput, setHangulInput] = useState('');
+  const [hangulOutput, setHangulOutput] = useState('');
+  const [isHangulCopied, setIsHangulCopied] = useState(false);
 
   const [isArtMode, setIsArtMode] = useState(false);
   const [isGeneratingArt, setIsGeneratingArt] = useState(false);
   const [artBgIndex, setArtBgIndex] = useState(1);
 
-  const [baybayinHistory, setBaybayinHistory] = useState<{ input: string, output: string }[]>([]);
-  const [showBaybayinHistory, setShowBaybayinHistory] = useState(false);
+  const [hangulHistory, setHangulHistory] = useState<{ input: string, output: string }[]>([]);
+  const [showHangulHistory, setShowHangulHistory] = useState(false);
 
   const englishSuggestions = ['hello', 'how are you?', 'thank you', 'good morning', 'I love you'];
-  const tagalogSuggestions = ['kumusta', 'salamat', 'magandang umaga', 'mahal kita', 'paalam'];
+  const koreanSuggestions = ['안녕하세요', '감사합니다', '대박', '사랑해', '안녕'];
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -952,11 +928,11 @@ export default function App() {
     return () => clearTimeout(timer);
   }, [exampleCooldown]);
 
-  const currentPlaceholder = direction === 'en-tl'
+  const currentPlaceholder = direction === 'en-ko'
     ? englishSuggestions[placeholderIndex % englishSuggestions.length]
-    : tagalogSuggestions[placeholderIndex % tagalogSuggestions.length];
+    : koreanSuggestions[placeholderIndex % koreanSuggestions.length];
 
-  const handleModeSwitch = (mode: 'translator' | 'baybayin') => {
+  const handleModeSwitch = (mode: 'translator' | 'hangul') => {
     if (mode === appMode) return;
     setNextMode(mode);
     setIsTransitioning(true);
@@ -967,7 +943,7 @@ export default function App() {
   };
 
   const handleSwap = () => {
-    setDirection(prev => prev === 'en-tl' ? 'tl-en' : 'en-tl');
+    setDirection(prev => prev === 'en-ko' ? 'ko-en' : 'en-ko');
     setEnglishWord(''); // New strict clear
     setTranslation('');
     setExample(null);
@@ -989,33 +965,33 @@ export default function App() {
     setErrorMsg(null);
   };
 
-  const handleGenerateBaybayin = () => {
-    if (!baybayinInput.trim()) return;
-    const output = toBaybayin(baybayinInput);
-    setBaybayinOutput(output);
-    setBaybayinHistory(prev => [{ input: baybayinInput, output: output }, ...prev]);
+  const handleGenerateHangul = () => {
+    if (!hangulInput.trim()) return;
+    const output = toHangul(hangulInput);
+    setHangulOutput(output);
+    setHangulHistory(prev => [{ input: hangulInput, output: output }, ...prev]);
     setIsArtMode(false);
   };
 
-  const handleDecodeBaybayin = async (targetOverride?: 'TL' | 'EN') => {
-    if (!baybayinInput.trim()) return;
+  const handleDecodeHangul = async (targetOverride?: 'KO' | 'EN') => {
+    if (!hangulInput.trim()) return;
 
     const target = targetOverride || decodeTarget;
     if (targetOverride) setDecodeTarget(target);
 
     if (decodedCache[target]) {
-      setBaybayinOutput(decodedCache[target]!);
+      setHangulOutput(decodedCache[target]!);
       return;
     }
 
     setIsDecoding(true);
-    setBaybayinOutput('');
+    setHangulOutput('');
     try {
-      const direction = target === 'TL' ? 'bay-tl' : 'bay-en';
+      const direction = target === 'KO' ? 'han-ko' : 'han-en';
       const response = await fetch('/api/translate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ word: baybayinInput, direction })
+        body: JSON.stringify({ word: hangulInput, direction })
       });
 
       if (!response.ok) {
@@ -1026,39 +1002,39 @@ export default function App() {
       const data = await response.json();
       if (data.translation) {
         setDecodedCache(prev => ({ ...prev, [target]: data.translation }));
-        setBaybayinOutput(data.translation);
+        setHangulOutput(data.translation);
         if (!targetOverride) {
-          setBaybayinHistory(prev => [{ input: baybayinInput, output: data.translation }, ...prev]);
+          setHangulHistory(prev => [{ input: hangulInput, output: data.translation }, ...prev]);
         }
         setIsArtMode(false);
       }
     } catch (error: any) {
       console.error('Decode error:', error);
       if (error.message === 'server_busy') {
-        setBaybayinOutput("ORACLE OVERLOADED: GOOGLE SERVERS BUSY. PLEASE TRY AGAIN LATER.");
+        setHangulOutput("ORACLE OVERLOADED: GOOGLE SERVERS BUSY. PLEASE TRY AGAIN LATER.");
       } else if (error.message === 'rate_limited') {
-        setBaybayinOutput("Error: Rate Limited");
+        setHangulOutput("Error: Rate Limited");
       } else {
-        setBaybayinOutput("Error communicating with the oracle.");
+        setHangulOutput("Error communicating with the oracle.");
       }
     } finally {
       setIsDecoding(false);
     }
   };
 
-  const baybayinRef = useRef<HTMLDivElement>(null);
+  const hangulRef = useRef<HTMLDivElement>(null);
 
   const handleDownloadImage = () => {
-    if (!baybayinRef.current) return;
-    toPng(baybayinRef.current, { 
+    if (!hangulRef.current) return;
+    toPng(hangulRef.current, { 
       cacheBust: true, 
       pixelRatio: 4, 
-      // skipFonts removed to allow Baybayin font embedding
+      // skipFonts removed to allow Hangul font embedding
       style: { transform: 'scale(1) rotate(0deg) translateY(0px)' } 
     })
       .then((dataUrl) => {
         const link = document.createElement('a');
-        link.download = `sinaunang-baybayin-${Date.now()}.png`;
+        link.download = `sinaunang-hangul-${Date.now()}.png`;
         link.href = dataUrl;
         link.click();
       })
@@ -1076,12 +1052,12 @@ export default function App() {
     }, 3500); // 3.5 second anticipation
   };
 
-  const handleCopyBaybayin = async () => {
-    if (!baybayinOutput) return;
+  const handleCopyHangul = async () => {
+    if (!hangulOutput) return;
     try {
-      await navigator.clipboard.writeText(baybayinOutput);
-      setIsBaybayinCopied(true);
-      setTimeout(() => setIsBaybayinCopied(false), 2000);
+      await navigator.clipboard.writeText(hangulOutput);
+      setIsHangulCopied(true);
+      setTimeout(() => setIsHangulCopied(false), 2000);
     } catch (err) {
       console.error('Failed to copy text', err);
     }
@@ -1099,9 +1075,9 @@ export default function App() {
   };
 
   const handleCopyExample = async () => {
-    if (!example?.tagalogSentence) return;
+    if (!example?.koreanSentence) return;
     try {
-      await navigator.clipboard.writeText(example.tagalogSentence);
+      await navigator.clipboard.writeText(example.koreanSentence);
       setIsExampleCopied(true);
       setTimeout(() => setIsExampleCopied(false), 2000);
     } catch (err) {
@@ -1109,7 +1085,7 @@ export default function App() {
     }
   };
 
-  const prefetchAudio = async (text: string, setter: React.Dispatch<React.SetStateAction<string | null>>, lang: string = 'fil-PH') => {
+  const prefetchAudio = async (text: string, setter: React.Dispatch<React.SetStateAction<string | null>>, lang: string = 'ko-KR') => {
     try {
       const res = await fetch('/api/tts', {
         method: 'POST',
@@ -1125,14 +1101,14 @@ export default function App() {
     }
   };
 
-  const fetchFunFact = async (english: string, tagalog: string) => {
+  const fetchFunFact = async (english: string, korean: string) => {
     setIsLoadingFunFact(true);
     setFunFact(null);
     try {
       const res = await fetch('/api/funfact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ englishWord: english, tagalogWord: tagalog })
+        body: JSON.stringify({ englishWord: english, koreanWord: korean })
       });
       if (res.ok) {
         const data = await res.json();
@@ -1172,12 +1148,12 @@ export default function App() {
       if (data.translation) {
         setTranslation(data.translation);
         setHistory(prev => {
-          const newEntry = { english: englishWord, tagalog: data.translation, direction };
+          const newEntry = { english: englishWord, korean: data.translation, direction };
           const filtered = prev.filter(item => item.english.toLowerCase() !== englishWord.toLowerCase());
           return [newEntry, ...filtered].slice(0, 10);
         });
 
-        prefetchAudio(data.translation, setAudioUrl, direction === 'en-tl' ? 'fil-PH' : 'en-US');
+        prefetchAudio(data.translation, setAudioUrl, direction === 'en-ko' ? 'ko-KR' : 'en-US');
         fetchFunFact(englishWord, data.translation);
       }
     } catch (error: any) {
@@ -1203,7 +1179,7 @@ export default function App() {
 
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
-    recognition.lang = direction === 'en-tl' ? 'en-US' : 'fil-PH';
+    recognition.lang = direction === 'en-ko' ? 'en-US' : 'ko-KR';
     recognition.interimResults = false;
 
     recognition.onstart = () => { setIsRecording(true); };
@@ -1229,8 +1205,8 @@ export default function App() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          englishWord: direction === 'en-tl' ? englishWord : translation,
-          tagalogWord: direction === 'tl-en' ? englishWord : translation,
+          englishWord: direction === 'en-ko' ? englishWord : translation,
+          koreanWord: direction === 'ko-en' ? englishWord : translation,
           direction
         }),
       });
@@ -1243,14 +1219,14 @@ export default function App() {
 
       if (!response.ok) throw new Error(`Server returned ${response.status}`);
       const data = await response.json();
-      const targetSentence = data.targetSentence || data.tagalogSentence;
+      const targetSentence = data.targetSentence || data.koreanSentence;
 
       if (targetSentence) {
         setExample({
-          tagalogSentence: targetSentence,
+          koreanSentence: targetSentence,
           englishTranslation: data.sourceTranslation || data.englishTranslation
         });
-        prefetchAudio(targetSentence, setExampleAudioUrl, direction === 'en-tl' ? 'fil-PH' : 'en-US');
+        prefetchAudio(targetSentence, setExampleAudioUrl, direction === 'en-ko' ? 'ko-KR' : 'en-US');
       }
     } catch (error) {
       console.error('Example generation error:', error);
@@ -1261,7 +1237,7 @@ export default function App() {
 
   return (
     <>
-      <h1 className="sr-only">Baybayin Translate — Elite Tagalog & Filipino Image Translator</h1>
+      <h1 className="sr-only">Hangul Translate — Elite Korean & Filipino Image Translator</h1>
 
       <style>
         {`
@@ -1281,22 +1257,22 @@ export default function App() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className={`fixed inset-0 z-50 flex flex-col items-center justify-center ${nextMode === 'baybayin' ? 'bg-[#12100E]' : 'bg-[#EEF2FF]'}`}
+            className={`fixed inset-0 z-50 flex flex-col items-center justify-center ${nextMode === 'hangul' ? 'bg-[#12100E]' : 'bg-[#EEF2FF]'}`}
           >
-            {nextMode === 'baybayin' ? (
+            {nextMode === 'hangul' ? (
               <div className="flex flex-col items-center text-white">
                 <motion.div
                   animate={{ rotate: 360, scale: [1, 1.1, 1] }}
                   transition={{ rotate: { duration: 3, repeat: Infinity, ease: "linear" }, scale: { duration: 1.5, repeat: Infinity } }}
                   className="mb-8"
                 >
-                  <TribalSun />
+                  <SejongSun />
                 </motion.div>
                 <motion.p
                   initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
                   className="font-tribal-title text-2xl tracking-[0.2em] opacity-80"
                 >
-                  PAG-UKIT NG BAYBAYIN...
+                  GENERATING HANGUL...
                 </motion.p>
               </div>
             ) : (
@@ -1312,7 +1288,7 @@ export default function App() {
                   initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
                   className="font-black text-2xl uppercase tracking-widest text-center"
                 >
-                  RETURNING TO TAGALOG SUPREME TRANSLATOR...
+                  RETURNING TO KOREAN SUPREME TRANSLATOR...
                 </motion.p>
               </div>
             )}
@@ -1346,7 +1322,7 @@ export default function App() {
         {/* Top Controls */}
         <div className="w-full max-w-4xl flex justify-between items-center z-40 mb-2 relative">
           <button
-            onClick={() => handleModeSwitch(appMode === 'translator' ? 'baybayin' : 'translator')}
+            onClick={() => handleModeSwitch(appMode === 'translator' ? 'hangul' : 'translator')}
             className={`flex items-center justify-center w-12 h-12 transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none rounded-[255px_15px_225px_15px/15px_225px_15px_255px] ${appMode === 'translator'
               ? 'bg-[#1A1A1A] border-[4px] border-[#1A1A1A] text-[#FED141] shadow-[4px_4px_0px_0px_#0032A0] hover:bg-gray-800'
               : 'bg-[#F6F5F2] border-[4px] border-[#2C2825] text-[#2C2825] shadow-[4px_4px_0px_0px_#2C2825] hover:bg-[#EAE6DF]'
@@ -1384,9 +1360,9 @@ export default function App() {
             </button>
           ) : (
             <button
-              onClick={() => setShowBaybayinHistory(true)}
+              onClick={() => setShowHangulHistory(true)}
               className="w-12 h-12 bg-[#F6F5F2] border-[4px] border-[#2C2825] shadow-[4px_4px_0px_0px_#2C2825] rounded-[255px_15px_225px_15px/15px_225px_15px_255px] flex items-center justify-center transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none hover:bg-[#EAE6DF]"
-              title="Baybayin History"
+              title="Hangul History"
             >
               <History className="w-6 h-6 stroke-[3] text-[#2C2825]" />
             </button>
@@ -1410,17 +1386,17 @@ export default function App() {
                 ) : (
                   history.map((item, index) => (
                     <div key={index} className="bg-gray-50 border-[4px] border-[#1A1A1A] rounded-xl p-4 flex flex-col gap-1 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => {
-                      setDirection(item.direction || 'en-tl');
+                      setDirection(item.direction || 'en-ko');
                       setEnglishWord(item.english);
-                      setTranslation(item.tagalog);
+                      setTranslation(item.korean);
                       setShowHistory(false);
                       setExample(null);
                       setFunFact(null);
                       setAudioUrl(null);
                       setExampleAudioUrl(null);
                     }}>
-                      <span className="text-sm font-black text-gray-500 uppercase">{item.direction === 'tl-en' ? 'Tagalog' : 'English'}: {item.english}</span>
-                      <span className="text-xl font-box text-[#1A1A1A]">{item.tagalog}</span>
+                      <span className="text-sm font-black text-gray-500 uppercase">{item.direction === 'ko-en' ? 'Korean' : 'English'}: {item.english}</span>
+                      <span className="text-xl font-box text-[#1A1A1A]">{item.korean}</span>
                     </div>
                   ))
                 )}
@@ -1429,29 +1405,29 @@ export default function App() {
           </div>
         )}
 
-        {/* History Modal (Baybayin) */}
-        {showBaybayinHistory && appMode === 'baybayin' && (
+        {/* History Modal (Hangul) */}
+        {showHangulHistory && appMode === 'hangul' && (
           <div className="fixed inset-0 bg-[#F6F5F2]/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
             <div className="bg-[#F6F5F2] border-[6px] border-[#2C2825] shadow-[12px_12px_0px_0px_#2C2825] rounded-[255px_25px_225px_25px/25px_225px_25px_255px] p-6 w-full max-w-md relative max-h-[80vh] flex flex-col">
               <button
-                onClick={() => setShowBaybayinHistory(false)}
+                onClick={() => setShowHangulHistory(false)}
                 className="absolute top-4 right-4 w-10 h-10 bg-[#F6F5F2] border-[4px] border-[#2C2825] shadow-[4px_4px_0px_0px_#2C2825] rounded-[255px_15px_225px_15px/15px_225px_15px_255px] flex items-center justify-center transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none hover:bg-[#EAE6DF] z-10"
               >
                 <X className="w-6 h-6 stroke-[3] text-[#2C2825]" />
               </button>
               <h2 className="text-2xl font-tribal-title text-[#2C2825] mb-6 uppercase tracking-wider pr-12">Script History</h2>
               <div className="overflow-y-auto flex-1 pr-2 space-y-4">
-                {baybayinHistory.length === 0 ? (
+                {hangulHistory.length === 0 ? (
                   <p className="text-[#2C2825]/60 font-tribal-text text-xl text-center italic py-8 uppercase tracking-widest">No scripts carved yet.</p>
                 ) : (
-                  baybayinHistory.map((item, index) => (
+                  hangulHistory.map((item, index) => (
                     <div key={index} className="bg-[#F6F5F2] border-[4px] border-[#2C2825] rounded-[255px_15px_225px_15px/15px_225px_15px_255px] p-4 flex flex-col gap-2 cursor-pointer hover:bg-[#EAE6DF] transition-colors" onClick={() => {
-                      setBaybayinInput(item.input);
-                      setBaybayinOutput(item.output);
-                      setShowBaybayinHistory(false);
+                      setHangulInput(item.input);
+                      setHangulOutput(item.output);
+                      setShowHangulHistory(false);
                     }}>
                       <span className="text-lg font-tribal-text text-[#2C2825]/60 uppercase tracking-widest">{item.input}</span>
-                      <span className="text-4xl text-[#2C2825] text-left" style={{ fontFamily: "'Noto Sans Tagalog', sans-serif" }}>{item.output}</span>
+                      <span className="text-4xl text-[#2C2825] text-left" style={{ fontFamily: "'Black Han Sans', sans-serif" }}>{item.output}</span>
                     </div>
                   ))
                 )}
@@ -1476,7 +1452,7 @@ export default function App() {
                     WebkitTextStroke: '3px #1A1A1A'
                   }}
                 >
-                  <span className="text-[#0032A0]">TAGALOG</span><br />
+                  <span className="text-[#0032A0]">KOREAN</span><br />
                   <span className="text-[#BF0D3E]">TRANSLATOR</span><br />
                   <span className="text-[#FED141]">SUPREME</span>
                 </h1>
@@ -1500,7 +1476,7 @@ export default function App() {
                     className="text-xl font-black text-white tracking-widest uppercase"
                     style={{ textShadow: '3px 3px 0px #1A1A1A', WebkitTextStroke: '1.5px #1A1A1A' }}
                   >
-                    {direction === 'en-tl' ? 'English Word' : 'Tagalog Word'}
+                    {direction === 'en-ko' ? 'English Word' : 'Korean Word'}
                   </motion.label>
                 </AnimatePresence>
                 <button
@@ -1508,7 +1484,7 @@ export default function App() {
                   className="flex items-center justify-center gap-2 bg-[#FFE5B4] border-[3px] border-[#1A1A1A] rounded-[10px_20px_10px_20px/20px_10px_20px_10px] px-3 py-2 text-sm font-black uppercase hover:bg-[#FFDAB9] active:translate-y-[2px] active:translate-x-[2px] shadow-[3px_3px_0px_0px_#1A1A1A] active:shadow-none transition-all"
                   title="Swap Translation Direction"
                 >
-                  {direction === 'en-tl' ? (
+                  {direction === 'en-ko' ? (
                     <><UKFlag className="-rotate-3" /> EN <ArrowLeftRight className="w-4 h-4 stroke-[3]" /> <PHFlag className="rotate-3" /> TL</>
                   ) : (
                     <><PHFlag className="-rotate-3" /> TL <ArrowLeftRight className="w-4 h-4 stroke-[3]" /> <UKFlag className="rotate-3" /> EN</>
@@ -1595,7 +1571,7 @@ export default function App() {
                       className="text-xl font-black text-white tracking-widest uppercase"
                       style={{ textShadow: '3px 3px 0px #1A1A1A', WebkitTextStroke: '1.5px #1A1A1A' }}
                     >
-                      {direction === 'en-tl' ? 'Tagalog Translation' : 'English Translation'}
+                      {direction === 'en-ko' ? 'Korean Translation' : 'English Translation'}
                     </motion.span>
                   </AnimatePresence>
                 </div>
@@ -1716,7 +1692,7 @@ export default function App() {
                     </div>
                     <div className="bg-white border-[6px] border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] rounded-[50px] p-8 flex flex-col items-center justify-center relative min-h-[160px]">
                       <p className="text-2xl font-box mb-6 break-words text-[#1A1A1A] text-center w-full leading-tight uppercase">
-                        {example.tagalogSentence}
+                        {example.koreanSentence}
                       </p>
                       <p className="text-xl font-box mb-8 text-[#1A1A1A] text-center w-full bg-gray-50 px-4 py-2 border-[4px] border-[#1A1A1A] rounded-xl transform -rotate-2 shadow-[4px_4px_0px_0px_#1A1A1A]">
                         "{example.englishTranslation}"
@@ -1746,15 +1722,15 @@ export default function App() {
           </div>
         )}
 
-        {/* Baybayin Mode Layout */}
-        {appMode === 'baybayin' && (
+        {/* Hangul Mode Layout */}
+        {appMode === 'hangul' && (
           <div
             className={`w-full max-w-md z-10 flex flex-col items-center pt-8 pb-12 animate-in fade-in duration-500 relative ${isGeneratingArt ? 'text-[#F6F5F2]' : 'text-[#1A1A1A]'}`}
           >
 
             {/* Background Petroglyphs */}
-            <div className="absolute top-0 left-[-60px]"><TribalPetroglyph1 /></div>
-            <div className="absolute top-[40%] right-[-70px]"><TribalPetroglyph2 /></div>
+            <div className="absolute top-0 left-[-60px]"><SejongPetroglyph1 /></div>
+            <div className="absolute top-[40%] right-[-70px]"><SejongPetroglyph2 /></div>
 
             {/* Header */}
             <div className="text-center relative z-10 w-full mb-12 flex flex-col items-center">
@@ -1771,7 +1747,7 @@ export default function App() {
                   WebkitTextStroke: '2px #2C2825',
                   filter: 'drop-shadow(6px 6px 0px #2C2825)'
                 }}>
-                Baybayin
+                Hangul
               </h1>
 
               <div className="flex items-center gap-4 mt-4 opacity-90">
@@ -1785,38 +1761,38 @@ export default function App() {
               {/* Mode Toggle */}
               <div className="flex mt-8 bg-transparent border-[4px] border-[#2C2825] p-1 rounded-[255px_15px_225px_15px/15px_225px_15px_255px]">
                 <button
-                  onClick={() => { setBaybayinMode('encode'); setBaybayinInput(''); setBaybayinOutput(''); setDecodedCache({}); setIsArtMode(false); setIsGeneratingArt(false); }}
-                  className={`px-4 py-2 font-tribal-text font-bold uppercase tracking-widest transition-colors rounded-xl ${baybayinMode === 'encode' ? 'bg-[#2C2825] text-[#F6F5F2]' : 'text-[#2C2825] hover:bg-[#2C2825]/10'}`}
+                  onClick={() => { setHangulMode('encode'); setHangulInput(''); setHangulOutput(''); setDecodedCache({}); setIsArtMode(false); setIsGeneratingArt(false); }}
+                  className={`px-4 py-2 font-tribal-text font-bold uppercase tracking-widest transition-colors rounded-xl ${hangulMode === 'encode' ? 'bg-[#2C2825] text-[#F6F5F2]' : 'text-[#2C2825] hover:bg-[#2C2825]/10'}`}
                 >
-                  CARVE (To Baybayin)
+                  CARVE (To Hangul)
                 </button>
                 <button
-                  onClick={() => { setBaybayinMode('decode'); setBaybayinInput(''); setBaybayinOutput(''); setDecodedCache({}); setIsArtMode(false); setIsGeneratingArt(false); }}
-                  className={`px-4 py-2 font-tribal-text font-bold uppercase tracking-widest transition-colors rounded-xl ${baybayinMode === 'decode' ? 'bg-[#2C2825] text-[#F6F5F2]' : 'text-[#2C2825] hover:bg-[#2C2825]/10'}`}
+                  onClick={() => { setHangulMode('decode'); setHangulInput(''); setHangulOutput(''); setDecodedCache({}); setIsArtMode(false); setIsGeneratingArt(false); }}
+                  className={`px-4 py-2 font-tribal-text font-bold uppercase tracking-widest transition-colors rounded-xl ${hangulMode === 'decode' ? 'bg-[#2C2825] text-[#F6F5F2]' : 'text-[#2C2825] hover:bg-[#2C2825]/10'}`}
                 >
-                  DECODE (From Baybayin)
+                  DECODE (From Hangul)
                 </button>
               </div>
             </div>
 
             {/* Input Box */}
             <div className="w-full space-y-3 z-10 relative mb-10">
-              <label htmlFor="baybayin-input" className="text-2xl font-tribal-text text-[#2C2825] uppercase tracking-[0.1em] px-2 block font-bold">
-                {baybayinMode === 'decode' ? 'Paste Baybayin Characters' : 'Enter Word or Name'}
+              <label htmlFor="hangul-input" className="text-2xl font-tribal-text text-[#2C2825] uppercase tracking-[0.1em] px-2 block font-bold">
+                {hangulMode === 'decode' ? 'Paste Hangul Characters' : 'Enter Word or Name'}
               </label>
               <div className="bg-transparent border-[8px] border-[#2C2825] p-6 relative">
                 <input
-                  id="baybayin-input"
+                  id="hangul-input"
                   type="text"
-                  value={baybayinInput}
+                  value={hangulInput}
                   onChange={(e) => {
-                    setBaybayinInput(e.target.value);
-                    setBaybayinOutput('');
+                    setHangulInput(e.target.value);
+                    setHangulOutput('');
                     setDecodedCache({});
                   }}
-                  onKeyDown={(e) => e.key === 'Enter' && (baybayinMode === 'decode' ? handleDecodeBaybayin() : handleGenerateBaybayin())}
+                  onKeyDown={(e) => e.key === 'Enter' && (hangulMode === 'decode' ? handleDecodeHangul() : handleGenerateHangul())}
                   className="flex-1 bg-transparent text-3xl font-tribal-text font-bold outline-none placeholder:text-[#2C2825]/40 w-full text-[#2C2825]"
-                  placeholder={baybayinMode === 'decode' ? 'e.g. \u170E\u1700\u170C\u1700' : 'e.g. malaya'}
+                  placeholder={hangulMode === 'decode' ? 'e.g. \u170E\u1700\u170C\u1700' : 'e.g. malaya'}
                 />
                 <div className="absolute -top-2 -left-2 w-4 h-4 bg-[#F6F5F2] border-r-4 border-b-4 border-[#2C2825] transform rotate-45"></div>
                 <div className="absolute -bottom-2 -right-2 w-4 h-4 bg-[#F6F5F2] border-l-4 border-t-4 border-[#2C2825] transform rotate-45"></div>
@@ -1825,19 +1801,19 @@ export default function App() {
 
             {/* Generate Button */}
             <button
-              onClick={() => baybayinMode === 'decode' ? handleDecodeBaybayin() : handleGenerateBaybayin()}
-              disabled={!baybayinInput.trim() || isDecoding}
+              onClick={() => hangulMode === 'decode' ? handleDecodeHangul() : handleGenerateHangul()}
+              disabled={!hangulInput.trim() || isDecoding}
               className="w-full bg-[#2C2825] hover:bg-[#1A1815] text-[#F6F5F2] text-3xl font-tribal-text font-bold py-6 border-4 border-transparent active:border-[#2C2825] active:bg-transparent active:text-[#2C2825] transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed mb-12 uppercase tracking-widest flex items-center justify-center"
             >
               {isDecoding ? <Loader2 className="w-8 h-8 mr-3 animate-spin stroke-[4]" /> : null}
-              {baybayinMode === 'decode' ? 'DECODE SCRIPT!' : 'Generate Characters!'}
+              {hangulMode === 'decode' ? 'DECODE SCRIPT!' : 'Generate Characters!'}
             </button>
 
             {/* Output Box */}
-            {baybayinOutput && (
+            {hangulOutput && (
               <div className="w-full relative z-10 animate-in fade-in slide-in-from-bottom-8 duration-300">
                 <motion.div
-                  ref={baybayinRef}
+                  ref={hangulRef}
                   animate={isGeneratingArt ? { x: [-2, 2, -2, 2, 0], transition: { repeat: Infinity, duration: 0.2 } } : {}}
                   className={`relative flex flex-col items-center justify-center transition-all duration-500 w-full min-h-[200px] sm:min-h-[250px] ${ 
                     isArtMode 
@@ -1865,7 +1841,7 @@ export default function App() {
                   )}
                   
                   {/* The Tiny Floating Trigger Button (Hidden during Art Mode or Loading) */}
-                  {!isArtMode && !isGeneratingArt && baybayinMode === 'encode' && (
+                  {!isArtMode && !isGeneratingArt && hangulMode === 'encode' && (
                     <motion.button 
                       onClick={handleMorphToArt}
                       className="absolute -right-3 -top-3 z-50 bg-[#F6F5F2] border-[3px] border-[#1A1A1A] w-10 h-10 rounded-sm flex items-center justify-center hover:bg-[#1A1A1A] hover:text-[#F6F5F2] transition-colors shadow-[2px_2px_0px_0px_#1A1A1A] text-[#1A1A1A]"
@@ -1910,12 +1886,12 @@ export default function App() {
                     </>
                   )}
 
-                  {baybayinMode === 'decode' && !isArtMode && (
+                  {hangulMode === 'decode' && !isArtMode && (
                     <div className="absolute top-4 border-[4px] border-[#2C2825] shadow-[4px_4px_0px_#2C2825] rounded-[255px_15px_225px_15px/15px_225px_15px_255px] flex p-1 mb-6 z-20">
-                      {['TL', 'EN'].map((lang) => (
+                      {['KO', 'EN'].map((lang) => (
                         <button
                           key={lang}
-                          onClick={() => handleDecodeBaybayin(lang as 'TL' | 'EN')}
+                          onClick={() => handleDecodeHangul(lang as 'KO' | 'EN')}
                           className={`px-4 py-1.5 rounded-xl font-tribal-text font-bold text-lg tracking-widest transition-all ${decodeTarget === lang
                             ? 'bg-[#2C2825] text-[#F6F5F2]'
                             : 'text-[#2C2825] hover:bg-[#2C2825]/10'
@@ -1927,19 +1903,19 @@ export default function App() {
                     </div>
                   )}
 
-                  {/* The Baybayin Characters (Adaptive Color) */}
+                  {/* The Hangul Characters (Adaptive Color) */}
                   <div className={`relative z-20 flex flex-wrap justify-center items-center gap-2 w-full ${isArtMode
                       ? 'text-[#F6F5F2] drop-shadow-[0_4px_12px_rgba(0,0,0,1)]'
                       : 'text-[#2C2825]'
                     }`}>
-                    {/* DO NOT TOUCH: The actual Baybayin text MUST remain Noto Sans Tagalog */}
-                    {baybayinMode === 'encode' ? (
-                      <span className="text-7xl mb-10 text-center break-words w-full block" style={{ fontFamily: "'Noto Sans Tagalog', sans-serif" }}>
-                        {baybayinOutput}
+                    {/* DO NOT TOUCH: The actual Hangul text MUST remain Noto Sans Korean */}
+                    {hangulMode === 'encode' ? (
+                      <span className="text-7xl mb-10 text-center break-words w-full block" style={{ fontFamily: "'Black Han Sans', sans-serif" }}>
+                        {hangulOutput}
                       </span>
                     ) : (
                       <span className="text-4xl mt-12 mb-10 text-center break-words w-full block font-tribal-text tracking-widest uppercase font-bold">
-                        {baybayinOutput}
+                        {hangulOutput}
                       </span>
                     )}
                   </div>
@@ -1948,13 +1924,13 @@ export default function App() {
 
                 <div className="flex flex-col gap-3 mt-6">
                   <button
-                    onClick={handleCopyBaybayin}
+                    onClick={handleCopyHangul}
                     className="flex items-center gap-3 bg-transparent hover:bg-[#2C2825] hover:text-[#F6F5F2] text-[#2C2825] px-6 py-4 border-4 border-[#2C2825] text-xl font-tribal-text font-bold uppercase transition-colors duration-150 tracking-wider w-full justify-center"
                   >
-                    {isBaybayinCopied ? <Check className="w-6 h-6 stroke-[3]" /> : <Copy className="w-6 h-6 stroke-[3]" />}
-                    {isBaybayinCopied ? 'COPIED!' : 'COPY CHARACTERS'}
+                    {isHangulCopied ? <Check className="w-6 h-6 stroke-[3]" /> : <Copy className="w-6 h-6 stroke-[3]" />}
+                    {isHangulCopied ? 'COPIED!' : 'COPY CHARACTERS'}
                   </button>
-                  {baybayinMode === 'encode' && (
+                  {hangulMode === 'encode' && (
                     <button
                       onClick={handleDownloadImage}
                       className="flex items-center gap-3 bg-transparent hover:bg-[#2C2825] hover:text-[#F6F5F2] text-[#2C2825] px-6 py-4 border-4 border-[#2C2825] text-xl font-tribal-text font-bold uppercase transition-colors duration-150 tracking-wider w-full justify-center"

@@ -20,8 +20,8 @@ export default async function handler(req: Request) {
     if (image && mode) {
       let promptText = "";
       if (mode === 'EN') promptText = "Extract the text in this image and translate it to English. Give a brief, cool description. CRITICAL: DO NOT use markdown, asterisks, or bullet points. Format as clean, readable plain text.";
-      if (mode === 'TL') promptText = "Extract the text in this image and translate it to Tagalog. Give a brief description in Tagalog. CRITICAL: DO NOT use markdown, asterisks, or bullet points. Format as clean, readable plain text.";
-      if (mode === 'BAY') promptText = "Extract the text in this image and translate it into simple, Romanized Tagalog words (standard alphabet, no special characters). Do not describe it, just give the literal Tagalog words.";
+      if (mode === 'KO') promptText = "Extract the text in this image and translate it to modern Korean. Give a brief description in Korean. CRITICAL: DO NOT use markdown, asterisks, or bullet points. Format as clean, readable plain text.";
+      if (mode === 'HAN') promptText = "Extract the text in this image and translate it into simple, Romanized Korean words (standard alphabet, no special characters). Do not describe it, just give the literal Korean words.";
 
       const cleanBase64 = image.replace(/^data:image\/\w+;base64,/, "");
 
@@ -49,22 +49,22 @@ export default async function handler(req: Request) {
 
     // 2. TEXT TRANSLATOR PIPELINE
     else if (word) {
-      let sourceLang = "Tagalog";
+      let sourceLang = "Korean";
       let targetLang = "English";
-      if (direction === "tl-en") { sourceLang = "Tagalog"; targetLang = "English"; }
-      else if (direction === "en-tl") { sourceLang = "English"; targetLang = "Tagalog"; }
-      else if (direction === "bay-tl") { sourceLang = "Baybayin"; targetLang = "Tagalog"; }
-      else if (direction === "bay-en") { sourceLang = "Baybayin"; targetLang = "English"; }
+      if (direction === "ko-en") { sourceLang = "Korean"; targetLang = "English"; }
+      else if (direction === "en-ko") { sourceLang = "English"; targetLang = "Korean"; }
+      else if (direction === "han-ko") { sourceLang = "Hangul"; targetLang = "Korean"; }
+      else if (direction === "han-en") { sourceLang = "Hangul"; targetLang = "English"; }
       let prompt = `Translate the following from ${sourceLang} to ${targetLang}. Return ONLY the direct translation. Do not include notes, options, or markdown. Word: ${word}`;
 
       if (inputMode === 'conversation') {
-        prompt = `You are a strict translation engine. Translate the following text from ${sourceLang} to ${targetLang}.
+        prompt = `You are "KTS Hangul Supreme Translator", an elite Korean streetwear-themed translator.
+Translate the following text from ${sourceLang} to ${targetLang}.
 
 STRICT REQUIREMENTS:
-1. Translate into natural, conversational language as spoken by a local.
-2. Output EXACTLY ONE version of the translation.
-3. RETURN ONLY THE TRANSLATED TEXT. 
-4. ABSOLUTELY NO options, NO notes, NO explanations, NO bullet points, and NO quotes.
+1. If translating English to Korean: Translate directly into stylized modern conversational Korean (Hangul), and output the corresponding English Romanization (pronunciation guide) alongside a breakdown of slang/nuance.
+2. If translating Korean to English: Translate directly into stylized modern English.
+3. Keep the format clean, edgy, and easily readable.
 
 Text to translate:
 ${word}`;
