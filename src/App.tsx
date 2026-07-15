@@ -1311,10 +1311,26 @@ export default function App() {
 
       {/* Main App Container */}
       <main
-        className={`min-h-[100dvh] font-sans p-6 pb-[calc(4.5rem+env(safe-area-inset-bottom))] flex flex-col items-center justify-start overflow-x-hidden relative ${appMode === 'translator' ? 'text-[#1A1A1A] selection:bg-[#93C5FD]' : 'text-[#CD2E3A] selection:bg-[#CD2E3A]/30'}`}
+        className={`min-h-[100dvh] font-sans p-6 pb-[calc(4.5rem+env(safe-area-inset-bottom))] flex flex-col items-center justify-start overflow-x-hidden relative ${appMode === 'translator' ? 'text-[#1A1A1A] selection:bg-[#93C5FD]' : 'text-[#2C2825] selection:bg-[#D4C3A3]'}`}
       >
-        {/* Dynamic Backgrounds (Kakao Polka & Joseon Wave) */}
-        <div className={`fixed inset-0 -z-10 transition-all duration-700 pointer-events-none ${appMode === 'translator' ? 'bg-kakao opacity-100' : 'bg-joseon opacity-100'}`} />
+        <motion.div
+          className="fixed inset-0 -z-10 pointer-events-none"
+          animate={isGeneratingArt ? {
+            filter: "invert(1) hue-rotate(180deg)",
+            backgroundPositionY: ["0px", "100px", "0px", "-100px", "0px"]
+          } : {
+            filter: "invert(0) hue-rotate(0deg)",
+            backgroundPositionY: "0px"
+          }}
+          transition={isGeneratingArt ? {
+            backgroundPositionY: { repeat: Infinity, duration: 3.5, ease: "linear" },
+            filter: { duration: 0.4 }
+          } : { duration: 0.4 }}
+          style={appMode === 'translator'
+            ? { backgroundColor: '#796CE3', backgroundImage: 'radial-gradient(circle, rgba(255, 255, 255, 0.15) 3px, transparent 3px)', backgroundSize: '30px 30px' }
+            : { backgroundColor: '#796CE3', backgroundImage: 'radial-gradient(circle, rgba(255, 255, 255, 0.15) 3px, transparent 3px)', backgroundSize: '30px 30px' }
+          }
+        />
 
         {/* Top Controls */}
         <div className="w-full max-w-4xl flex justify-between items-center z-40 mb-2 relative">
@@ -1752,53 +1768,53 @@ export default function App() {
 
         {/* Hangul Mode Layout */}
         {appMode === 'hangul' && (
-          <div className="w-full max-w-md z-10 flex flex-col items-center pt-8 pb-12 animate-in fade-in duration-500 relative text-[#CD2E3A]">
-            
-            {/* Joseon Swag Curved Header & Graphic */}
-            <div className="text-center relative z-10 w-full mb-8 flex flex-col items-center">
-              
-              {/* Curved Text SVG */}
-              <div className="relative w-full max-w-[340px] h-[130px] -mb-20 z-20 overflow-visible">
-                <svg viewBox="0 0 340 130" className="w-full h-full overflow-visible">
-                  {/* Tighter, flatter quadratic arch to perfectly hug the hats */}
-                  <path id="curve" fill="transparent" d="M 30,120 Q 170,10 310,120" />
-                  <text className="text-[6.5rem] drop-shadow-sm" style={{ fontFamily: "'East Sea Dokdo', cursive", fill: "#CD2E3A", letterSpacing: "2px" }}>
-                    <textPath href="#curve" startOffset="50%" textAnchor="middle">
-                      모던 한글
-                    </textPath>
-                  </text>
-                </svg>
-              </div>
+          <div
+            className={`w-full max-w-md z-10 flex flex-col items-center pt-8 pb-12 animate-in fade-in duration-500 relative ${isGeneratingArt ? 'text-[#F6F5F2]' : 'text-[#1A1A1A]'}`}
+          >
 
-              {/* The WebP Character Asset */}
-              <div className="relative z-10 w-[240px] drop-shadow-[0_15px_15px_rgba(205,46,58,0.15)]">
-                <img src="/kcharacters.webp" alt="Joseon Characters" className="w-full h-auto object-contain" />
-              </div>
+            {/* Background Petroglyphs */}
+            <div className="absolute top-0 left-[-60px]"><SejongPetroglyph1 /></div>
+            <div className="absolute top-[40%] right-[-70px]"><SejongPetroglyph2 /></div>
 
-              {/* Sub-label */}
-              <div className="-mt-3 flex items-center gap-2">
-                <div className="w-10 h-[2px] bg-[#CD2E3A]"></div>
-                <span className="font-bold text-lg tracking-[0.2em] text-[#CD2E3A] uppercase" style={{ fontFamily: "'Do Hyeon', sans-serif" }}>
-                  GENERATOR
+            {/* Header */}
+            <div className="text-center relative z-10 w-full mb-12 flex flex-col items-center">
+              <div className="flex items-center gap-4 mb-2 opacity-90">
+                <div className="w-6 h-1.5 bg-[#2C2825] rounded-sm"></div>
+                <span className="font-text text-xl text-xl md:text-2xl tracking-[0.3em] uppercase text-[#2C2825] font-black">
+                  Sinaunang
                 </span>
-                <div className="w-10 h-[2px] bg-[#CD2E3A]"></div>
+                <div className="w-6 h-1.5 bg-[#2C2825] rounded-sm"></div>
+              </div>
+
+              <h1 className="text-[4rem] md:text-[5rem] font-bold text-[#F6F5F2] text-center leading-[1] tracking-wider uppercase mb-1"
+                style={{
+                  WebkitTextStroke: '2px #2C2825',
+                  filter: 'drop-shadow(6px 6px 0px #2C2825)'
+                }}>
+                Hangul
+              </h1>
+
+              <div className="flex items-center gap-4 mt-4 opacity-90">
+                <div className="w-10 h-1 bg-[#2C2825] rounded-sm"></div>
+                <span className="font-text text-xl text-lg md:text-xl tracking-[0.2em] uppercase text-[#2C2825] font-bold">
+                  Script Generator
+                </span>
+                <div className="w-10 h-1 bg-[#2C2825] rounded-sm"></div>
               </div>
 
               {/* Mode Toggle */}
-              <div className="flex mt-8 bg-[#F8F6F0] border-[4px] border-[#CD2E3A] p-1 rounded-[1.5rem] shadow-[4px_4px_0px_0px_#CD2E3A]">
+              <div className="flex mt-8 bg-transparent border-[4px] border-[#2C2825] p-1 rounded-[255px_15px_225px_15px/15px_225px_15px_255px]">
                 <button
                   onClick={() => { setHangulMode('encode'); setHangulInput(''); setHangulOutput(''); setDecodedCache({}); setIsArtMode(false); setIsGeneratingArt(false); }}
-                  className={`px-6 py-2 text-xl uppercase tracking-widest transition-colors rounded-xl ${hangulMode === 'encode' ? 'bg-[#CD2E3A] text-[#F8F6F0]' : 'text-[#CD2E3A] hover:bg-[#CD2E3A]/10'}`}
-                  style={{ fontFamily: "'Do Hyeon', sans-serif" }}
+                  className={`px-4 py-2 font-text text-xl font-bold uppercase tracking-widest transition-colors rounded-xl ${hangulMode === 'encode' ? 'bg-[#2C2825] text-[#F6F5F2]' : 'text-[#2C2825] hover:bg-[#2C2825]/10'}`}
                 >
-                  CARVE
+                  CARVE (To Hangul)
                 </button>
                 <button
                   onClick={() => { setHangulMode('decode'); setHangulInput(''); setHangulOutput(''); setDecodedCache({}); setIsArtMode(false); setIsGeneratingArt(false); }}
-                  className={`px-6 py-2 text-xl uppercase tracking-widest transition-colors rounded-xl ${hangulMode === 'decode' ? 'bg-[#CD2E3A] text-[#F8F6F0]' : 'text-[#CD2E3A] hover:bg-[#CD2E3A]/10'}`}
-                  style={{ fontFamily: "'Do Hyeon', sans-serif" }}
+                  className={`px-4 py-2 font-text text-xl font-bold uppercase tracking-widest transition-colors rounded-xl ${hangulMode === 'decode' ? 'bg-[#2C2825] text-[#F6F5F2]' : 'text-[#2C2825] hover:bg-[#2C2825]/10'}`}
                 >
-                  DECODE
+                  DECODE (From Hangul)
                 </button>
               </div>
             </div>
