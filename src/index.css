@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Tagalog&display=swap');
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'BagwisBaybayin';
+  src: url('/BagwisBaybayinFontRegular-ZV3MK.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@theme {
+  --font-sans: "Comic Sans MS", "Comic Sans", "Mali", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer utilities {
+  .doodle-border {
+    border: 5px solid #1A1A1A;
+    border-radius: 25px 125px 25px 125px / 125px 25px 125px 25px;
+  }
+  
+  .doodle-border-alt {
+    border: 5px solid #1A1A1A;
+    border-radius: 125px 25px 125px 25px / 25px 125px 25px 125px;
+  }
+  
+  .doodle-border-btn {
+    border: 5px solid #1A1A1A;
+    border-radius: 100px 25px 100px 25px / 25px 100px 25px 100px;
+  }
+
+  .doodle-border-example {
+    border: 5px solid #1A1A1A;
+    border-radius: 50px;
+  }
+
+  .doodle-shadow {
+    box-shadow: 6px 6px 0px 0px #1A1A1A;
+  }
+  
+  .doodle-shadow-sm {
+    box-shadow: 4px 4px 0px 0px #1A1A1A;
+  }
+
+  .doodle-shadow:active, .doodle-shadow-sm:active {
+    box-shadow: 0px 0px 0px 0px #1A1A1A;
+    transform: translateY(4px) translateX(4px);
+  }
+}
+
