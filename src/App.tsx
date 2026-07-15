@@ -1758,29 +1758,30 @@ export default function App() {
             <div className="text-center relative z-10 w-full mb-8 flex flex-col items-center">
               
               {/* Curved Text SVG */}
-              <div className="relative w-full max-w-[300px] h-[100px] -mb-4 z-20 overflow-visible">
-                <svg viewBox="0 0 300 100" className="w-full h-full overflow-visible">
-                  <path id="curve" fill="transparent" d="M 40,100 C 40,10 260,10 260,100" />
-                  <text width="300" className="text-[3.5rem] drop-shadow-md" style={{ fontFamily: "'East Sea Dokdo', cursive", fill: "#CD2E3A" }}>
+              <div className="relative w-full max-w-[340px] h-[130px] -mb-20 z-20 overflow-visible">
+                <svg viewBox="0 0 340 130" className="w-full h-full overflow-visible">
+                  {/* Tighter, flatter quadratic arch to perfectly hug the hats */}
+                  <path id="curve" fill="transparent" d="M 30,120 Q 170,10 310,120" />
+                  <text className="text-[6.5rem] drop-shadow-sm" style={{ fontFamily: "'East Sea Dokdo', cursive", fill: "#CD2E3A", letterSpacing: "2px" }}>
                     <textPath href="#curve" startOffset="50%" textAnchor="middle">
-                      조선 스웩
+                      모던 한글
                     </textPath>
                   </text>
                 </svg>
               </div>
 
               {/* The WebP Character Asset */}
-              <div className="relative z-10 w-[260px] drop-shadow-[0_15px_15px_rgba(205,46,58,0.15)]">
+              <div className="relative z-10 w-[240px] drop-shadow-[0_15px_15px_rgba(205,46,58,0.15)]">
                 <img src="/kcharacters.webp" alt="Joseon Characters" className="w-full h-auto object-contain" />
               </div>
 
               {/* Sub-label */}
-              <div className="mt-4 flex items-center gap-3">
-                <div className="w-12 h-[2px] bg-[#CD2E3A]"></div>
-                <span className="font-bold text-xl tracking-[0.2em] text-[#CD2E3A] uppercase" style={{ fontFamily: "'Do Hyeon', sans-serif" }}>
+              <div className="-mt-3 flex items-center gap-2">
+                <div className="w-10 h-[2px] bg-[#CD2E3A]"></div>
+                <span className="font-bold text-lg tracking-[0.2em] text-[#CD2E3A] uppercase" style={{ fontFamily: "'Do Hyeon', sans-serif" }}>
                   GENERATOR
                 </span>
-                <div className="w-12 h-[2px] bg-[#CD2E3A]"></div>
+                <div className="w-10 h-[2px] bg-[#CD2E3A]"></div>
               </div>
 
               {/* Mode Toggle */}
