@@ -1501,7 +1501,7 @@ export default function App() {
                 </AnimatePresence>
                 <button
                   onClick={handleSwap}
-                  className="flex items-center justify-center gap-2 bg-[#FFE5B4] border-[3px] border-[#1A1A1A] rounded-[10px_20px_10px_20px/20px_10px_20px_10px] px-3 py-2 text-sm font-black uppercase hover:bg-[#FFDAB9] active:translate-y-[2px] active:translate-x-[2px] shadow-[3px_3px_0px_0px_#1A1A1A] active:shadow-none transition-all"
+                  className="flex items-center justify-center gap-2 bg-[#FED141] border-[3px] border-[#1A1A1A] rounded-xl px-3 py-2 text-sm font-black uppercase hover:bg-[#E5BC3A] active:translate-y-[2px] active:translate-x-[2px] shadow-[3px_3px_0px_0px_#1A1A1A] active:shadow-none transition-all transform rotate-1"
                   title="Swap Translation Direction"
                 >
                   {direction === 'en-ko' ? (
@@ -1511,40 +1511,47 @@ export default function App() {
                   )}
                 </button>
               </div>
-              <div className="bg-white border-[6px] border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] rounded-[255px_15px_225px_15px/15px_225px_15px_255px] p-6 flex items-center relative min-h-[100px]">
-                <textarea
-                  id="english-input"
-                  value={englishWord}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    if (inputMode === 'conversation' && val.length > 500) return;
-                    setEnglishWord(val);
-                    setErrorMsg(null);
-                    if (val.trim() === '') {
-                      setTranslation('');
-                      setExample(null);
-                      setFunFact(null);
-                      setAudioUrl(null);
-                      setExampleAudioUrl(null);
-                    }
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                      e.preventDefault();
-                      handleTranslate();
-                    }
-                  }}
-                  className={`flex-1 bg-transparent outline-none placeholder:text-gray-300 w-full text-[#1A1A1A] resize-none transition-all duration-300 ${inputMode === 'conversation' ? 'min-h-[120px] text-lg font-sans font-bold leading-relaxed' : 'min-h-[3rem] text-2xl font-bold overflow-hidden'}`}
-                  placeholder={inputMode === 'conversation' ? 'Type a full sentence or paragraph here...' : `e.g. ${currentPlaceholder}`}
-                />
-                {inputMode === 'conversation' && <span className="absolute bottom-2 right-24 text-xs font-black text-gray-400">{englishWord.length}/500</span>}
-                <button
-                  onClick={handleMicClick}
-                  className={`w-14 h-14 ml-3 rounded-[15px_225px_15px_255px/255px_15px_225px_15px] border-[5px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] flex flex-shrink-0 items-center justify-center transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none ${isRecording ? 'bg-[#ffcdd2]' : 'bg-[#e8f5e9] hover:bg-[#c8e6c9]'}`}
-                  title="Speak to translate"
-                >
-                  <Mic className="w-7 h-7 stroke-[4] text-[#1A1A1A]" />
-                </button>
+              <div className="drop-shadow-[8px_8px_0px_#1A1A1A] w-full">
+                <div className="bg-[#E8E6D9] border-[6px] border-[#1A1A1A] rounded-none p-6 flex items-center relative min-h-[100px] z-10">
+                  <div className="absolute top-[100%] left-10 flex flex-col items-start z-10">
+                    <div className="w-[24px] h-[6px] bg-[#E8E6D9]"></div>
+                    <div className="w-[24px] h-[12px] bg-[#E8E6D9] border-x-[6px] border-[#1A1A1A]"></div>
+                    <div className="w-[12px] h-[6px] bg-[#1A1A1A] ml-[12px]"></div>
+                  </div>
+                  <textarea
+                    id="english-input"
+                    value={englishWord}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (inputMode === 'conversation' && val.length > 500) return;
+                      setEnglishWord(val);
+                      setErrorMsg(null);
+                      if (val.trim() === '') {
+                        setTranslation('');
+                        setExample(null);
+                        setFunFact(null);
+                        setAudioUrl(null);
+                        setExampleAudioUrl(null);
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        handleTranslate();
+                      }
+                    }}
+                    className={`flex-1 bg-transparent outline-none placeholder:text-gray-400/70 w-full text-[#1A1A1A] resize-none transition-all duration-300 ${inputMode === 'conversation' ? 'min-h-[120px] text-lg font-sans font-bold leading-relaxed' : 'min-h-[3rem] text-2xl font-bold overflow-hidden'}`}
+                    placeholder={inputMode === 'conversation' ? 'Type a full sentence or paragraph here...' : `e.g. ${currentPlaceholder}`}
+                  />
+                  {inputMode === 'conversation' && <span className="absolute bottom-2 right-24 text-xs font-black text-gray-500">{englishWord.length}/500</span>}
+                  <button
+                    onClick={handleMicClick}
+                    className={`w-14 h-14 ml-3 rounded-none border-[5px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] flex flex-shrink-0 items-center justify-center transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none ${isRecording ? 'bg-[#ffcdd2]' : 'bg-[#C6CDB9] hover:bg-[#B5BDA7]'}`}
+                    title="Speak to translate"
+                  >
+                    <Mic className="w-7 h-7 stroke-[4] text-[#1A1A1A]" />
+                  </button>
+                </div>
               </div>
 
               <motion.div className="absolute -bottom-16 -right-4 z-20 pointer-events-none" animate={{ y: [0, -8, 0], rotate: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 2.5 }}>
@@ -1557,11 +1564,11 @@ export default function App() {
               <motion.button
                 whileHover={isLoading ? {} : { scale: 1.02 }}
                 whileTap={isLoading ? {} : { scale: 0.96, x: 4, y: 4, boxShadow: "0px 0px 0px 0px #1A1A1A" }}
-                animate={{ backgroundColor: isLoading ? ["#F6F5F2", "#FED141", "#BF0D3E", "#0032A0", "#F6F5F2"] : "#F6F5F2" }}
+                animate={{ backgroundColor: isLoading ? ["#C6CDB9", "#FED141", "#BF0D3E", "#0032A0", "#C6CDB9"] : "#C6CDB9" }}
                 transition={{ backgroundColor: isLoading ? { repeat: Infinity, duration: 0.6, ease: "linear" } : { duration: 0.1 } }}
                 onClick={handleTranslate}
                 disabled={isLoading || !englishWord.trim()}
-                className="w-full text-[#1A1A1A] text-3xl font-black py-5 border-[6px] border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] rounded-[100px_25px_100px_25px/25px_100px_25px_100px] disabled:opacity-70 disabled:cursor-not-allowed min-h-[64px] uppercase tracking-wider flex items-center justify-center"
+                className="w-full text-[#1A1A1A] text-3xl font-black py-5 border-[6px] border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] rounded-none disabled:opacity-70 disabled:cursor-not-allowed min-h-[64px] uppercase tracking-wider flex items-center justify-center"
               >
                 {isLoading ? (
                   <Loader2 className="w-10 h-10 animate-spin stroke-[4]" />
@@ -1596,22 +1603,27 @@ export default function App() {
                   </AnimatePresence>
                 </div>
 
-                <div className="relative">
+                <div className="relative drop-shadow-[8px_8px_0px_#1A1A1A] w-full">
                   <motion.div className="absolute -left-12 top-10 -z-10" animate={{ rotate: [0, -8, 0], x: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 3.5 }}>
                     <Butterfly />
                   </motion.div>
 
                   <motion.div
                     key={translation ? `result-${translation.substring(0, 10)}` : 'empty'}
-                    initial={translation && !isLoading ? { scale: 0.8, rotate: -3, backgroundColor: "#FED141", opacity: 0 } : { opacity: 1, backgroundColor: "#F6F5F2" }}
-                    animate={{ scale: 1, rotate: 0, backgroundColor: "#F6F5F2", opacity: 1 }}
+                    initial={translation && !isLoading ? { scale: 0.8, backgroundColor: "#FED141", opacity: 0 } : { opacity: 1, backgroundColor: "#D3D6CB" }}
+                    animate={{ scale: 1, backgroundColor: "#D3D6CB", opacity: 1 }}
                     transition={translation && !isLoading ? {
                       scale: { type: "spring", stiffness: 400, damping: 15 },
                       backgroundColor: { duration: 0.5, ease: "easeOut", delay: 0.1 },
                       opacity: { duration: 0.2 }
                     } : { duration: 0.2 }}
-                    className="relative border-[6px] border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] rounded-[125px_25px_125px_25px/25px_125px_25px_125px] p-8 flex flex-col items-center justify-center min-h-[180px]"
+                    className="relative border-[6px] border-[#1A1A1A] rounded-none p-8 flex flex-col items-center justify-center min-h-[180px] z-10"
                   >
+                    <div className="absolute left-[100%] top-10 flex flex-row items-start z-10">
+                      <div className="w-[6px] h-[24px] bg-inherit"></div>
+                      <div className="w-[12px] h-[24px] bg-inherit border-y-[6px] border-[#1A1A1A]"></div>
+                      <div className="w-[6px] h-[12px] bg-[#1A1A1A] mt-[12px]"></div>
+                    </div>
                     {translation && !isLoading && <PhParticles triggerKey={translation} />}
                     {isLoading ? (
                       <div className="flex flex-col items-center justify-center w-full animate-pulse">
@@ -1630,7 +1642,7 @@ export default function App() {
                             <button
                               onClick={() => handleSpeak(audioUrl)}
                               disabled={!audioUrl}
-                              className="flex items-center gap-3 bg-white hover:bg-gray-50 text-[#1A1A1A] px-6 py-3 border-[5px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] rounded-[255px_15px_225px_15px/15px_225px_15px_255px] text-lg font-black uppercase transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none disabled:opacity-50 disabled:cursor-wait min-h-[56px]"
+                              className="flex items-center gap-3 bg-[#E8E6D9] hover:bg-[#D9D7C8] text-[#1A1A1A] px-6 py-3 border-[5px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] rounded-none text-lg font-black uppercase transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none disabled:opacity-50 disabled:cursor-wait min-h-[56px]"
                             >
                               <Volume2 className="w-6 h-6 stroke-[4]" />
                               SPEAK
@@ -1638,7 +1650,7 @@ export default function App() {
                           )}
                           <button
                             onClick={handleCopy}
-                            className="flex items-center justify-center w-14 h-14 bg-white hover:bg-gray-50 text-[#1A1A1A] border-[5px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] rounded-[15px_225px_15px_255px/255px_15px_225px_15px] transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
+                            className="flex items-center justify-center w-14 h-14 bg-[#E8E6D9] hover:bg-[#D9D7C8] text-[#1A1A1A] border-[5px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] rounded-none transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
                             title="Copy to clipboard"
                           >
                             {isCopied ? <Check className="w-6 h-6 stroke-[4] text-green-500" /> : <Copy className="w-6 h-6 stroke-[4]" />}
@@ -1654,21 +1666,28 @@ export default function App() {
             {/* Fun Fact Card */}
             {inputMode === 'word' && (funFact || isLoadingFunFact) && !isLoading && (
               <div className="w-full z-10 relative mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="bg-[#FFE5B4] border-[6px] border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] rounded-[255px_15px_225px_15px/15px_225px_15px_255px] p-6 pt-8 relative transform -rotate-1">
-                  <span className="absolute -top-4 left-6 bg-[#1A1A1A] text-[#FFE5B4] text-sm font-black uppercase tracking-widest px-4 py-1.5 rounded-full shadow-[2px_2px_0px_0px_#FFE5B4] flex items-center gap-2">
-                    <Lightbulb className="w-4 h-4 stroke-[3]" /> DID YOU KNOW?
-                  </span>
-                  {isLoadingFunFact ? (
-                    <div className="animate-pulse space-y-2 mt-2">
-                      <div className="h-3.5 bg-[#1A1A1A]/20 rounded-full w-full"></div>
-                      <div className="h-3.5 bg-[#1A1A1A]/20 rounded-full w-5/6"></div>
-                      <div className="h-3.5 bg-[#1A1A1A]/20 rounded-full w-3/4"></div>
+                <div className="drop-shadow-[8px_8px_0px_#1A1A1A] w-full">
+                  <div className="bg-[#DBC27C] border-[6px] border-[#1A1A1A] rounded-none p-6 pt-8 relative z-10">
+                    <div className="absolute right-[100%] bottom-10 flex flex-row items-end z-10">
+                      <div className="w-[6px] h-[12px] bg-[#1A1A1A] mb-[12px]"></div>
+                      <div className="w-[12px] h-[24px] bg-[#DBC27C] border-y-[6px] border-[#1A1A1A]"></div>
+                      <div className="w-[6px] h-[24px] bg-[#DBC27C]"></div>
                     </div>
-                  ) : (
-                    <p className="text-xl font-bold text-[#1A1A1A] leading-snug">
-                      {funFact}
-                    </p>
-                  )}
+                    <span className="absolute -top-4 left-6 bg-[#1A1A1A] text-[#DBC27C] text-sm font-black uppercase tracking-widest px-4 py-1.5 rounded-none shadow-[3px_3px_0px_0px_#DBC27C] flex items-center gap-2">
+                      <Lightbulb className="w-4 h-4 stroke-[3]" /> DID YOU KNOW?
+                    </span>
+                    {isLoadingFunFact ? (
+                      <div className="animate-pulse space-y-2 mt-2">
+                        <div className="h-3.5 bg-[#1A1A1A]/20 rounded-full w-full"></div>
+                        <div className="h-3.5 bg-[#1A1A1A]/20 rounded-full w-5/6"></div>
+                        <div className="h-3.5 bg-[#1A1A1A]/20 rounded-full w-3/4"></div>
+                      </div>
+                    ) : (
+                      <p className="text-xl font-bold text-[#1A1A1A] leading-snug">
+                        {funFact}
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
             )}
@@ -1680,20 +1699,27 @@ export default function App() {
                 {/* Cooldown UI or normal button */}
                 {!example && (
                   exampleCooldown ? (
-                    <div className="w-full bg-white border-[6px] border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] rounded-[25px_125px_25px_125px/125px_25px_125px_25px] p-6 mb-8 flex flex-col items-center gap-2 text-center">
-                      <span className="text-5xl font-black text-[#1A1A1A]">⏳ {exampleCooldown}s</span>
-                      <p className="text-lg font-black text-[#1A1A1A] uppercase tracking-tight leading-tight">
-                        Sentence examples on cooldown!
-                      </p>
-                      <p className="text-sm font-bold text-gray-500 uppercase tracking-wide">
-                        You can keep translating words in the meantime ✌️
-                      </p>
+                    <div className="drop-shadow-[8px_8px_0px_#1A1A1A] w-full mb-8">
+                      <div className="w-full bg-[#D3D6CB] border-[6px] border-[#1A1A1A] rounded-none p-6 flex flex-col items-center gap-2 text-center relative z-10">
+                        <div className="absolute top-[100%] right-10 flex flex-col items-end z-10">
+                          <div className="w-[24px] h-[6px] bg-[#D3D6CB]"></div>
+                          <div className="w-[24px] h-[12px] bg-[#D3D6CB] border-x-[6px] border-[#1A1A1A]"></div>
+                          <div className="w-[12px] h-[6px] bg-[#1A1A1A] mr-[12px]"></div>
+                        </div>
+                        <span className="text-5xl font-black text-[#1A1A1A]">⏳ {exampleCooldown}s</span>
+                        <p className="text-lg font-black text-[#1A1A1A] uppercase tracking-tight leading-tight">
+                          Sentence examples on cooldown!
+                        </p>
+                        <p className="text-sm font-bold text-gray-500 uppercase tracking-wide">
+                          You can keep translating words in the meantime ✌️
+                        </p>
+                      </div>
                     </div>
                   ) : (
                     <button
                       onClick={handleShowExample}
                       disabled={isLoadingExample}
-                      className="w-full bg-white hover:bg-gray-50 text-[#1A1A1A] text-xl font-black py-5 px-6 border-[6px] border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] rounded-[25px_125px_25px_125px/125px_25px_125px_25px] transition-all duration-150 active:translate-x-[8px] active:translate-y-[8px] active:shadow-none disabled:opacity-70 flex items-center justify-center mb-8 min-h-[64px] uppercase"
+                      className="w-full bg-[#D3D6CB] hover:bg-[#C2C5BA] text-[#1A1A1A] text-xl font-black py-5 px-6 border-[6px] border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] rounded-none transition-all duration-150 active:translate-x-[8px] active:translate-y-[8px] active:shadow-none disabled:opacity-70 flex items-center justify-center mb-8 min-h-[64px] uppercase"
                     >
                       {isLoadingExample ? (
                         <Loader2 className="w-8 h-8 mr-3 animate-spin stroke-[4]" />
@@ -1710,29 +1736,36 @@ export default function App() {
                         Context
                       </span>
                     </div>
-                    <div className="bg-white border-[6px] border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] rounded-[50px] p-8 flex flex-col items-center justify-center relative min-h-[160px]">
-                      <p className="text-2xl font-bold mb-6 break-words text-[#1A1A1A] text-center w-full leading-tight uppercase">
-                        {example.koreanSentence}
-                      </p>
-                      <p className="text-xl font-bold mb-8 text-[#1A1A1A] text-center w-full bg-gray-50 px-4 py-2 border-[4px] border-[#1A1A1A] rounded-xl transform -rotate-2 shadow-[4px_4px_0px_0px_#1A1A1A]">
-                        "{example.englishTranslation}"
-                      </p>
-                      <div className="flex items-center gap-4 flex-wrap justify-center">
-                        <button
-                          onClick={() => handleSpeak(exampleAudioUrl)}
-                          disabled={!exampleAudioUrl}
-                          className="flex items-center gap-3 bg-white hover:bg-gray-50 text-[#1A1A1A] px-6 py-3 border-[5px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] rounded-[15px_225px_15px_255px/255px_15px_225px_15px] text-lg font-black uppercase transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none disabled:opacity-50 disabled:cursor-wait min-h-[56px]"
-                        >
-                          <Volume2 className="w-6 h-6 stroke-[4]" />
-                          SPEAK
-                        </button>
-                        <button
-                          onClick={handleCopyExample}
-                          className="flex items-center justify-center w-14 h-14 bg-white hover:bg-gray-50 text-[#1A1A1A] border-[5px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] rounded-[255px_15px_225px_15px/15px_225px_15px_255px] transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
-                          title="Copy to clipboard"
-                        >
-                          {isExampleCopied ? <Check className="w-6 h-6 stroke-[4] text-green-500" /> : <Copy className="w-6 h-6 stroke-[4]" />}
-                        </button>
+                    <div className="drop-shadow-[8px_8px_0px_#1A1A1A] w-full">
+                      <div className="bg-[#D3D6CB] border-[6px] border-[#1A1A1A] rounded-none p-8 flex flex-col items-center justify-center relative min-h-[160px] z-10">
+                        <div className="absolute bottom-[100%] left-10 flex flex-col items-start z-10">
+                          <div className="w-[12px] h-[6px] bg-[#1A1A1A] ml-[12px]"></div>
+                          <div className="w-[24px] h-[12px] bg-[#D3D6CB] border-x-[6px] border-[#1A1A1A]"></div>
+                          <div className="w-[24px] h-[6px] bg-[#D3D6CB]"></div>
+                        </div>
+                        <p className="text-2xl font-bold mb-6 break-words text-[#1A1A1A] text-center w-full leading-tight uppercase">
+                          {example.koreanSentence}
+                        </p>
+                        <p className="text-xl font-bold mb-8 text-[#1A1A1A] text-center w-full bg-[#E8E6D9] px-4 py-2 border-[4px] border-[#1A1A1A] rounded-none shadow-[4px_4px_0px_0px_#1A1A1A]">
+                          "{example.englishTranslation}"
+                        </p>
+                        <div className="flex items-center gap-4 flex-wrap justify-center">
+                          <button
+                            onClick={() => handleSpeak(exampleAudioUrl)}
+                            disabled={!exampleAudioUrl}
+                            className="flex items-center gap-3 bg-[#E8E6D9] hover:bg-[#D9D7C8] text-[#1A1A1A] px-6 py-3 border-[5px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] rounded-none text-lg font-black uppercase transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none disabled:opacity-50 disabled:cursor-wait min-h-[56px]"
+                          >
+                            <Volume2 className="w-6 h-6 stroke-[4]" />
+                            SPEAK
+                          </button>
+                          <button
+                            onClick={handleCopyExample}
+                            className="flex items-center justify-center w-14 h-14 bg-[#E8E6D9] hover:bg-[#D9D7C8] text-[#1A1A1A] border-[5px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] rounded-none transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
+                            title="Copy to clipboard"
+                          >
+                            {isExampleCopied ? <Check className="w-6 h-6 stroke-[4] text-green-500" /> : <Copy className="w-6 h-6 stroke-[4]" />}
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
