@@ -1,9 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Single+Day&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Darumadrop+One&family=Do+Hyeon&family=Gaegu:wght@400;700&family=Jua&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-bagel: 'Bagel Fat One', cursive;
-  --font-doodle: 'Single Day', cursive;
+  --font-title: 'Darumadrop One', cursive;
+  --font-bold: 'Do Hyeon', sans-serif;
+  --font-text: 'Gaegu', cursive;
 }
 
 @layer utilities {
