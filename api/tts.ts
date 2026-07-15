@@ -4,14 +4,15 @@ export default async function handler(req: Request) {
   if (req.method !== 'POST') return new Response('Method Not Allowed', { status: 405 });
 
   try {
-    const { text, lang = "fil-PH" } = await req.json();
+    const { text, lang = "ko-KR" } = await req.json();
     
     if (!text) {
       return new Response(JSON.stringify({ error: "Text is required" }), { status: 400 });
     }
 
-    const isKorean = /[\u3131-\uD79D]/.test(text);
+    const isKorean = /[\uac00-\ud7af\u1100-\u11ff\u3130-\u318f\ua960-\ua97f\ud7b0-\ud7ff]/.test(text);
     const voiceId = isKorean ? "EXAVITQu4vr4xnSDxMaL" : "ErXwobaYiN019PkySvjV";
+    console.log(`[TTS] Detected Language: ${isKorean ? 'Korean' : 'English'} | Assigned Voice: ${voiceId}`);
 
     // 1. ElevenLabs Attempt
     if (process.env.ELEVENLABS_API_KEY) {

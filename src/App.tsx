@@ -419,7 +419,7 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
             <motion.div
               initial={{ scale: 0.95, y: 15, opacity: 1 }}
               animate={{ scale: 1.05, y: -20, rotate: -2, filter: 'drop-shadow(0px 30px 40px rgba(0,0,0,0.9))', opacity: 1 }}
-              transition={{ type: "spring", bounce: 0.6, duration: 0.6 }}
+              transition={{ type: "spring", stiffness: 400, damping: 15 }}
               className="absolute z-30 flex items-center justify-center"
             >
               {/* ISOLATED EXPORT WRAPPER: ref goes here to avoid transform clipping */}
@@ -1261,10 +1261,10 @@ export default function App() {
       <style>
         {`
           @import url('https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&family=Permanent+Marker&family=Knewave&family=Neucha&display=swap');
-          .font-title { font-family: 'Permanent Marker', cursive; }
-          .font-box { font-family: 'Gloria Hallelujah', cursive; }
-          .font-tribal-title { font-family: 'Knewave', cursive; }
-          .font-tribal-text { font-family: 'Neucha', cursive; }
+          .font-bagel { font-family: 'Permanent Marker', cursive; }
+          .font-bagel { font-family: 'Gloria Hallelujah', cursive; }
+          .font-bagel { font-family: 'Knewave', cursive; }
+          .font-doodle font-bold { font-family: 'Neucha', cursive; }
         `}
       </style>
 
@@ -1289,7 +1289,7 @@ export default function App() {
                 </motion.div>
                 <motion.p
                   initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                  className="font-tribal-title text-2xl tracking-[0.2em] opacity-80"
+                  className="font-bagel text-2xl tracking-[0.2em] opacity-80"
                 >
                   GENERATING HANGUL...
                 </motion.p>
@@ -1333,8 +1333,8 @@ export default function App() {
             filter: { duration: 0.4 }
           } : { duration: 0.4 }}
           style={appMode === 'translator'
-            ? { backgroundColor: '#EEF2FF', backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M0 0h20v20H0zM20 20h20v20H20z\' fill=\'%23E0E7FF\' fill-opacity=\'0.6\'/%3E%3C/svg%3E")' }
-            : { backgroundColor: '#F6F5F2', backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'240\' height=\'240\' viewBox=\'0 0 240 240\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg stroke=\'%232C2825\' stroke-width=\'2\' fill=\'none\' stroke-linecap=\'round\' stroke-linejoin=\'round\' opacity=\'0.06\'%3E%3Ccircle cx=\'120\' cy=\'120\' r=\'12\'/%3E%3Cpath d=\'M 120 100 L 120 92 M 120 140 L 120 148 M 100 120 L 92 120 M 140 120 L 148 120\' stroke-width=\'3\'/%3E%3Cpath d=\'M 106 106 L 98 98 M 134 134 L 142 142 M 106 134 L 98 142 M 134 106 L 142 98\' stroke-width=\'2\'/%3E%3Cpath d=\'M 110 70 L 120 80 L 130 70 M 110 60 L 120 70 L 130 60 M 110 50 L 120 60 L 130 50\'/%3E%3Cpath d=\'M 110 170 L 120 160 L 130 170 M 110 180 L 120 170 L 130 180 M 110 190 L 120 180 L 130 190\'/%3E%3Cpath d=\'M 40 100 L 50 110 L 40 120 L 30 110 Z\'/%3E%3Cpath d=\'M 40 130 L 50 140 L 40 150 L 30 140 Z\'/%3E%3Cpath d=\'M 25 80 L 35 90 L 45 80 L 55 90 M 25 90 L 35 100 L 45 90 L 55 100\'/%3E%3Cpath d=\'M 200 100 L 210 110 L 200 120 L 190 110 Z\'/%3E%3Cpath d=\'M 200 130 L 210 140 L 200 150 L 190 140 Z\'/%3E%3Cpath d=\'M 185 80 L 195 90 L 205 80 L 215 90 M 185 90 L 195 100 L 205 90 L 215 100\'/%3E%3Ccircle cx=\'120\' cy=\'30\' r=\'1.5\' fill=\'%232C2825\'/%3E%3Ccircle cx=\'120\' cy=\'210\' r=\'1.5\' fill=\'%232C2825\'/%3E%3Ccircle cx=\'40\' cy=\'60\' r=\'1.5\' fill=\'%232C2825\'/%3E%3Ccircle cx=\'200\' cy=\'190\' r=\'1.5\' fill=\'%232C2825\'/%3E%3C/g%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg width=\'200\' height=\'200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.85\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\' opacity=\'0.05\'/%3E%3C/svg%3E")' }
+            ? { backgroundColor: '#FEFCE8' }
+            : { backgroundColor: '#FEFCE8' }
           }
         />
 
@@ -1372,7 +1372,7 @@ export default function App() {
           {appMode === 'translator' ? (
             <button
               onClick={() => setShowHistory(true)}
-              className="w-12 h-12 bg-white border-[4px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] rounded-[255px_15px_225px_15px/15px_225px_15px_255px] flex items-center justify-center transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none hover:bg-gray-50"
+              className="w-12 h-12 bg-white border-4 border-black rounded-3xl doodle-shadow flex items-center justify-center transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none hover:bg-gray-50"
               title="History"
             >
               <History className="w-5 h-5 stroke-[4] text-[#1A1A1A]" />
@@ -1415,7 +1415,7 @@ export default function App() {
                       setExampleAudioUrl(null);
                     }}>
                       <span className="text-sm font-black text-gray-500 uppercase">{item.direction === 'ko-en' ? 'Korean' : 'English'}: {item.english}</span>
-                      <span className="text-xl font-box text-[#1A1A1A]">{item.korean}</span>
+                      <span className="text-xl font-bagel text-[#1A1A1A]">{item.korean}</span>
                     </div>
                   ))
                 )}
@@ -1434,10 +1434,10 @@ export default function App() {
               >
                 <X className="w-6 h-6 stroke-[3] text-[#2C2825]" />
               </button>
-              <h2 className="text-2xl font-tribal-title text-[#2C2825] mb-6 uppercase tracking-wider pr-12">Script History</h2>
+              <h2 className="text-2xl font-bagel text-[#2C2825] mb-6 uppercase tracking-wider pr-12">Script History</h2>
               <div className="overflow-y-auto flex-1 pr-2 space-y-4">
                 {hangulHistory.length === 0 ? (
-                  <p className="text-[#2C2825]/60 font-tribal-text text-xl text-center italic py-8 uppercase tracking-widest">No scripts carved yet.</p>
+                  <p className="text-[#2C2825]/60 font-doodle font-bold text-xl text-center italic py-8 uppercase tracking-widest">No scripts carved yet.</p>
                 ) : (
                   hangulHistory.map((item, index) => (
                     <div key={index} className="bg-[#F6F5F2] border-[4px] border-[#2C2825] rounded-[255px_15px_225px_15px/15px_225px_15px_255px] p-4 flex flex-col gap-2 cursor-pointer hover:bg-[#EAE6DF] transition-colors" onClick={() => {
@@ -1445,7 +1445,7 @@ export default function App() {
                       setHangulOutput(item.output);
                       setShowHangulHistory(false);
                     }}>
-                      <span className="text-lg font-tribal-text text-[#2C2825]/60 uppercase tracking-widest">{item.input}</span>
+                      <span className="text-lg font-doodle font-bold text-[#2C2825]/60 uppercase tracking-widest">{item.input}</span>
                       <span className="text-4xl text-[#2C2825] text-left" style={{ fontFamily: "'Black Han Sans', sans-serif" }}>{item.output}</span>
                     </div>
                   ))
@@ -1465,15 +1465,15 @@ export default function App() {
                   <Sampaguita />
                 </div>
                 <h1
-                  className="text-[2.9rem] sm:text-[4rem] md:text-[5.5rem] font-title leading-[1.05] tracking-normal sm:tracking-wide relative z-10"
+                  className="text-[3.2rem] sm:text-[4.5rem] md:text-[6rem] font-bagel leading-[1.1] tracking-normal sm:tracking-wide relative z-10"
                   style={{
-                    filter: 'drop-shadow(6px 6px 0px #1A1A1A)',
-                    WebkitTextStroke: '3px #1A1A1A'
+                    filter: 'drop-shadow(4px 4px 0px rgba(255,255,255,1))',
+                    WebkitTextStroke: '2px #FFFFFF'
                   }}
                 >
-                  <span className="text-[#0032A0]">KOREAN</span><br />
-                  <span className="text-[#BF0D3E]">TRANSLATOR</span><br />
-                  <span className="text-[#FED141]">SUPREME</span>
+                  <span className="text-[#0047A0]">KOREAN</span><br />
+                  <span className="text-[#CD2E3A]">TRANSLATOR</span><br />
+                  <span className="text-black">SUPREME</span>
                 </h1>
               </div>
             </div>
@@ -1533,7 +1533,7 @@ export default function App() {
                       handleTranslate();
                     }
                   }}
-                  className={`flex-1 bg-transparent outline-none placeholder:text-gray-300 w-full text-[#1A1A1A] resize-none transition-all duration-300 ${inputMode === 'conversation' ? 'min-h-[120px] text-lg font-sans font-bold leading-relaxed' : 'min-h-[3rem] text-2xl font-box overflow-hidden'}`}
+                  className={`flex-1 bg-transparent outline-none placeholder:text-gray-300 w-full text-[#1A1A1A] resize-none transition-all duration-300 ${inputMode === 'conversation' ? 'min-h-[120px] text-lg font-sans font-bold leading-relaxed' : 'min-h-[3rem] text-2xl font-bagel overflow-hidden'}`}
                   placeholder={inputMode === 'conversation' ? 'Type a full sentence or paragraph here...' : `e.g. ${currentPlaceholder}`}
                 />
                 {inputMode === 'conversation' && <span className="absolute bottom-2 right-24 text-xs font-black text-gray-400">{englishWord.length}/500</span>}
@@ -1605,7 +1605,7 @@ export default function App() {
                     initial={translation && !isLoading ? { scale: 0.8, rotate: -3, backgroundColor: "#FED141", opacity: 0 } : { opacity: 1, backgroundColor: "#F6F5F2" }}
                     animate={{ scale: 1, rotate: 0, backgroundColor: "#F6F5F2", opacity: 1 }}
                     transition={translation && !isLoading ? {
-                      scale: { type: "spring", bounce: 0.7, duration: 0.6 },
+                      scale: { type: "spring", stiffness: 400, damping: 15 },
                       backgroundColor: { duration: 0.5, ease: "easeOut", delay: 0.1 },
                       opacity: { duration: 0.2 }
                     } : { duration: 0.2 }}
@@ -1620,7 +1620,7 @@ export default function App() {
                     ) : (
                       <>
                         <div className={`w-full ${inputMode === 'conversation' ? 'max-h-[250px] overflow-y-auto pr-4 mb-6' : 'mb-8'}`}>
-                          <span className={`${inputMode === 'conversation' ? 'text-lg md:text-xl font-sans font-bold normal-case text-left block' : 'text-3xl md:text-4xl font-box uppercase text-center'} text-[#1A1A1A] break-words w-full`}>
+                          <span className={`${inputMode === 'conversation' ? 'text-lg md:text-xl font-sans font-bold normal-case text-left block' : 'text-3xl md:text-4xl font-bagel uppercase text-center'} text-[#1A1A1A] break-words w-full`}>
                             {translation}
                           </span>
                         </div>
@@ -1664,7 +1664,7 @@ export default function App() {
                       <div className="h-3.5 bg-[#1A1A1A]/20 rounded-full w-3/4"></div>
                     </div>
                   ) : (
-                    <p className="text-xl font-box text-[#1A1A1A] leading-snug">
+                    <p className="text-xl font-bagel text-[#1A1A1A] leading-snug">
                       {funFact}
                     </p>
                   )}
@@ -1710,10 +1710,10 @@ export default function App() {
                       </span>
                     </div>
                     <div className="bg-white border-[6px] border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] rounded-[50px] p-8 flex flex-col items-center justify-center relative min-h-[160px]">
-                      <p className="text-2xl font-box mb-6 break-words text-[#1A1A1A] text-center w-full leading-tight uppercase">
+                      <p className="text-2xl font-bagel mb-6 break-words text-[#1A1A1A] text-center w-full leading-tight uppercase">
                         {example.koreanSentence}
                       </p>
-                      <p className="text-xl font-box mb-8 text-[#1A1A1A] text-center w-full bg-gray-50 px-4 py-2 border-[4px] border-[#1A1A1A] rounded-xl transform -rotate-2 shadow-[4px_4px_0px_0px_#1A1A1A]">
+                      <p className="text-xl font-bagel mb-8 text-[#1A1A1A] text-center w-full bg-gray-50 px-4 py-2 border-[4px] border-[#1A1A1A] rounded-xl transform -rotate-2 shadow-[4px_4px_0px_0px_#1A1A1A]">
                         "{example.englishTranslation}"
                       </p>
                       <div className="flex items-center gap-4 flex-wrap justify-center">
@@ -1755,13 +1755,13 @@ export default function App() {
             <div className="text-center relative z-10 w-full mb-12 flex flex-col items-center">
               <div className="flex items-center gap-4 mb-2 opacity-90">
                 <div className="w-6 h-1.5 bg-[#2C2825] rounded-sm"></div>
-                <span className="font-tribal-text text-xl md:text-2xl tracking-[0.3em] uppercase text-[#2C2825] font-black">
+                <span className="font-doodle font-bold text-xl md:text-2xl tracking-[0.3em] uppercase text-[#2C2825] font-black">
                   Sinaunang
                 </span>
                 <div className="w-6 h-1.5 bg-[#2C2825] rounded-sm"></div>
               </div>
 
-              <h1 className="text-[4rem] md:text-[5rem] font-tribal-title text-[#F6F5F2] text-center leading-[1] tracking-wider uppercase mb-1"
+              <h1 className="text-[4rem] md:text-[5rem] font-bagel text-[#F6F5F2] text-center leading-[1] tracking-wider uppercase mb-1"
                 style={{
                   WebkitTextStroke: '2px #2C2825',
                   filter: 'drop-shadow(6px 6px 0px #2C2825)'
@@ -1771,7 +1771,7 @@ export default function App() {
 
               <div className="flex items-center gap-4 mt-4 opacity-90">
                 <div className="w-10 h-1 bg-[#2C2825] rounded-sm"></div>
-                <span className="font-tribal-text text-lg md:text-xl tracking-[0.2em] uppercase text-[#2C2825] font-bold">
+                <span className="font-doodle font-bold text-lg md:text-xl tracking-[0.2em] uppercase text-[#2C2825] font-bold">
                   Script Generator
                 </span>
                 <div className="w-10 h-1 bg-[#2C2825] rounded-sm"></div>
@@ -1781,13 +1781,13 @@ export default function App() {
               <div className="flex mt-8 bg-transparent border-[4px] border-[#2C2825] p-1 rounded-[255px_15px_225px_15px/15px_225px_15px_255px]">
                 <button
                   onClick={() => { setHangulMode('encode'); setHangulInput(''); setHangulOutput(''); setDecodedCache({}); setIsArtMode(false); setIsGeneratingArt(false); }}
-                  className={`px-4 py-2 font-tribal-text font-bold uppercase tracking-widest transition-colors rounded-xl ${hangulMode === 'encode' ? 'bg-[#2C2825] text-[#F6F5F2]' : 'text-[#2C2825] hover:bg-[#2C2825]/10'}`}
+                  className={`px-4 py-2 font-doodle font-bold font-bold uppercase tracking-widest transition-colors rounded-xl ${hangulMode === 'encode' ? 'bg-[#2C2825] text-[#F6F5F2]' : 'text-[#2C2825] hover:bg-[#2C2825]/10'}`}
                 >
                   CARVE (To Hangul)
                 </button>
                 <button
                   onClick={() => { setHangulMode('decode'); setHangulInput(''); setHangulOutput(''); setDecodedCache({}); setIsArtMode(false); setIsGeneratingArt(false); }}
-                  className={`px-4 py-2 font-tribal-text font-bold uppercase tracking-widest transition-colors rounded-xl ${hangulMode === 'decode' ? 'bg-[#2C2825] text-[#F6F5F2]' : 'text-[#2C2825] hover:bg-[#2C2825]/10'}`}
+                  className={`px-4 py-2 font-doodle font-bold font-bold uppercase tracking-widest transition-colors rounded-xl ${hangulMode === 'decode' ? 'bg-[#2C2825] text-[#F6F5F2]' : 'text-[#2C2825] hover:bg-[#2C2825]/10'}`}
                 >
                   DECODE (From Hangul)
                 </button>
@@ -1796,7 +1796,7 @@ export default function App() {
 
             {/* Input Box */}
             <div className="w-full space-y-3 z-10 relative mb-10">
-              <label htmlFor="hangul-input" className="text-2xl font-tribal-text text-[#2C2825] uppercase tracking-[0.1em] px-2 block font-bold">
+              <label htmlFor="hangul-input" className="text-2xl font-doodle font-bold text-[#2C2825] uppercase tracking-[0.1em] px-2 block font-bold">
                 {hangulMode === 'decode' ? 'Paste Hangul Characters' : 'Enter Word or Name'}
               </label>
               <div className="bg-transparent border-[8px] border-[#2C2825] p-6 relative">
@@ -1810,7 +1810,7 @@ export default function App() {
                     setDecodedCache({});
                   }}
                   onKeyDown={(e) => e.key === 'Enter' && (hangulMode === 'decode' ? handleDecodeHangul() : handleGenerateHangul())}
-                  className="flex-1 bg-transparent text-3xl font-tribal-text font-bold outline-none placeholder:text-[#2C2825]/40 w-full text-[#2C2825]"
+                  className="flex-1 bg-transparent text-3xl font-doodle font-bold font-bold outline-none placeholder:text-[#2C2825]/40 w-full text-[#2C2825]"
                   placeholder={hangulMode === 'decode' ? 'e.g. \u170E\u1700\u170C\u1700' : 'e.g. malaya'}
                 />
                 <div className="absolute -top-2 -left-2 w-4 h-4 bg-[#F6F5F2] border-r-4 border-b-4 border-[#2C2825] transform rotate-45"></div>
@@ -1822,7 +1822,7 @@ export default function App() {
             <button
               onClick={() => hangulMode === 'decode' ? handleDecodeHangul() : handleGenerateHangul()}
               disabled={!hangulInput.trim() || isDecoding}
-              className="w-full bg-[#2C2825] hover:bg-[#1A1815] text-[#F6F5F2] text-3xl font-tribal-text font-bold py-6 border-4 border-transparent active:border-[#2C2825] active:bg-transparent active:text-[#2C2825] transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed mb-12 uppercase tracking-widest flex items-center justify-center"
+              className="w-full bg-[#2C2825] hover:bg-[#1A1815] text-[#F6F5F2] text-3xl font-doodle font-bold font-bold py-6 border-4 border-transparent active:border-[#2C2825] active:bg-transparent active:text-[#2C2825] transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed mb-12 uppercase tracking-widest flex items-center justify-center"
             >
               {isDecoding ? <Loader2 className="w-8 h-8 mr-3 animate-spin stroke-[4]" /> : null}
               {hangulMode === 'decode' ? 'DECODE SCRIPT!' : 'Generate Characters!'}
@@ -1911,7 +1911,7 @@ export default function App() {
                         <button
                           key={lang}
                           onClick={() => handleDecodeHangul(lang as 'KO' | 'EN')}
-                          className={`px-4 py-1.5 rounded-xl font-tribal-text font-bold text-lg tracking-widest transition-all ${decodeTarget === lang
+                          className={`px-4 py-1.5 rounded-xl font-doodle font-bold font-bold text-lg tracking-widest transition-all ${decodeTarget === lang
                             ? 'bg-[#2C2825] text-[#F6F5F2]'
                             : 'text-[#2C2825] hover:bg-[#2C2825]/10'
                             }`}
@@ -1933,7 +1933,7 @@ export default function App() {
                         {hangulOutput}
                       </span>
                     ) : (
-                      <span className="text-4xl mt-12 mb-10 text-center break-words w-full block font-tribal-text tracking-widest uppercase font-bold">
+                      <span className="text-4xl mt-12 mb-10 text-center break-words w-full block font-doodle font-bold tracking-widest uppercase font-bold">
                         {hangulOutput}
                       </span>
                     )}
@@ -1944,7 +1944,7 @@ export default function App() {
                 <div className="flex flex-col gap-3 mt-6">
                   <button
                     onClick={handleCopyHangul}
-                    className="flex items-center gap-3 bg-transparent hover:bg-[#2C2825] hover:text-[#F6F5F2] text-[#2C2825] px-6 py-4 border-4 border-[#2C2825] text-xl font-tribal-text font-bold uppercase transition-colors duration-150 tracking-wider w-full justify-center"
+                    className="flex items-center gap-3 bg-transparent hover:bg-[#2C2825] hover:text-[#F6F5F2] text-[#2C2825] px-6 py-4 border-4 border-[#2C2825] text-xl font-doodle font-bold font-bold uppercase transition-colors duration-150 tracking-wider w-full justify-center"
                   >
                     {isHangulCopied ? <Check className="w-6 h-6 stroke-[3]" /> : <Copy className="w-6 h-6 stroke-[3]" />}
                     {isHangulCopied ? 'COPIED!' : 'COPY CHARACTERS'}
@@ -1952,7 +1952,7 @@ export default function App() {
                   {hangulMode === 'encode' && (
                     <button
                       onClick={handleDownloadImage}
-                      className="flex items-center gap-3 bg-transparent hover:bg-[#2C2825] hover:text-[#F6F5F2] text-[#2C2825] px-6 py-4 border-4 border-[#2C2825] text-xl font-tribal-text font-bold uppercase transition-colors duration-150 tracking-wider w-full justify-center"
+                      className="flex items-center gap-3 bg-transparent hover:bg-[#2C2825] hover:text-[#F6F5F2] text-[#2C2825] px-6 py-4 border-4 border-[#2C2825] text-xl font-doodle font-bold font-bold uppercase transition-colors duration-150 tracking-wider w-full justify-center"
                     >
                       <Download className="w-6 h-6 stroke-[3]" />
                       SAVE AS IMAGE
