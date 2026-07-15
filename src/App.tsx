@@ -781,12 +781,31 @@ const UKFlag = ({ className = "" }: { className?: string }) => (
   </svg>
 );
 
-const PHFlag = ({ className = "" }: { className?: string }) => (
+const KRFlag = ({ className = "" }: { className?: string }) => (
   <svg width="32" height="24" viewBox="0 0 28 20" className={`inline-block rounded-[3px] shadow-[2px_2px_0px_0px_#1A1A1A] bg-white ${className}`}>
-    <rect width="28" height="10" fill="#3b82f6" />
-    <rect y="10" width="28" height="10" fill="#ef4444" />
-    <polygon points="-2,-2 14,10 -2,22" fill="white" stroke="#1A1A1A" strokeWidth="1.5" strokeLinejoin="round" />
-    <circle cx="4.5" cy="10" r="2.5" fill="#eab308" stroke="#1A1A1A" strokeWidth="1" />
+    <g stroke="#1A1A1A" strokeWidth="1">
+      {/* Geon: 3 solid (Top-Left) */}
+      <g transform="translate(6, 5) rotate(32)">
+        <path d="M -2 -2.5 L -2 2.5 M 0 -2.5 L 0 2.5 M 2 -2.5 L 2 2.5" />
+      </g>
+      {/* Gam: broken, solid, broken (Top-Right) */}
+      <g transform="translate(22, 5) rotate(148)">
+        <path d="M -2 -2.5 L -2 -0.5 M -2 0.5 L -2 2.5 M 0 -2.5 L 0 2.5 M 2 -2.5 L 2 -0.5 M 2 0.5 L 2 2.5" />
+      </g>
+      {/* Ri: solid, broken, solid (Bottom-Left) */}
+      <g transform="translate(6, 15) rotate(-32)">
+        <path d="M -2 -2.5 L -2 2.5 M 0 -2.5 L 0 -0.5 M 0 0.5 L 0 2.5 M 2 -2.5 L 2 2.5" />
+      </g>
+      {/* Gon: 3 broken (Bottom-Right) */}
+      <g transform="translate(22, 15) rotate(-148)">
+        <path d="M -2 -2.5 L -2 -0.5 M -2 0.5 L -2 2.5 M 0 -2.5 L 0 -0.5 M 0 0.5 L 0 2.5 M 2 -2.5 L 2 -0.5 M 2 0.5 L 2 2.5" />
+      </g>
+    </g>
+    {/* Taegeuk Center */}
+    <g transform="translate(14, 10) rotate(32)">
+      <circle cx="0" cy="0" r="4.5" fill="#ef4444" />
+      <path d="M -4.5 0 A 2.25 2.25 0 0 0 0 0 A 2.25 2.25 0 0 1 4.5 0 A 4.5 4.5 0 0 1 -4.5 0 Z" fill="#3b82f6" />
+    </g>
     <rect width="28" height="20" fill="none" stroke="#1A1A1A" strokeWidth="4" />
   </svg>
 );
@@ -1485,9 +1504,9 @@ export default function App() {
                   title="Swap Translation Direction"
                 >
                   {direction === 'en-ko' ? (
-                    <><UKFlag className="-rotate-3" /> EN <ArrowLeftRight className="w-4 h-4 stroke-[3]" /> <PHFlag className="rotate-3" /> TL</>
+                    <><UKFlag className="-rotate-3" /> EN <ArrowLeftRight className="w-4 h-4 stroke-[3]" /> <KRFlag className="rotate-3" /> KR</>
                   ) : (
-                    <><PHFlag className="-rotate-3" /> TL <ArrowLeftRight className="w-4 h-4 stroke-[3]" /> <UKFlag className="rotate-3" /> EN</>
+                    <><KRFlag className="-rotate-3" /> KR <ArrowLeftRight className="w-4 h-4 stroke-[3]" /> <UKFlag className="rotate-3" /> EN</>
                   )}
                 </button>
               </div>

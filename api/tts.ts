@@ -10,9 +10,12 @@ export default async function handler(req: Request) {
       return new Response(JSON.stringify({ error: "Text is required" }), { status: 400 });
     }
 
+    const isKorean = /[\u3131-\uD79D]/.test(text);
+    const voiceId = isKorean ? "EXAVITQu4vr4xnSDxMaL" : "ErXwobaYiN019PkySvjV";
+
     // 1. ElevenLabs Attempt
     if (process.env.ELEVENLABS_API_KEY) {
-      const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/pNInz6obbfDQGcgMyIGb`, {
+      const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
         method: "POST",
         headers: {
           "Accept": "audio/mpeg",
@@ -36,8 +39,8 @@ export default async function handler(req: Request) {
 
     // 2. Google Cloud TTS Attempt
     if (process.env.GOOGLE_TTS_API_KEY) {
-      const languageCode = lang === "en-US" ? "en-US" : "fil-PH";
-      const voiceName = lang === "en-US" ? "en-US-Neural2-F" : "fil-PH-Neural2-A";
+      const languageCode = lang === "en-US" ? "en-US" : "ko-KR";
+      const voiceName = lang === "en-US" ? "en-US-Neural2-F" : "ko-KR-Neural2-A";
       
       const response = await fetch(
         `https://texttospeech.googleapis.com/v1/text:synthesize?key=${process.env.GOOGLE_TTS_API_KEY}`,
@@ -70,8 +73,8 @@ export default async function handler(req: Request) {
     }
 
     // 3. Fallback: Free Google Translate TTS
-    const tl = lang === "en-US" ? "en" : "tl";
-    const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=${tl}&client=tw-ob`;
+    const targetLang = lang === "en-US" ? "en" : "ko";
+    const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=${targetLang}&client=tw-ob`;
     
     const fallbackRes = await fetch(url);
     if (fallbackRes.ok) {
