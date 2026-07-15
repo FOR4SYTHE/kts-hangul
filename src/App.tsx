@@ -682,59 +682,69 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
 };
 
 // Character Components
-const Sampaguita = () => (
-  <motion.svg width="120" height="120" viewBox="0 0 100 100"
-    animate={{ rotate: [0, 5, -5, 0], scale: [0.98, 1.05, 0.98] }}
-    transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+const HaiChar = () => (
+  <motion.svg width="90" height="80" viewBox="0 0 130 110"
+    animate={{ rotate: [-3, 3] }}
+    transition={{ repeat: Infinity, repeatType: "mirror", duration: 2.5, ease: "easeInOut" }}
     className="overflow-visible"
   >
-    {/* Petals */}
-    <g fill="#FFF" stroke="#1A1A1A" strokeWidth="4" strokeLinejoin="round">
-      {[0, 72, 144, 216, 288].map(angle => (
-        <path key={angle} d="M 50 50 C 15 -15, 85 -15, 50 50" style={{ transformOrigin: '50px 50px', transform: `rotate(${angle}deg)` }} />
-      ))}
-    </g>
+    {/* ── 하 — white fill, black border only ── */}
+    <text x="35" y="75" textAnchor="middle"
+      fontFamily="'Black Han Sans','Do Hyeon',sans-serif"
+      fontSize="72" fontWeight="900"
+      fill="white" stroke="white" strokeWidth="10" strokeLinejoin="round"
+      transform="rotate(-10, 35, 75)"
+    >하</text>
+    <text x="35" y="75" textAnchor="middle"
+      fontFamily="'Black Han Sans','Do Hyeon',sans-serif"
+      fontSize="72" fontWeight="900"
+      fill="white" stroke="#1A1A1A" strokeWidth="5" strokeLinejoin="round"
+      transform="rotate(-10, 35, 75)"
+    >하</text>
 
-    {/* Spikes / Stamen */}
-    <g stroke="#1A1A1A" strokeWidth="3.5" strokeLinecap="round">
-      {[36, 108, 180, 252, 324].map(angle => (
-        <line key={angle} x1="50" y1="50" x2="50" y2="20" style={{ transformOrigin: '50px 50px', transform: `rotate(${angle}deg)` }} />
-      ))}
-    </g>
-
-    {/* Center Face */}
-    <circle cx="50" cy="50" r="18" fill="#FFF" stroke="#1A1A1A" strokeWidth="4" />
-
-    {/* Blushes */}
-    <circle cx="38" cy="53" r="3" fill="#FFB6C1" />
-    <circle cx="62" cy="53" r="3" fill="#FFB6C1" />
-
-    {/* Eyes */}
-    <ellipse cx="43" cy="47" rx="3.5" ry="5.5" fill="#1A1A1A" />
-    <ellipse cx="57" cy="47" rx="3.5" ry="5.5" fill="#1A1A1A" />
-
-    {/* Eye Highlights */}
-    <circle cx="42" cy="45" r="1.5" fill="#FFF" />
-    <circle cx="56" cy="45" r="1.5" fill="#FFF" />
-
-    {/* Smile */}
-    <path d="M 41 55 Q 50 63 59 55" fill="none" stroke="#1A1A1A" strokeWidth="3.5" strokeLinecap="round" />
+    {/* ── 이 — white fill, black border only ── */}
+    <text x="92" y="82" textAnchor="middle"
+      fontFamily="'Black Han Sans','Do Hyeon',sans-serif"
+      fontSize="65" fontWeight="900"
+      fill="white" stroke="white" strokeWidth="10" strokeLinejoin="round"
+      transform="rotate(8, 92, 82)"
+    >이</text>
+    <text x="92" y="82" textAnchor="middle"
+      fontFamily="'Black Han Sans','Do Hyeon',sans-serif"
+      fontSize="65" fontWeight="900"
+      fill="white" stroke="#1A1A1A" strokeWidth="5" strokeLinejoin="round"
+      transform="rotate(8, 92, 82)"
+    >이</text>
   </motion.svg>
 );
 
-const Butterfly = () => (
-  <motion.svg width="90" height="90" viewBox="0 0 100 100"
-    animate={{ y: [0, -8, 0], rotate: [-2, 4, -2] }}
-    transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}>
-    <path d="M 50 50 C 20 20, 10 50, 45 55 C 10 70, 30 90, 50 60 C 70 90, 90 70, 55 55 C 90 50, 80 20, 50 50 Z" fill="#FFF" stroke="#1A1A1A" strokeWidth="5" strokeLinejoin="round" />
-    <circle cx="35" cy="40" r="4" fill="#1A1A1A" />
-    <circle cx="65" cy="40" r="4" fill="#1A1A1A" />
-    <circle cx="40" cy="70" r="3" fill="#1A1A1A" />
-    <circle cx="60" cy="70" r="3" fill="#1A1A1A" />
-    <rect x="47" y="35" width="6" height="40" rx="3" fill="#1A1A1A" />
-    <path d="M 48 35 Q 40 20 35 25 M 52 35 Q 60 20 65 25" fill="none" stroke="#1A1A1A" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+
+const LeftWing = () => (
+  <motion.svg width="90" height="90" viewBox="0 0 100 100" className="overflow-visible"
+    animate={{ rotate: [0, -10, 0], y: [0, -4, 0] }}
+    transition={{ repeat: Infinity, duration: 2.2, ease: "easeInOut" }}>
+    {/* Sketch Outline of wing */}
+    <path d="M 90 50 C 40 10, 10 30, 20 60 C 25 75, 45 80, 60 70 C 45 85, 65 90, 80 80 C 75 90, 85 92, 90 90 C 85 75, 88 60, 90 50 Z" fill="#FFF" stroke="#1A1A1A" strokeWidth="5.5" strokeLinecap="round" strokeLinejoin="round" />
+    {/* Feathery sketch lines */}
+    <path d="M 80 52 C 50 30, 30 45, 40 65" fill="none" stroke="#1A1A1A" strokeWidth="3" strokeLinecap="round" />
+    <path d="M 82 62 C 60 50, 48 62, 55 72" fill="none" stroke="#1A1A1A" strokeWidth="3" strokeLinecap="round" />
+    <path d="M 85 72 C 70 65, 62 72, 70 80" fill="none" stroke="#1A1A1A" strokeWidth="3" strokeLinecap="round" />
   </motion.svg>
 );
+
+const RightWing = () => (
+  <motion.svg width="90" height="90" viewBox="0 0 100 100" className="overflow-visible"
+    animate={{ rotate: [0, 10, 0], y: [0, -4, 0] }}
+    transition={{ repeat: Infinity, duration: 2.2, ease: "easeInOut" }}>
+    {/* Sketch Outline of wing */}
+    <path d="M 10 50 C 60 10, 90 30, 80 60 C 75 75, 55 80, 40 70 C 55 85, 35 90, 20 80 C 25 90, 15 92, 10 90 C 15 75, 12 60, 10 50 Z" fill="#FFF" stroke="#1A1A1A" strokeWidth="5.5" strokeLinecap="round" strokeLinejoin="round" />
+    {/* Feathery sketch lines */}
+    <path d="M 20 52 C 50 30, 70 45, 60 65" fill="none" stroke="#1A1A1A" strokeWidth="3" strokeLinecap="round" />
+    <path d="M 18 62 C 40 50, 52 62, 45 72" fill="none" stroke="#1A1A1A" strokeWidth="3" strokeLinecap="round" />
+    <path d="M 15 72 C 30 65, 38 72, 30 80" fill="none" stroke="#1A1A1A" strokeWidth="3" strokeLinecap="round" />
+  </motion.svg>
+);
+
 
 const CartoonCamera = () => (
   <motion.svg width="90" height="90" viewBox="0 0 100 100"
@@ -857,22 +867,6 @@ const toHangul = (text: string) => {
   }
   return result;
 };
-
-const PhParticles = ({ triggerKey }: { triggerKey: string }) => (
-  <div key={triggerKey} className="absolute inset-0 pointer-events-none z-50 flex items-center justify-center">
-    {/* Left Star */}
-    <motion.svg initial={{ scale: 0, x: 0, y: 0, rotate: 0, opacity: 1 }} animate={{ scale: [0, 1.5, 1.5, 0], x: -80, y: -50, rotate: -120, opacity: [1, 1, 1, 0] }} transition={{ duration: 0.7, ease: "easeOut" }} className="absolute w-8 h-8 text-[#FED141] fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></motion.svg>
-    {/* Right Star */}
-    <motion.svg initial={{ scale: 0, x: 0, y: 0, rotate: 0, opacity: 1 }} animate={{ scale: [0, 1.5, 1.5, 0], x: 80, y: -50, rotate: 120, opacity: [1, 1, 1, 0] }} transition={{ duration: 0.7, ease: "easeOut" }} className="absolute w-8 h-8 text-[#FED141] fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></motion.svg>
-    {/* Top Sun */}
-    <motion.svg initial={{ scale: 0, y: 0, rotate: -45, opacity: 1 }} animate={{ scale: [0, 2, 2, 0], y: -90, rotate: 45, opacity: [1, 1, 1, 0] }} transition={{ duration: 0.8, ease: "easeOut" }} className="absolute w-12 h-12 text-[#FED141] fill-current" viewBox="0 0 100 100">
-      <circle cx="50" cy="50" r="20" />
-      {[0, 45, 90, 135, 180, 225, 270, 315].map(angle => (
-        <polygon key={angle} points="50,15 54,28 46,28" style={{ transformOrigin: '50px 50px', transform: `rotate(${angle}deg)` }} />
-      ))}
-    </motion.svg>
-  </div>
-);
 
 export default function App() {
   // App Mode State
@@ -1466,8 +1460,8 @@ export default function App() {
             {/* Header */}
             <div className="w-full flex flex-col items-center justify-center relative mb-12 mt-6 select-none">
               <div className="relative inline-block transform -rotate-3 text-center">
-                <div className="absolute -top-14 -left-12 sm:-top-20 sm:-left-16 z-0 pointer-events-none">
-                  <Sampaguita />
+                <div className="absolute -top-6 -left-2 sm:-top-8 sm:-left-4 z-20 pointer-events-none">
+                  <HaiChar />
                 </div>
                 <h1
                   className="text-[3.2rem] sm:text-[4.5rem] md:text-[6rem] font-title leading-[1.1] tracking-normal sm:tracking-wide relative z-10 [text-shadow:_-3px_-3px_0_#fff,_3px_-3px_0_#fff,_-3px_3px_0_#fff,_3px_3px_0_#fff]"
@@ -1481,9 +1475,9 @@ export default function App() {
 
             {/* Input Box */}
             <div className="w-full space-y-3 z-10 relative mb-8">
-              <div className="flex bg-[#F6F5F2] border-[4px] border-[#1A1A1A] rounded-[15px_225px_15px_255px/255px_15px_225px_15px] p-1 mb-4 shadow-[4px_4px_0px_0px_#1A1A1A] self-start z-10 w-full sm:w-auto">
-                <button onClick={() => handleInputModeChange('word')} className={`flex-1 px-4 py-2 text-sm font-black uppercase rounded-lg transition-colors ${inputMode === 'word' ? 'bg-[#1A1A1A] text-white' : 'text-[#1A1A1A] hover:bg-gray-200'}`}>Word</button>
-                <button onClick={() => handleInputModeChange('conversation')} className={`flex-1 px-4 py-2 text-sm font-black uppercase rounded-lg transition-colors ${inputMode === 'conversation' ? 'bg-[#1A1A1A] text-white' : 'text-[#1A1A1A] hover:bg-gray-200'}`}>Conversation</button>
+              <div className="flex bg-[#F6F5F2] border-[6px] border-[#1A1A1A] rounded-none p-1 mb-4 shadow-[8px_8px_0px_0px_#1A1A1A] self-start z-10 w-full sm:w-auto">
+                <button onClick={() => handleInputModeChange('word')} className={`flex-1 px-8 py-3 text-xl font-bubbly font-extrabold uppercase rounded-none transition-colors ${inputMode === 'word' ? 'bg-[#1A1A1A] text-white' : 'text-[#1A1A1A] hover:bg-gray-200'}`}>Word</button>
+                <button onClick={() => handleInputModeChange('conversation')} className={`flex-1 px-8 py-3 text-xl font-bubbly font-extrabold uppercase rounded-none transition-colors ${inputMode === 'conversation' ? 'bg-[#1A1A1A] text-white' : 'text-[#1A1A1A] hover:bg-gray-200'}`}>Conversation</button>
               </div>
               <div className="flex items-center justify-between px-2 mb-2">
                 <AnimatePresence mode="wait">
@@ -1493,15 +1487,15 @@ export default function App() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
                     htmlFor="english-input"
-                    className="text-xl font-black text-white tracking-widest uppercase"
-                    style={{ textShadow: '3px 3px 0px #1A1A1A', WebkitTextStroke: '1.5px #1A1A1A' }}
+                    className="text-2xl font-bubbly font-extrabold text-white tracking-widest uppercase"
+                    style={{ textShadow: '4px 4px 0px #1A1A1A', WebkitTextStroke: '2px #1A1A1A' }}
                   >
                     {direction === 'en-ko' ? 'English Word' : 'Korean Word'}
                   </motion.label>
                 </AnimatePresence>
                 <button
                   onClick={handleSwap}
-                  className="flex items-center justify-center gap-2 bg-[#FED141] border-[3px] border-[#1A1A1A] rounded-xl px-3 py-2 text-sm font-black uppercase hover:bg-[#E5BC3A] active:translate-y-[2px] active:translate-x-[2px] shadow-[3px_3px_0px_0px_#1A1A1A] active:shadow-none transition-all transform rotate-1"
+                  className="flex items-center justify-center gap-3 bg-[#FED141] border-[6px] border-[#1A1A1A] rounded-none px-4 py-2 text-xl font-bubbly font-extrabold uppercase hover:bg-[#E5BC3A] active:translate-y-[4px] active:translate-x-[4px] shadow-[6px_6px_0px_0px_#1A1A1A] active:shadow-none transition-all"
                   title="Swap Translation Direction"
                 >
                   {direction === 'en-ko' ? (
@@ -1512,7 +1506,7 @@ export default function App() {
                 </button>
               </div>
               <div className="drop-shadow-[8px_8px_0px_#1A1A1A] w-full">
-                <div className="bg-[#E8E6D9] border-[6px] border-[#1A1A1A] rounded-none p-6 flex items-center relative min-h-[100px] z-10">
+                <div className="bg-[#E8E6D9] border-[6px] border-[#1A1A1A] rounded-[32px] p-6 flex items-center relative min-h-[100px] z-10">
                   <div className="absolute top-[100%] left-10 flex flex-col items-start z-10">
                     <div className="w-[24px] h-[6px] bg-[#E8E6D9]"></div>
                     <div className="w-[24px] h-[12px] bg-[#E8E6D9] border-x-[6px] border-[#1A1A1A]"></div>
@@ -1540,10 +1534,10 @@ export default function App() {
                         handleTranslate();
                       }
                     }}
-                    className={`flex-1 bg-transparent outline-none placeholder:text-gray-400/70 w-full text-[#1A1A1A] resize-none transition-all duration-300 ${inputMode === 'conversation' ? 'min-h-[120px] text-lg font-sans font-bold leading-relaxed' : 'min-h-[3rem] text-2xl font-bold overflow-hidden'}`}
+                    className={`flex-1 bg-transparent outline-none placeholder:text-gray-400/70 w-full text-[#1A1A1A] resize-none transition-all duration-300 ${inputMode === 'conversation' ? 'min-h-[120px] text-xl font-bubbly font-extrabold leading-relaxed' : 'min-h-[3rem] text-4xl font-bubbly font-extrabold overflow-hidden'}`}
                     placeholder={inputMode === 'conversation' ? 'Type a full sentence or paragraph here...' : `e.g. ${currentPlaceholder}`}
                   />
-                  {inputMode === 'conversation' && <span className="absolute bottom-2 right-24 text-xs font-black text-gray-500">{englishWord.length}/500</span>}
+                  {inputMode === 'conversation' && <span className="absolute bottom-2 right-24 text-sm font-bubbly font-extrabold text-gray-500">{englishWord.length}/500</span>}
                   <button
                     onClick={handleMicClick}
                     className={`w-14 h-14 ml-3 rounded-none border-[5px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] flex flex-shrink-0 items-center justify-center transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none ${isRecording ? 'bg-[#ffcdd2]' : 'bg-[#C6CDB9] hover:bg-[#B5BDA7]'}`}
@@ -1554,9 +1548,6 @@ export default function App() {
                 </div>
               </div>
 
-              <motion.div className="absolute -bottom-16 -right-4 z-20 pointer-events-none" animate={{ y: [0, -8, 0], rotate: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 2.5 }}>
-                <Sparkle />
-              </motion.div>
             </div>
 
             {/* Translate Button */}
@@ -1564,11 +1555,11 @@ export default function App() {
               <motion.button
                 whileHover={isLoading ? {} : { scale: 1.02 }}
                 whileTap={isLoading ? {} : { scale: 0.96, x: 4, y: 4, boxShadow: "0px 0px 0px 0px #1A1A1A" }}
-                animate={{ backgroundColor: isLoading ? ["#C6CDB9", "#FED141", "#BF0D3E", "#0032A0", "#C6CDB9"] : "#C6CDB9" }}
+                animate={{ backgroundColor: isLoading ? ["#C6CDB9", "#F6F5F2", "#CD2E3A", "#0047A0", "#C6CDB9"] : "#C6CDB9" }}
                 transition={{ backgroundColor: isLoading ? { repeat: Infinity, duration: 0.6, ease: "linear" } : { duration: 0.1 } }}
                 onClick={handleTranslate}
                 disabled={isLoading || !englishWord.trim()}
-                className="w-full text-[#1A1A1A] text-3xl font-black py-5 border-[6px] border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] rounded-none disabled:opacity-70 disabled:cursor-not-allowed min-h-[64px] uppercase tracking-wider flex items-center justify-center"
+                className="w-full text-[#1A1A1A] text-4xl font-bubbly font-extrabold py-5 border-[6px] border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] rounded-none disabled:opacity-70 disabled:cursor-not-allowed min-h-[64px] uppercase tracking-wider flex items-center justify-center"
               >
                 {isLoading ? (
                   <Loader2 className="w-10 h-10 animate-spin stroke-[4]" />
@@ -1576,6 +1567,9 @@ export default function App() {
                   'Translate!'
                 )}
               </motion.button>
+              <motion.div className="absolute -top-6 -right-5 z-20 pointer-events-none" animate={{ scale: [0.9, 1.2, 0.9], rotate: [0, 15, 0] }} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}>
+                <Sparkle />
+              </motion.div>
 
               {errorMsg && (
                 <div className="mt-6 p-4 bg-red-100 border-[4px] border-[#1A1A1A] rounded-xl text-[#1A1A1A] font-black flex items-start gap-3 shadow-[4px_4px_0px_0px_#1A1A1A]">
@@ -1595,8 +1589,8 @@ export default function App() {
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
-                      className="text-xl font-black text-white tracking-widest uppercase"
-                      style={{ textShadow: '3px 3px 0px #1A1A1A', WebkitTextStroke: '1.5px #1A1A1A' }}
+                      className="text-2xl font-bubbly font-extrabold text-white tracking-widest uppercase"
+                      style={{ textShadow: '4px 4px 0px #1A1A1A', WebkitTextStroke: '2px #1A1A1A' }}
                     >
                       {direction === 'en-ko' ? 'Korean Translation' : 'English Translation'}
                     </motion.span>
@@ -1604,9 +1598,12 @@ export default function App() {
                 </div>
 
                 <div className="relative drop-shadow-[8px_8px_0px_#1A1A1A] w-full">
-                  <motion.div className="absolute -left-12 top-10 -z-10" animate={{ rotate: [0, -8, 0], x: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 3.5 }}>
-                    <Butterfly />
-                  </motion.div>
+                  <div className="absolute -left-[72px] top-6 -z-10">
+                    <LeftWing />
+                  </div>
+                  <div className="absolute -right-[72px] top-6 -z-10">
+                    <RightWing />
+                  </div>
 
                   <motion.div
                     key={translation ? `result-${translation.substring(0, 10)}` : 'empty'}
@@ -1617,23 +1614,17 @@ export default function App() {
                       backgroundColor: { duration: 0.5, ease: "easeOut", delay: 0.1 },
                       opacity: { duration: 0.2 }
                     } : { duration: 0.2 }}
-                    className="relative border-[6px] border-[#1A1A1A] rounded-none p-8 flex flex-col items-center justify-center min-h-[180px] z-10"
+                    className="relative border-[6px] border-[#1A1A1A] rounded-[32px] p-8 flex flex-col items-center justify-center min-h-[180px] z-10"
                   >
-                    <div className="absolute left-[100%] top-10 flex flex-row items-start z-10">
-                      <div className="w-[6px] h-[24px] bg-inherit"></div>
-                      <div className="w-[12px] h-[24px] bg-inherit border-y-[6px] border-[#1A1A1A]"></div>
-                      <div className="w-[6px] h-[12px] bg-[#1A1A1A] mt-[12px]"></div>
-                    </div>
-                    {translation && !isLoading && <PhParticles triggerKey={translation} />}
                     {isLoading ? (
                       <div className="flex flex-col items-center justify-center w-full animate-pulse">
-                        <div className="h-12 bg-gray-300 border-[4px] border-[#1A1A1A] rounded-[255px_15px_225px_15px/15px_225px_15px_255px] w-3/4 mb-6 opacity-50"></div>
-                        <div className="h-12 bg-gray-300 border-[4px] border-[#15px_225px_15px_255px/255px_15px_225px_15px] w-32 opacity-50"></div>
+                        <div className="h-12 bg-gray-300 border-[4px] border-[#1A1A1A] rounded-none w-3/4 mb-6 opacity-50"></div>
+                        <div className="h-12 bg-gray-300 border-[4px] border-[#1A1A1A] rounded-none w-32 opacity-50"></div>
                       </div>
                     ) : (
                       <>
                         <div className={`w-full ${inputMode === 'conversation' ? 'max-h-[250px] overflow-y-auto pr-4 mb-6' : 'mb-8'}`}>
-                          <span className={`${inputMode === 'conversation' ? 'text-lg md:text-xl font-sans font-bold normal-case text-left block' : 'text-3xl md:text-4xl font-bold uppercase text-center'} text-[#1A1A1A] break-words w-full`}>
+                          <span className={`${inputMode === 'conversation' ? 'text-2xl md:text-3xl font-bubbly font-extrabold normal-case text-left block' : 'text-4xl md:text-5xl font-bubbly font-extrabold uppercase text-center'} text-[#1A1A1A] break-words w-full`}>
                             {translation}
                           </span>
                         </div>
@@ -1642,7 +1633,7 @@ export default function App() {
                             <button
                               onClick={() => handleSpeak(audioUrl)}
                               disabled={!audioUrl}
-                              className="flex items-center gap-3 bg-[#E8E6D9] hover:bg-[#D9D7C8] text-[#1A1A1A] px-6 py-3 border-[5px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] rounded-none text-lg font-black uppercase transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none disabled:opacity-50 disabled:cursor-wait min-h-[56px]"
+                              className="flex items-center gap-3 bg-[#E8E6D9] hover:bg-[#D9D7C8] text-[#1A1A1A] px-6 py-3 border-[5px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] rounded-none text-xl font-bubbly font-extrabold uppercase transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none disabled:opacity-50 disabled:cursor-wait min-h-[56px]"
                             >
                               <Volume2 className="w-6 h-6 stroke-[4]" />
                               SPEAK
@@ -1673,7 +1664,7 @@ export default function App() {
                       <div className="w-[12px] h-[24px] bg-[#DBC27C] border-y-[6px] border-[#1A1A1A]"></div>
                       <div className="w-[6px] h-[24px] bg-[#DBC27C]"></div>
                     </div>
-                    <span className="absolute -top-4 left-6 bg-[#1A1A1A] text-[#DBC27C] text-sm font-black uppercase tracking-widest px-4 py-1.5 rounded-none shadow-[3px_3px_0px_0px_#DBC27C] flex items-center gap-2">
+                    <span className="absolute -top-4 left-6 bg-[#1A1A1A] text-[#DBC27C] text-lg font-bubbly font-extrabold uppercase tracking-widest px-4 py-1.5 rounded-none shadow-[3px_3px_0px_0px_#DBC27C] flex items-center gap-2">
                       <Lightbulb className="w-4 h-4 stroke-[3]" /> DID YOU KNOW?
                     </span>
                     {isLoadingFunFact ? (
@@ -1683,7 +1674,7 @@ export default function App() {
                         <div className="h-3.5 bg-[#1A1A1A]/20 rounded-full w-3/4"></div>
                       </div>
                     ) : (
-                      <p className="text-xl font-bold text-[#1A1A1A] leading-snug">
+                      <p className="text-3xl font-qtpi text-[#1A1A1A] leading-snug">
                         {funFact}
                       </p>
                     )}
@@ -1700,17 +1691,17 @@ export default function App() {
                 {!example && (
                   exampleCooldown ? (
                     <div className="drop-shadow-[8px_8px_0px_#1A1A1A] w-full mb-8">
-                      <div className="w-full bg-[#D3D6CB] border-[6px] border-[#1A1A1A] rounded-none p-6 flex flex-col items-center gap-2 text-center relative z-10">
+                      <div className="w-full bg-[#D3D6CB] border-[6px] border-[#1A1A1A] rounded-[32px] p-6 flex flex-col items-center gap-2 text-center relative z-10">
                         <div className="absolute top-[100%] right-10 flex flex-col items-end z-10">
                           <div className="w-[24px] h-[6px] bg-[#D3D6CB]"></div>
                           <div className="w-[24px] h-[12px] bg-[#D3D6CB] border-x-[6px] border-[#1A1A1A]"></div>
                           <div className="w-[12px] h-[6px] bg-[#1A1A1A] mr-[12px]"></div>
                         </div>
-                        <span className="text-5xl font-black text-[#1A1A1A]">⏳ {exampleCooldown}s</span>
-                        <p className="text-lg font-black text-[#1A1A1A] uppercase tracking-tight leading-tight">
+                        <span className="text-5xl font-bubbly font-extrabold text-[#1A1A1A]">⏳ {exampleCooldown}s</span>
+                        <p className="text-2xl font-bubbly font-extrabold text-[#1A1A1A] uppercase tracking-tight leading-tight">
                           Sentence examples on cooldown!
                         </p>
-                        <p className="text-sm font-bold text-gray-500 uppercase tracking-wide">
+                        <p className="text-lg font-bubbly font-extrabold text-gray-500 uppercase tracking-wide">
                           You can keep translating words in the meantime ✌️
                         </p>
                       </div>
@@ -1719,7 +1710,7 @@ export default function App() {
                     <button
                       onClick={handleShowExample}
                       disabled={isLoadingExample}
-                      className="w-full bg-[#D3D6CB] hover:bg-[#C2C5BA] text-[#1A1A1A] text-xl font-black py-5 px-6 border-[6px] border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] rounded-none transition-all duration-150 active:translate-x-[8px] active:translate-y-[8px] active:shadow-none disabled:opacity-70 flex items-center justify-center mb-8 min-h-[64px] uppercase"
+                      className="w-full bg-[#D3D6CB] hover:bg-[#C2C5BA] text-[#1A1A1A] text-2xl font-bubbly font-extrabold py-5 px-6 border-[6px] border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] rounded-full transition-all duration-150 active:translate-x-[8px] active:translate-y-[8px] active:shadow-none disabled:opacity-70 flex items-center justify-center mb-8 min-h-[64px] uppercase"
                     >
                       {isLoadingExample ? (
                         <Loader2 className="w-8 h-8 mr-3 animate-spin stroke-[4]" />
@@ -1732,7 +1723,7 @@ export default function App() {
                 {example && (
                   <div className="w-full space-y-3 z-10 relative mb-8 animate-in zoom-in-95 duration-300">
                     <div className="flex items-center justify-between px-2">
-                      <span className="text-xl font-black text-white tracking-widest uppercase" style={{ textShadow: '3px 3px 0px #1A1A1A', WebkitTextStroke: '1.5px #1A1A1A' }}>
+                      <span className="text-2xl font-bubbly font-extrabold text-white tracking-widest uppercase" style={{ textShadow: '4px 4px 0px #1A1A1A', WebkitTextStroke: '2px #1A1A1A' }}>
                         Context
                       </span>
                     </div>
@@ -1743,17 +1734,17 @@ export default function App() {
                           <div className="w-[24px] h-[12px] bg-[#D3D6CB] border-x-[6px] border-[#1A1A1A]"></div>
                           <div className="w-[24px] h-[6px] bg-[#D3D6CB]"></div>
                         </div>
-                        <p className="text-2xl font-bold mb-6 break-words text-[#1A1A1A] text-center w-full leading-tight uppercase">
+                        <p className="text-3xl font-bubbly font-normal mb-6 break-words text-[#1A1A1A] text-center w-full leading-tight uppercase">
                           {example.koreanSentence}
                         </p>
-                        <p className="text-xl font-bold mb-8 text-[#1A1A1A] text-center w-full bg-[#E8E6D9] px-4 py-2 border-[4px] border-[#1A1A1A] rounded-none shadow-[4px_4px_0px_0px_#1A1A1A]">
+                        <p className="text-3xl font-bubbly font-normal mb-8 text-[#1A1A1A] text-center w-full bg-[#E8E6D9] px-4 py-2 border-[4px] border-[#1A1A1A] rounded-none shadow-[4px_4px_0px_0px_#1A1A1A]">
                           "{example.englishTranslation}"
                         </p>
                         <div className="flex items-center gap-4 flex-wrap justify-center">
                           <button
                             onClick={() => handleSpeak(exampleAudioUrl)}
                             disabled={!exampleAudioUrl}
-                            className="flex items-center gap-3 bg-[#E8E6D9] hover:bg-[#D9D7C8] text-[#1A1A1A] px-6 py-3 border-[5px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] rounded-none text-lg font-black uppercase transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none disabled:opacity-50 disabled:cursor-wait min-h-[56px]"
+                            className="flex items-center gap-3 bg-[#E8E6D9] hover:bg-[#D9D7C8] text-[#1A1A1A] px-6 py-3 border-[5px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] rounded-none text-xl font-bubbly font-extrabold uppercase transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none disabled:opacity-50 disabled:cursor-wait min-h-[56px]"
                           >
                             <Volume2 className="w-6 h-6 stroke-[4]" />
                             SPEAK

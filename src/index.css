@@ -1,10 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Darumadrop+One&family=Do+Hyeon&family=Gaegu:wght@400;700&family=Jua&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Darumadrop+One&family=Do+Hyeon&family=Gaegu:wght@400;700&family=Jua&family=Pixelify+Sans:wght@400;700&family=Fredoka:wght@600;700&family=Sniglet:wght@400;800&family=Mali:wght@500;600;700&display=swap');
 @import "tailwindcss";
+
+@font-face {
+    font-family: 'QTPI';
+    src: url('https://zephyo.github.io/5fonts10hours/qtpi/qtpi.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
 
 @theme {
   --font-title: 'Darumadrop One', cursive;
   --font-bold: 'Do Hyeon', sans-serif;
   --font-text: 'Gaegu', cursive;
+  --font-pixel: 'Pixelify Sans', sans-serif;
+  --font-bubbly: 'Sniglet', 'Jua', sans-serif;
+  --font-tangerine: 'Mali', 'Gaegu', sans-serif;
+  --font-qtpi: 'QTPI', 'Gaegu', sans-serif;
 }
 
 @layer utilities {
