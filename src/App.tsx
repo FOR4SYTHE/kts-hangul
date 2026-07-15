@@ -1342,29 +1342,34 @@ export default function App() {
         <div className="w-full max-w-4xl flex justify-between items-center z-40 mb-2 relative">
           <button
             onClick={() => handleModeSwitch(appMode === 'translator' ? 'hangul' : 'translator')}
-            className={`flex items-center justify-center w-12 h-12 transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none rounded-[255px_15px_225px_15px/15px_225px_15px_255px] ${appMode === 'translator'
-              ? 'bg-[#1A1A1A] border-[4px] border-[#1A1A1A] text-[#FED141] shadow-[4px_4px_0px_0px_#0032A0] hover:bg-gray-800'
-              : 'bg-[#F6F5F2] border-[4px] border-[#2C2825] text-[#2C2825] shadow-[4px_4px_0px_0px_#2C2825] hover:bg-[#EAE6DF]'
+            className={`flex items-center justify-center w-12 h-12 transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none rounded-3xl doodle-shadow border-4 border-black text-white ${appMode === 'translator'
+              ? 'bg-[#CD2E3A] hover:bg-[#B0212E]'
+              : 'bg-[#0047A0] hover:bg-[#0032A0]'
               }`}
             title={appMode === 'translator' ? 'Reveal the past...' : 'Return to translator'}
           >
             {appMode === 'translator' ? (
-              <svg width="26" height="26" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M 50 15 Q 60 35 85 50 Q 60 65 50 85 Q 40 65 15 50 Q 40 35 50 15 Z" />
-                <circle cx="50" cy="50" r="8" fill="currentColor" />
-                <path d="M 30 30 Q 35 35 40 40" />
-                <path d="M 70 30 Q 65 35 60 40" />
-                <path d="M 30 70 Q 35 65 40 60" />
-                <path d="M 70 70 Q 65 65 60 60" />
+              <svg width="26" height="26" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="50" cy="50" r="10" />
+                {[0, 45, 90, 135, 180, 225, 270, 315].map(angle => (
+                  <g key={angle} style={{ transformOrigin: '50px 50px', transform: `rotate(${angle}deg)` }}>
+                    <path d="M 46 41 C 30 15 40 2 50 2 C 60 2 70 15 54 41" />
+                    <path d="M 47.5 39 C 42 22 46 12 50 12 C 54 12 58 22 52.5 39" />
+                  </g>
+                ))}
               </svg>
             ) : (
-              <svg width="26" height="26" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M 50 45 Q 60 10 70 20 Q 60 35 55 50" />
-                <path d="M 55 50 Q 90 30 85 45 Q 65 55 50 55" />
-                <path d="M 50 55 Q 80 85 65 90 Q 45 65 45 50" />
-                <path d="M 45 50 Q 15 80 10 65 Q 35 45 50 45" />
-                <path d="M 50 45 Q 15 15 30 10 Q 45 35 55 50" />
-                <circle cx="50" cy="50" r="12" fill="currentColor" />
+              <svg width="26" height="26" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="50" cy="50" r="16" />
+                {[0, 72, 144, 216, 288].map(angle => (
+                  <g key={angle} style={{ transformOrigin: '50px 50px', transform: `rotate(${angle}deg)` }}>
+                    <path d="M 41 37 C 25 15 40 2 50 2 C 60 2 75 15 59 37" />
+                  </g>
+                ))}
+                <circle cx="50" cy="50" r="2.5" fill="currentColor" stroke="none" />
+                {[0, 60, 120, 180, 240, 300].map(angle => (
+                  <circle key={angle} cx="50" cy="41" r="2.5" fill="currentColor" stroke="none" style={{ transformOrigin: '50px 50px', transform: `rotate(${angle}deg)` }} />
+                ))}
               </svg>
             )}
           </button>
@@ -1380,7 +1385,7 @@ export default function App() {
           ) : (
             <button
               onClick={() => setShowHangulHistory(true)}
-              className="w-12 h-12 bg-[#F6F5F2] border-[4px] border-[#2C2825] shadow-[4px_4px_0px_0px_#2C2825] rounded-[255px_15px_225px_15px/15px_225px_15px_255px] flex items-center justify-center transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none hover:bg-[#EAE6DF]"
+              className="w-12 h-12 bg-[#F6F5F2] border-4 border-[#2C2825] rounded-3xl doodle-shadow flex items-center justify-center transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none hover:bg-[#EAE6DF]"
               title="Hangul History"
             >
               <History className="w-6 h-6 stroke-[3] text-[#2C2825]" />
