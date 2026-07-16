@@ -1046,18 +1046,16 @@ export default function App() {
                   </textPath>
                 </text>
               </svg>
-              <div className="bg-[#E8E6D9] border-[6px] border-[#1A1A1A] rounded-[32px] p-4 shadow-[8px_8px_0px_0px_#1A1A1A] flex items-center justify-center w-[260px] h-auto z-0 overflow-hidden">
-                <img
-                  src="/kcharacters.webp"
-                  alt="Traditional Korean Dancers"
-                  className="w-full h-auto object-contain select-none"
-                  style={{
-                    filter: 'drop-shadow(3px 0 0 #F6F5F2) drop-shadow(-3px 0 0 #F6F5F2) drop-shadow(0 3px 0 #F6F5F2) drop-shadow(0 -3px 0 #F6F5F2) drop-shadow(2px 2px 0 #F6F5F2) drop-shadow(-2px -2px 0 #F6F5F2) drop-shadow(2px -2px 0 #F6F5F2) drop-shadow(-2px 2px 0 #F6F5F2)'
-                  }}
-                />
-              </div>
+              <img
+                src="/kcharacters.webp"
+                alt="Traditional Korean Dancers"
+                className="w-[240px] h-auto object-contain z-0 select-none"
+                style={{
+                  filter: 'drop-shadow(3px 0 0 #F6F5F2) drop-shadow(-3px 0 0 #F6F5F2) drop-shadow(0 3px 0 #F6F5F2) drop-shadow(0 -3px 0 #F6F5F2) drop-shadow(2px 2px 0 #F6F5F2) drop-shadow(-2px -2px 0 #F6F5F2) drop-shadow(2px -2px 0 #F6F5F2) drop-shadow(-2px 2px 0 #F6F5F2)'
+                }}
+              />
             </div>
-            <div className="mt-8 flex flex-col items-center w-full px-4">
+            <div className="mt-1 flex flex-col items-center w-full px-4">
               <span className="text-[11px] xs:text-[13px] sm:text-[15px] tracking-[0.15em] sm:tracking-[0.25em] uppercase font-bold text-[#F6F5F2] whitespace-nowrap text-center drop-shadow-[2px_2px_0px_#1A1A1A]" style={{ fontFamily: "var(--font-pudding)" }}>
                 — KOREAN TRANSLATOR SUPREME —
               </span>
