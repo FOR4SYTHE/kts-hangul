@@ -1053,9 +1053,9 @@ export default function App() {
           </div>
         )}
 
-        <div className="w-full max-w-md z-10 flex flex-col items-center pt-4 pb-12 animate-in fade-in duration-500">
+        <div className="w-full max-w-md z-10 flex flex-col items-center pt-4 pb-12 animate-in fade-in duration-500 shrink-0">
           <div className="w-full flex flex-col items-center justify-center relative mb-12 mt-6 select-none">
-            <div className="relative flex flex-col items-center justify-center w-[360px] sm:w-[420px] -mb-2">
+            <div className="relative flex flex-col items-center justify-center w-full max-w-[290px] xs:max-w-[320px] sm:max-w-[380px] -mb-2">
               <svg viewBox="0 0 200 80" className="w-[320px] sm:w-[380px] h-auto -mb-[35px] z-10 overflow-visible translate-y-[10px]">
                 <path id="curve" d="M 10 70 Q 100 0 190 70" fill="transparent" />
                 <text width="200">
@@ -1106,7 +1106,7 @@ export default function App() {
           </div>
 
           <div className="w-full space-y-3 z-10 relative mb-8">
-            <div className="flex bg-[#F6F5F2] border-[4px] border-[#1A1A1A] p-[3px] rounded-full shadow-[5px_5px_0px_0px_#1A1A1A] self-start z-10 w-full sm:w-auto mb-6">
+            <div className="flex bg-[#F6F5F2] border-[4px] border-[#1A1A1A] p-[3px] rounded-full shadow-[5px_5px_0px_0px_#1A1A1A] self-start z-10 w-full sm:w-auto mb-6 shrink-0">
               <button
                 onClick={() => handleInputModeChange('word')}
                 className={`flex-1 px-8 py-2.5 text-xl font-bubbly font-extrabold uppercase rounded-full transition-all duration-150 ${inputMode === 'word'
@@ -1152,7 +1152,7 @@ export default function App() {
                 )}
               </button>
             </div>
-            <div className="drop-shadow-[8px_8px_0px_#1A1A1A] w-full">
+            <div className="drop-shadow-[8px_8px_0px_#1A1A1A] w-full shrink-0">
               <div className="bg-[#E8E6D9] border-[6px] border-[#1A1A1A] rounded-[32px] p-6 flex items-center relative min-h-[100px] z-10">
                 <div className="absolute top-[100%] left-10 flex flex-col items-start z-10">
                   <div className="w-[24px] h-[6px] bg-[#E8E6D9]"></div>
@@ -1207,7 +1207,7 @@ export default function App() {
               transition={{ backgroundColor: isLoading ? { repeat: Infinity, duration: 0.6, ease: "linear" } : { duration: 0.1 } }}
               onClick={() => { playTapSound(); handleTranslate(); }}
               disabled={isLoading || !englishWord.trim()}
-              className="w-full text-[#1A1A1A] text-4xl font-bubbly font-extrabold py-5 border-[6px] border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] rounded-none disabled:opacity-70 disabled:cursor-not-allowed min-h-[64px] uppercase tracking-wider flex items-center justify-center"
+              className="w-full text-[#1A1A1A] text-3xl sm:text-4xl font-bubbly font-extrabold py-4 sm:py-5 border-[6px] border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] rounded-none disabled:opacity-70 disabled:cursor-not-allowed min-h-[60px] uppercase tracking-wider flex items-center justify-center shrink-0"
             >
               {isLoading ? (
                 <Loader2 className="w-10 h-10 animate-spin stroke-[4]" />

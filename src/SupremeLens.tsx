@@ -386,7 +386,7 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
 
       {/* MASSIVE VIEWFINDER (Fills Space) */}
       <div
-        className="relative flex-1 min-h-[50vh] mx-4 my-2 bg-black rounded-[32px] border-[6px] border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] overflow-hidden flex flex-col"
+        className="relative flex-1 min-h-[50vh] shrink-0 mx-4 my-2 bg-black rounded-[32px] border-[6px] border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] overflow-hidden flex flex-col"
         style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)', transform: 'translateZ(0)' }}
       >
         {!capturedImage ? (
