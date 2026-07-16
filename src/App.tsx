@@ -217,8 +217,10 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
         if (videoRef.current?.srcObject) {
           const oldStream = videoRef.current.srcObject as MediaStream;
           oldStream.getTracks().forEach(track => track.stop());
+          videoRef.current.srcObject = null;
         }
-        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: facingMode } });
+        await new Promise(resolve => setTimeout(resolve, 100));
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: facingMode } } });
         if (videoRef.current) videoRef.current.srcObject = stream;
       } catch (err) {
         console.error("Camera access denied", err);

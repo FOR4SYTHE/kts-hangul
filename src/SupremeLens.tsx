@@ -65,9 +65,11 @@ export default function SupremeLens({ onClose, onCapturedChange, onInfoToggle, o
         if (videoRef.current && videoRef.current.srcObject) {
           const oldStream = videoRef.current.srcObject as MediaStream;
           oldStream.getTracks().forEach(track => track.stop());
+          videoRef.current.srcObject = null;
         }
+        await new Promise(resolve => setTimeout(resolve, 100));
         const mediaStream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'environment', advanced: [{ zoom: 1 }] }
+          video: { facingMode: { ideal: 'environment' } }
         });
         currentStream = mediaStream;
         setStream(mediaStream);
