@@ -1051,7 +1051,7 @@ export default function App() {
                 alt="Traditional Korean Dancers"
                 className="w-[240px] h-auto object-contain z-0 select-none"
                 style={{
-                  filter: 'drop-shadow(3px 0 0 #F6F5F2) drop-shadow(-3px 0 0 #F6F5F2) drop-shadow(0 3px 0 #F6F5F2) drop-shadow(0 -3px 0 #F6F5F2) drop-shadow(2px 2px 0 #F6F5F2) drop-shadow(-2px -2px 0 #F6F5F2) drop-shadow(2px -2px 0 #F6F5F2) drop-shadow(-2px 2px 0 #F6F5F2)'
+                  filter: 'brightness(0) drop-shadow(3px 0 0 #F6F5F2) drop-shadow(-3px 0 0 #F6F5F2) drop-shadow(0 3px 0 #F6F5F2) drop-shadow(0 -3px 0 #F6F5F2) drop-shadow(2px 2px 0 #F6F5F2) drop-shadow(-2px -2px 0 #F6F5F2) drop-shadow(2px -2px 0 #F6F5F2) drop-shadow(-2px 2px 0 #F6F5F2)'
                 }}
               />
             </div>
