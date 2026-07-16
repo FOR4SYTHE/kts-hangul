@@ -1056,12 +1056,21 @@ export default function App() {
                   </textPath>
                 </text>
               </svg>
-              <img
+              <motion.img
                 src="/kcharacters.webp"
                 alt="Traditional Korean Dancers"
                 className="w-[280px] sm:w-[340px] h-auto object-contain z-0 select-none"
                 style={{
                   filter: 'brightness(0) drop-shadow(3px 0 0 #F6F5F2) drop-shadow(-3px 0 0 #F6F5F2) drop-shadow(0 3px 0 #F6F5F2) drop-shadow(0 -3px 0 #F6F5F2) drop-shadow(2px 2px 0 #F6F5F2) drop-shadow(-2px -2px 0 #F6F5F2) drop-shadow(2px -2px 0 #F6F5F2) drop-shadow(-2px 2px 0 #F6F5F2)'
+                }}
+                animate={{
+                  y: [0, -6, 0],
+                  rotate: [0, 1.5, -1.5, 0]
+                }}
+                transition={{
+                  duration: 6,
+                  repeat: Infinity,
+                  ease: "easeInOut"
                 }}
               />
             </div>
