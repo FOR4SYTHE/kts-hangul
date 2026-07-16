@@ -249,12 +249,12 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
   }, [resultText, isProcessing]);
 
   const getWaitingMessage = (time: number) => {
-    if (time > 25) return "ALMOST THERE, PROMISE... 😅";
-    if (time > 20) return "STILL THINKING (IT'S A TOUGH ONE) 🤔";
-    if (time > 15) return "HANG IN THERE... ⏳";
-    if (time > 10) return "DECODING THE VIBES... ✨";
-    if (time > 5) return "ANALYZING PIXELS... 🔍";
-    return "SCANNING... 👁️";
+    if (time > 25) return "ALMOST THERE";
+    if (time > 20) return "DEEP ANALYSIS";
+    if (time > 15) return "HOLD TIGHT";
+    if (time > 10) return "DECODING VIBES";
+    if (time > 5) return "ANALYZING";
+    return "SCANNING";
   };
 
   const isErrorState = resultText.includes("ORACLE OVERLOADED") || resultText.includes("Error communicating");
@@ -412,25 +412,41 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
 
         {isProcessing && (
           <>
-            <div className="absolute inset-0 bg-black/50 z-10" />
-            <div ref={scanlineRef} className="absolute top-0 left-0 w-full h-4 bg-[#FED141] shadow-[0_0_20px_#FED141] opacity-80 z-20" />
-            <div className="absolute inset-0 z-30 flex flex-col items-center justify-center pointer-events-none px-6">
-
-              <div className="relative flex justify-center items-center w-full mb-4">
-                {/* Reusing your animated sparkle for a premium loading feel */}
-                <div className="absolute -top-10 -right-4 scale-75 opacity-80">
-                  <CartoonSparkle />
+            {/* Dark overlay */}
+            <div className="absolute inset-0 bg-black/60 z-10" />
+            {/* Animated scan line */}
+            <div ref={scanlineRef} className="absolute top-0 left-0 w-full h-[3px] bg-[#FED141] z-20" style={{ boxShadow: '0 0 16px 4px #FED141, 0 0 40px 8px rgba(254,209,65,0.4)' }} />
+            <div className="absolute inset-0 z-30 flex flex-col items-center justify-center pointer-events-none px-6 gap-4">
+              {/* Premium frosted glass status pill */}
+              <div
+                className="relative flex flex-col items-center gap-3 px-8 py-5 rounded-2xl border border-white/20"
+                style={{ background: 'rgba(18, 50, 79, 0.75)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
+              >
+                {/* Pulsing dot row */}
+                <div className="flex items-center gap-2">
+                  {[0, 0.15, 0.3].map((delay, i) => (
+                    <motion.div
+                      key={i}
+                      className="w-2 h-2 rounded-full bg-[#FED141]"
+                      animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1.2, 0.8] }}
+                      transition={{ repeat: Infinity, duration: 1.2, delay, ease: 'easeInOut' }}
+                    />
+                  ))}
                 </div>
-                <span className="text-white font-title text-3xl md:text-4xl tracking-widest uppercase text-center animate-pulse" style={{ WebkitTextStroke: '2px #1A1A1A' }}>
+                {/* Status text */}
+                <span
+                  className="text-white font-sniglet text-2xl md:text-3xl tracking-[0.25em] uppercase text-center leading-none"
+                  style={{ textShadow: '0 2px 8px rgba(0,0,0,0.6)' }}
+                >
                   {getWaitingMessage(scanTime)}
                 </span>
+                {/* Timer badge */}
+                {scanTime > 0 && (
+                  <span className="text-[#FED141] font-bubbly font-extrabold text-lg tracking-widest border-[3px] border-[#FED141]/40 bg-[#FED141]/10 px-5 py-1 rounded-full">
+                    {scanTime}s
+                  </span>
+                )}
               </div>
-
-              {scanTime > 0 && (
-                <span className="text-[#FED141] font-black text-xl tracking-widest border-[3px] border-[#1A1A1A] bg-[#1A1A1A]/80 px-5 py-1.5 rounded-full shadow-[4px_4px_0px_#1A1A1A]">
-                  {scanTime}s
-                </span>
-              )}
             </div>
           </>
         )}
