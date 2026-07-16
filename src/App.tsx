@@ -213,6 +213,14 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
   useEffect(() => {
     let stream: MediaStream | null = null;
     const startCamera = async () => {
+      if (activeTab === 'archive') {
+        if (videoRef.current?.srcObject) {
+          const oldStream = videoRef.current.srcObject as MediaStream;
+          oldStream.getTracks().forEach(track => track.stop());
+          videoRef.current.srcObject = null;
+        }
+        return;
+      }
       try {
         if (videoRef.current?.srcObject) {
           const oldStream = videoRef.current.srcObject as MediaStream;
@@ -220,7 +228,7 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
           videoRef.current.srcObject = null;
         }
         await new Promise(resolve => setTimeout(resolve, 100));
-        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: facingMode } } });
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } } });
         if (videoRef.current) videoRef.current.srcObject = stream;
       } catch (err) {
         console.error("Camera access denied", err);
@@ -371,21 +379,7 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
             </motion.div>
           )}
 
-          {punchState === 'viewfinder' && !hasCameraError && (
-            <motion.button
-              whileHover={{ scale: 1.1, rotate: 15 }} whileTap={{ scale: 0.9 }}
-              onClick={(e) => { e.stopPropagation(); setFacingMode(prev => prev === 'environment' ? 'user' : 'environment'); }}
-              className={`absolute -top-20 left-4 z-50 text-[#1A1A1A] ${facingMode === 'user' ? 'bg-[#FED141]' : 'bg-[#F6F5F2]'} border-[4px] border-[#1A1A1A] rounded-3xl p-3 shadow-[4px_4px_0px_0px_#1A1A1A] ${facingMode === 'user' ? 'hover:bg-[#E2B935]' : 'hover:bg-[#E8E6D9]'} active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all`}
-              title="Flip Camera"
-            >
-              <svg width="32" height="32" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M 25 50 C 25 30 40 15 60 15 C 75 15 85 25 90 35" />
-                <path d="M 90 20 L 90 35 L 75 35" />
-                <path d="M 75 50 C 75 70 60 85 40 85 C 25 85 15 75 10 65" />
-                <path d="M 10 80 L 10 65 L 25 65" />
-              </svg>
-            </motion.button>
-          )}
+
 
           {hqImage && punchState === 'done' && (
             <motion.div
@@ -456,6 +450,7 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4 }}
           className="absolute inset-0 pt-24 pb-36 px-4 overflow-y-auto flex flex-col items-center z-20"
+          style={{ transform: 'translateZ(0)', willChange: 'transform' }}
         >
           <div className="relative mb-12">
             <h2 className="text-[#1A1A1A] font-bubbly font-extrabold text-[2.5rem] uppercase tracking-widest text-center">
@@ -502,7 +497,7 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
                         <path fill="#F6F5F2" d={stampPath} />
                       </svg>
                       <div className="relative z-10 w-[84%] h-[88%] border-[2px] border-[#1A1A1A] overflow-hidden bg-white">
-                        <img src={entry.data} className="w-full h-full object-cover grayscale-[0.1] contrast-[1.1]" />
+                        <img src={entry.data} className="w-full h-full object-cover grayscale-[0.1] contrast-[1.1]" loading="lazy" decoding="async" />
                       </div>
                     </motion.div>
                   </div>
