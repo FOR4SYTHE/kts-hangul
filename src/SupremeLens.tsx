@@ -279,9 +279,10 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
 
       {/* LAYER 3: Film Grain Overlay */}
       <div
-        className="absolute inset-0 -z-10 opacity-[0.18] mix-blend-overlay pointer-events-none"
+        className="absolute inset-0 -z-10 opacity-[0.06] pointer-events-none"
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.80' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.80' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+          transform: 'translateZ(0)'
         }}
       />
 
@@ -384,7 +385,10 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
       </div>
 
       {/* MASSIVE VIEWFINDER (Fills Space) */}
-      <div className="relative flex-grow mx-4 my-2 bg-black rounded-[32px] border-[6px] border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] overflow-hidden flex flex-col">
+      <div
+        className="relative flex-1 min-h-[50vh] mx-4 my-2 bg-black rounded-[32px] border-[6px] border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] overflow-hidden flex flex-col"
+        style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)', transform: 'translateZ(0)' }}
+      >
         {!capturedImage ? (
           <video ref={videoRef} autoPlay playsInline style={{ transform: `scale(${zoomLevel})` }} className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 ease-out" />
         ) : (
@@ -420,8 +424,8 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
             <div className="absolute inset-0 z-30 flex flex-col items-center justify-center pointer-events-none px-6 gap-4">
               {/* Premium frosted glass status pill */}
               <div
-                className="relative flex flex-col items-center gap-3 px-8 py-5 rounded-2xl border border-white/20"
-                style={{ background: 'rgba(18, 50, 79, 0.75)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
+                className="relative flex flex-col items-center gap-3 px-8 py-5 rounded-2xl border-[3px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A]"
+                style={{ background: 'rgba(18, 50, 79, 0.95)', transform: 'translateZ(0)' }}
               >
                 {/* Pulsing dot row */}
                 <div className="flex items-center gap-2">

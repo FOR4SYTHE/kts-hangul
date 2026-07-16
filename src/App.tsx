@@ -337,7 +337,10 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
               transition={{ duration: 0.15, ease: "easeOut" }}
               className={`absolute inset-0 rounded-[48px] bg-gradient-to-br from-[#E5E7EB] via-[#9CA3AF] to-[#4B5563] shadow-[inset_0_4px_15px_rgba(255,255,255,0.7),0_30px_60px_rgba(0,0,0,0.9)] border-[4px] border-[#374151] flex items-center justify-center z-10 ${punchState === 'viewfinder' ? 'cursor-pointer' : ''}`}
             >
-              <div className="relative w-[260px] h-[340px] bg-[#0a0a0a] rounded shadow-[inset_0_15px_40px_rgba(0,0,0,1)] border-[2px] border-[#1f2937] overflow-hidden group">
+              <div
+                className="relative w-[260px] h-[340px] bg-[#0a0a0a] rounded shadow-[inset_0_15px_40px_rgba(0,0,0,1)] border-[2px] border-[#1f2937] overflow-hidden group"
+                style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)', transform: 'translateZ(0)' }}
+              >
                 {hasCameraError ? (
                   <label className="cursor-pointer text-gray-500 font-black text-center p-6 hover:text-white transition-colors w-full h-full flex flex-col items-center justify-center gap-3">
                     <span className="tracking-widest text-sm">CAMERA UNAVAILABLE<br />TAP TO UPLOAD</span>
@@ -962,8 +965,8 @@ export default function App() {
             TWILIGHT BOLASAEK CANVAS (HARDWARE ACCELERATED & OPTIMIZED FOR MOBILE/TABLET)
             ============================================================================ */}
         {/* LAYER 1: Solid Twilight Indigo-Purple Base Paint */}
-        <div 
-          className="fixed inset-0 -z-30 pointer-events-none bg-[#12324F]" 
+        <div
+          className="fixed inset-0 -z-30 pointer-events-none bg-[#12324F]"
           style={{ transform: 'translateZ(0)' }} /* ◄ Forces hardware GPU acceleration */
         />
 
@@ -982,11 +985,10 @@ export default function App() {
 
         {/* LAYER 3: Static Film Grain Overlay (Optimized Texture Map) */}
         <div
-          className="fixed inset-0 -z-10 pointer-events-none opacity-[0.15]"
+          className="fixed inset-0 -z-10 pointer-events-none opacity-[0.06]"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.80' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-            transform: 'translateZ(0)',
-            mixBlendMode: 'overlay' /* ◄ Kept inline explicitly to separate background blending */
+            transform: 'translateZ(0)'
           }}
         />
 
@@ -1082,7 +1084,8 @@ export default function App() {
                 alt="Traditional Korean Dancers"
                 className="w-[280px] sm:w-[340px] h-auto object-contain z-0 select-none"
                 style={{
-                  filter: 'brightness(0) drop-shadow(3px 0 0 #F6F5F2) drop-shadow(-3px 0 0 #F6F5F2) drop-shadow(0 3px 0 #F6F5F2) drop-shadow(0 -3px 0 #F6F5F2) drop-shadow(2px 2px 0 #F6F5F2) drop-shadow(-2px -2px 0 #F6F5F2) drop-shadow(2px -2px 0 #F6F5F2) drop-shadow(-2px 2px 0 #F6F5F2)'
+                  transform: 'translateZ(0)', /* ◄ Caches image texture directly into mobile GPU */
+                  willChange: 'transform'     /* ◄ Bypasses layout thrashing on frame updates */
                 }}
                 animate={{
                   y: [0, -6, 0],
