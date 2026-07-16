@@ -3,9 +3,14 @@
 
 @font-face {
   font-family: 'QTPI';
-  src: url('https://zephyo.github.io/5fonts10hours/qtpi/qtpi.otf') format('opentype');
+  src: url('https://zephyo.github.io/5fonts10hours/qtpi/qtpi.otf') format('opentype'),
+       url('https://raw.githubusercontent.com/zephyo/5fonts10hours/master/qtpi/qtpi.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
+}
+
+textarea#english-input {
+  font-family: 'QTPI', 'Gaegu', sans-serif !important;
 }
 
 @theme {

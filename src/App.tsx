@@ -1534,7 +1534,7 @@ export default function App() {
                         handleTranslate();
                       }
                     }}
-                    className={`flex-1 bg-transparent outline-none placeholder:text-gray-400/70 w-full text-[#1A1A1A] resize-none transition-all duration-300 ${inputMode === 'conversation' ? 'min-h-[120px] text-xl font-bubbly font-extrabold leading-relaxed' : 'min-h-[3rem] text-4xl font-bubbly font-extrabold overflow-hidden'}`}
+                    className={`flex-1 bg-transparent outline-none placeholder:text-gray-400/70 w-full text-[#1A1A1A] resize-none transition-all duration-300 ${inputMode === 'conversation' ? 'min-h-[120px] text-2xl font-qtpi leading-relaxed' : 'min-h-[3rem] text-4xl font-qtpi overflow-hidden'}`}
                     placeholder={inputMode === 'conversation' ? 'Type a full sentence or paragraph here...' : `e.g. ${currentPlaceholder}`}
                   />
                   {inputMode === 'conversation' && <span className="absolute bottom-2 right-24 text-sm font-bubbly font-extrabold text-gray-500">{englishWord.length}/500</span>}
