@@ -1460,11 +1460,11 @@ export default function App() {
             {/* Header */}
             <div className="w-full flex flex-col items-center justify-center relative mb-12 mt-6 select-none">
               <div className="relative inline-block transform -rotate-3 text-center">
-                <div className="absolute -top-6 -left-2 sm:-top-8 sm:-left-4 z-20 pointer-events-none">
+                <div className="absolute -top-12 -left-12 sm:-top-16 sm:-left-16 z-20 pointer-events-none">
                   <HaiChar />
                 </div>
                 <h1
-                  className="text-[3.2rem] sm:text-[4.5rem] md:text-[6rem] font-title leading-[1.1] tracking-normal sm:tracking-wide relative z-10 [text-shadow:_-3px_-3px_0_#fff,_3px_-3px_0_#fff,_-3px_3px_0_#fff,_3px_3px_0_#fff]"
+                  className="text-[3.2rem] sm:text-[4.5rem] md:text-[6rem] font-title leading-[1.1] tracking-normal sm:tracking-wide relative z-10 smooth-title-outline"
                 >
                   <span className="text-[#0047A0]">KOREAN</span><br />
                   <span className="text-[#CD2E3A]">TRANSLATOR</span><br />

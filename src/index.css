@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Gaegu:wght@400;700&family=Jua&family=East+Sea+Dokdo&family=Black+Han+Sans&family=Sniglet:wght@400;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Gaegu:wght@400;700&family=Jua&family=East+Sea+Dokdo&family=Black+Han+Sans&family=Sniglet:wght@400;800&family=Chewy&family=DynaPuff:wght@400..700&family=Bagel+Fat+One&display=swap');
 @import "tailwindcss";
 
 @font-face {
@@ -14,7 +14,7 @@ textarea#english-input {
 }
 
 @theme {
-  --font-title: 'Jua', sans-serif;
+  --font-title: 'Bagel Fat One', cursive;
   --font-text: 'Gaegu', cursive;
   /* We map bubbly to Do Hyeon so all your buttons auto-update perfectly! */
   --font-bubbly: 'Do Hyeon', sans-serif;
@@ -24,6 +24,11 @@ textarea#english-input {
 }
 
 @layer utilities {
+  .smooth-title-outline {
+    -webkit-text-stroke: 12px #ffffff;
+    paint-order: stroke fill;
+  }
+
   .doodle-border {
     border: 4px solid #000000;
     border-radius: 1.5rem;
