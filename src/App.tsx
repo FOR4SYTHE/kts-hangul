@@ -1026,8 +1026,8 @@ export default function App() {
 
         <div className="w-full max-w-md z-10 flex flex-col items-center pt-4 pb-12 animate-in fade-in duration-500">
           <div className="w-full flex flex-col items-center justify-center relative mb-12 mt-6 select-none">
-            <div className="relative flex flex-col items-center justify-center w-[320px] -mb-2">
-              <svg viewBox="0 0 200 80" className="w-[280px] h-auto -mb-[35px] z-10 overflow-visible translate-y-[10px]">
+            <div className="relative flex flex-col items-center justify-center w-[360px] sm:w-[420px] -mb-2">
+              <svg viewBox="0 0 200 80" className="w-[320px] sm:w-[380px] h-auto -mb-[35px] z-10 overflow-visible translate-y-[10px]">
                 <path id="curve" d="M 10 70 Q 100 0 190 70" fill="transparent" />
                 <text width="200">
                   <textPath
@@ -1053,14 +1053,14 @@ export default function App() {
               <img
                 src="/kcharacters.webp"
                 alt="Traditional Korean Dancers"
-                className="w-[240px] h-auto object-contain z-0 select-none"
+                className="w-[280px] sm:w-[340px] h-auto object-contain z-0 select-none"
                 style={{
                   filter: 'brightness(0) drop-shadow(3px 0 0 #F6F5F2) drop-shadow(-3px 0 0 #F6F5F2) drop-shadow(0 3px 0 #F6F5F2) drop-shadow(0 -3px 0 #F6F5F2) drop-shadow(2px 2px 0 #F6F5F2) drop-shadow(-2px -2px 0 #F6F5F2) drop-shadow(2px -2px 0 #F6F5F2) drop-shadow(-2px 2px 0 #F6F5F2)'
                 }}
               />
             </div>
             <div className="mt-1 flex flex-col items-center w-full px-4">
-              <span className="text-[11px] xs:text-[13px] sm:text-[15px] tracking-[0.15em] sm:tracking-[0.25em] uppercase font-bold text-[#F6F5F2] whitespace-nowrap text-center drop-shadow-[2px_2px_0px_#1A1A1A]" style={{ fontFamily: "var(--font-pudding)" }}>
+              <span className="text-[13px] xs:text-[15px] sm:text-[17px] tracking-[0.15em] sm:tracking-[0.25em] uppercase font-bold text-[#F6F5F2] whitespace-nowrap text-center drop-shadow-[2px_2px_0px_#1A1A1A]" style={{ fontFamily: "var(--font-pudding)" }}>
                 — KOREAN TRANSLATOR SUPREME —
               </span>
             </div>
