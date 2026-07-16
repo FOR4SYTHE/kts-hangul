@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import gsap from 'gsap';
 import { X, Info, Zap, ZapOff, RefreshCcw, Camera, Copy, Check, Sparkles } from 'lucide-react';
+import { playSnapLensSound } from './utils/sounds';
 
 
 // Hand-drawn sparkle decoration
@@ -150,7 +151,7 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
     return data.translation;
   };
 
-  const handleSnap = async () => {
+  const handleCapture = async () => {
     if (!videoRef.current || !canvasRef.current) return;
 
     const video = videoRef.current;
@@ -484,7 +485,7 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
         {!capturedImage ? (
           <div className="relative">
             <CartoonSparkle />
-            <button onClick={handleSnap} className="w-[100px] h-[100px] bg-[#FED141] hover:bg-[#E5BC3A] rounded-full border-[6px] border-[#1A1A1A] shadow-[6px_6px_0px_0px_#1A1A1A] active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all flex items-center justify-center outline-none">
+            <button onClick={() => { playSnapLensSound(); handleCapture(); }} className="w-[100px] h-[100px] bg-[#FED141] hover:bg-[#E5BC3A] rounded-full border-[6px] border-[#1A1A1A] shadow-[6px_6px_0px_0px_#1A1A1A] active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all flex items-center justify-center outline-none">
               <div className="w-14 h-14 rounded-full border-[5px] border-[#1A1A1A] bg-[#F6F5F2]"></div>
             </button>
           </div>

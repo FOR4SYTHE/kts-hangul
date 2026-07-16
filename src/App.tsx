@@ -4,9 +4,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import html2canvas from 'html2canvas';
 import { toPng } from 'html-to-image';
 import SupremeLens from './SupremeLens';
+import {
+  playTapSound,
+  playOpenLensSound,
+  playSnapStampSound,
+  playResultBamSound
+} from './utils/sounds';
 
 // ============================================================================
-// SUPREME ARCHITECT: LIVE CAMERA STAMP MACHINE (AWWWARDS SOTD FINAL)
+// LIVE CAMERA STAMP MACHINE 
 // ============================================================================
 
 const generateStampPath = (width: number, height: number) => {
@@ -320,7 +326,12 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
         <div className="relative w-[340px] h-[420px] flex items-center justify-center mt-4">
           {punchState !== 'done' && (
             <motion.div
-              onPointerDown={punchState === 'viewfinder' && !hasCameraError ? handlePunch : undefined}
+              onPointerDown={() => {
+                if (punchState === 'viewfinder' && !hasCameraError) {
+                  playSnapStampSound();
+                  handlePunch();
+                }
+              }}
               animate={punchState === 'punching' ? { scale: 0.95, y: 15 } : { scale: 1, y: 0 }}
               transition={{ duration: 0.15, ease: "easeOut" }}
               className={`absolute inset-0 rounded-[48px] bg-gradient-to-br from-[#E5E7EB] via-[#9CA3AF] to-[#4B5563] shadow-[inset_0_4px_15px_rgba(255,255,255,0.7),0_30px_60px_rgba(0,0,0,0.9)] border-[4px] border-[#374151] flex items-center justify-center z-10 ${punchState === 'viewfinder' ? 'cursor-pointer' : ''}`}
@@ -837,6 +848,7 @@ export default function App() {
       const data = await response.json();
       if (data.translation) {
         setTranslation(data.translation);
+        playResultBamSound();
         setConversationContext(data.context || null);
         setHistory(prev => {
           const newEntry = { english: englishWord, korean: data.translation, direction };
@@ -971,7 +983,7 @@ export default function App() {
 
         <div className="w-full max-w-4xl flex justify-between items-center z-40 mb-2 relative">
           <button
-            onClick={() => setIsLensOpen(true)}
+            onClick={() => { playOpenLensSound(); setIsLensOpen(true); }}
             className="flex items-center justify-center w-12 h-12 transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none rounded-3xl doodle-shadow border-4 border-black text-white bg-[#CD2E3A] hover:bg-[#B0212E]"
             title="Supreme Lens"
           >
@@ -1181,7 +1193,7 @@ export default function App() {
               whileTap={isLoading ? {} : { scale: 0.96, x: 4, y: 4, boxShadow: "0px 0px 0px 0px #1A1A1A" }}
               animate={{ backgroundColor: isLoading ? ["#C6CDB9", "#F6F5F2", "#CD2E3A", "#0047A0", "#C6CDB9"] : "#C6CDB9" }}
               transition={{ backgroundColor: isLoading ? { repeat: Infinity, duration: 0.6, ease: "linear" } : { duration: 0.1 } }}
-              onClick={handleTranslate}
+              onClick={() => { playTapSound(); handleTranslate(); }}
               disabled={isLoading || !englishWord.trim()}
               className="w-full text-[#1A1A1A] text-4xl font-bubbly font-extrabold py-5 border-[6px] border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] rounded-none disabled:opacity-70 disabled:cursor-not-allowed min-h-[64px] uppercase tracking-wider flex items-center justify-center"
             >
@@ -1347,9 +1359,9 @@ export default function App() {
                   </div>
                 ) : (
                   <button
-                    onClick={handleShowExample}
+                    onClick={() => { playTapSound(); handleShowExample(); }}
                     disabled={isLoadingExample}
-                    className="w-full bg-[#D3D6CB] hover:bg-[#C2C5BA] text-[#1A1A1A] text-2xl font-bubbly font-extrabold py-5 px-6 border-[6px] border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] rounded-full transition-all duration-150 active:translate-x-[8px] active:translate-y-[8px] active:shadow-none disabled:opacity-70 flex items-center justify-center mb-8 min-h-[64px] uppercase"
+                    className="w-full bg-[#D3D6CB] hover:bg-[#C2C5BA] text-[#1A1A1A] text-2xl font-bubbly font-extrabold py-5 px-6 border-[6px] border-[1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] rounded-full transition-all duration-150 active:translate-x-[8px] active:translate-y-[8px] active:shadow-none disabled:opacity-70 flex items-center justify-center mb-8 min-h-[64px] uppercase"
                   >
                     {isLoadingExample ? (
                       <Loader2 className="w-8 h-8 mr-3 animate-spin stroke-[4]" />
