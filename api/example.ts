@@ -6,22 +6,30 @@ export default async function handler(req: Request) {
   if (req.method !== 'POST') return new Response('Method Not Allowed', { status: 405 });
 
   try {
-    const { englishWord, koreanWord } = await req.json();
+    const { englishWord, koreanWord, direction } = await req.json();
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
       return new Response(JSON.stringify({ error: "missing_key" }), { status: 500, headers: { 'Content-Type': 'application/json' } });
     }
 
-    if (!englishWord || !koreanWord) {
+    if (!englishWord || !koreanWord || !direction) {
       return new Response(JSON.stringify({ error: 'missing_input' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
     }
 
     const ai = new GoogleGenAI({ apiKey });
 
-    const prompt = `You are a modern Korean language tutor. Write ONE short, casual, modern, conversational Korean example sentence using the phrase: "${koreanWord}". Provide the English translation and the Romanized pronunciation.
+    // For ko-en: generate an English example using the English meaning of the Korean word.
+    // For en-ko: generate a Korean example using the Korean translation.
+    const isKoToEn = direction === 'ko-en';
+
+    const prompt = isKoToEn
+      ? `You are a modern English language tutor. Write ONE short, casual, conversational English example sentence using the phrase: "${englishWord}". Provide a Korean translation of that sentence.
 CRITICAL: Output ONLY a raw JSON object. NO markdown, NO code blocks.
-Format: {"koreanSentence": "[Hangul] ([Romanization])", "englishTranslation": "..."}`;
+Format: {"targetSentence": "[English sentence]", "sourceTranslation": "[Korean translation]"}`
+      : `You are a modern Korean language tutor. Write ONE short, casual, modern, conversational Korean example sentence using the phrase: "${koreanWord}". Provide the English translation and the Romanized pronunciation.
+CRITICAL: Output ONLY a raw JSON object. NO markdown, NO code blocks.
+Format: {"targetSentence": "[Hangul] ([Romanization])", "sourceTranslation": "..."}`;
 
     // Lightweight text task — no reasoning depth needed, so we use
     // Flash-Lite instead of 3.5 Flash for lower latency + cost.
