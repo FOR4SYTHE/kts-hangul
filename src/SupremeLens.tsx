@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import gsap from 'gsap';
-import { X, Info, Zap, ZapOff, RefreshCcw, Camera, Copy, Check } from 'lucide-react';
+import { X, Info, Zap, ZapOff, RefreshCcw, Camera, Copy, Check, Sparkles } from 'lucide-react';
 
 
 // Hand-drawn sparkle decoration
@@ -529,6 +529,15 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
                 </li>
                 <li className="flex items-center gap-4"><span className="w-8 h-8 rounded-full border-[4px] border-[#1A1A1A] flex items-center justify-center text-sm bg-white">1x</span> Camera Zoom Scale</li>
                 <li className="flex items-center gap-4"><Camera strokeWidth={4} className="text-[#38BDF8]" /> Snap to translate!</li>
+                <li className="flex flex-col items-start gap-2">
+                  <div className="flex items-center gap-4">
+                    <Sparkles strokeWidth={4} size={22} className="text-[#FED141] fill-[#FED141]" />
+                    <span>Stamp Cam (Fun Feature)</span>
+                  </div>
+                  <div className="pl-10 text-xs font-sans font-extrabold text-[#1A1A1A]/70 normal-case tracking-normal">
+                    An extra feature you can try for fun! Snap custom photos and turn them into printable postage stamps to save in your collection book.
+                  </div>
+                </li>
               </ul>
             </div>
           </motion.div>
