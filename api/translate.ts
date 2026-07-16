@@ -58,13 +58,14 @@ export default async function handler(req: Request) {
       let prompt = `Translate the following from ${sourceLang} to ${targetLang}. Return ONLY the direct translation. Do not include notes, options, or markdown. Word: ${word}`;
 
       if (inputMode === 'conversation') {
-        prompt = `You are "KTS Hangul Supreme Translator", an elite Korean streetwear-themed translator.
-Translate the following text from ${sourceLang} to ${targetLang}.
+        prompt = `You are a modern Korean translator.
+Translate the following text from ${sourceLang} to ${targetLang} using modern, natural conversational phrasing (including relevant slang if appropriate).
 
 STRICT REQUIREMENTS:
-1. If translating English to Korean: Translate directly into stylized modern conversational Korean (Hangul), and output the corresponding English Romanization (pronunciation guide) alongside a breakdown of slang/nuance.
-2. If translating Korean to English: Translate directly into stylized modern English.
-3. Keep the format clean, edgy, and easily readable.
+1. Provide the direct translation (Hangul if English->Korean, English if Korean->English), prefixed with "TRANSLATION:".
+2. For English to Korean, provide the Romanization on a new line below the Hangul, prefixed with "PRONUNCIATION:".
+3. Below the translation/romanization, provide a BRIEF, straight-to-the-point explanation (1-2 sentences max) IN ENGLISH, prefixed with "CONTEXT:". Explain the nuance, any slang used, or how it should be delivered in today's Korean lingo so non-Korean speakers understand the tone.
+4. Use blank lines to cleanly separate the Translation, Pronunciation, and Context sections. Do NOT include any markdown formatting (like asterisks or bolding).
 
 Text to translate:
 ${word}`;
@@ -80,7 +81,18 @@ ${word}`;
       let text = response.text ?? '';
       text = text.replace(/[*#]/g, '');
 
-      return new Response(JSON.stringify({ translation: text.trim() }), {
+      let translationOut = text.trim();
+      let contextOut = '';
+
+      if (inputMode === 'conversation') {
+        const contextMatch = text.match(/CONTEXT:\s*([\s\S]*)$/i);
+        if (contextMatch) {
+          contextOut = contextMatch[1].trim();
+          translationOut = text.replace(contextMatch[0], '').trim();
+        }
+      }
+
+      return new Response(JSON.stringify({ translation: translationOut, context: contextOut }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' }
       });

@@ -691,6 +691,7 @@ export default function App() {
 
   const [englishWord, setEnglishWord] = useState('');
   const [translation, setTranslation] = useState('');
+  const [conversationContext, setConversationContext] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const [funFact, setFunFact] = useState<string | null>(null);
@@ -744,6 +745,7 @@ export default function App() {
     setDirection(prev => prev === 'en-ko' ? 'ko-en' : 'en-ko');
     setEnglishWord('');
     setTranslation('');
+    setConversationContext(null);
     setExample(null);
     setFunFact(null);
     setAudioUrl(null);
@@ -756,6 +758,7 @@ export default function App() {
     setInputMode(mode);
     setEnglishWord('');
     setTranslation('');
+    setConversationContext(null);
     setExample(null);
     setFunFact(null);
     setAudioUrl(null);
@@ -849,6 +852,7 @@ export default function App() {
       const data = await response.json();
       if (data.translation) {
         setTranslation(data.translation);
+        setConversationContext(data.context || null);
         setHistory(prev => {
           const newEntry = { english: englishWord, korean: data.translation, direction };
           const filtered = prev.filter(item => item.english.toLowerCase() !== englishWord.toLowerCase());
@@ -1120,12 +1124,15 @@ export default function App() {
                   id="english-input"
                   value={englishWord}
                   onChange={(e) => {
-                    const val = e.target.value;
-                    if (inputMode === 'conversation' && val.length > 500) return;
+                    let val = e.target.value;
+                    if (inputMode === 'conversation' && val.length > 500) {
+                      val = val.substring(0, 500);
+                    }
                     setEnglishWord(val);
                     setErrorMsg(null);
                     if (val.trim() === '') {
                       setTranslation('');
+                      setConversationContext(null);
                       setExample(null);
                       setFunFact(null);
                       setAudioUrl(null);
@@ -1225,7 +1232,7 @@ export default function App() {
                   ) : (
                     <>
                       <div className={`w-full ${inputMode === 'conversation' ? 'max-h-[250px] overflow-y-auto pr-4 mb-6' : 'mb-8'}`}>
-                        <span className={`${inputMode === 'conversation' ? 'text-2xl md:text-3xl font-qtpi normal-case text-left block' : 'text-4xl md:text-5xl font-qtpi uppercase text-center'} text-[#1A1A1A] break-words w-full`}>
+                        <span className={`${inputMode === 'conversation' ? 'text-2xl md:text-3xl font-qtpi normal-case text-left block' : 'text-4xl md:text-5xl font-qtpi uppercase text-center'} text-[#1A1A1A] break-words whitespace-pre-wrap w-full`}>
                           {translation}
                         </span>
                       </div>
@@ -1255,6 +1262,26 @@ export default function App() {
             </div>
           )}
 
+          {inputMode === 'conversation' && conversationContext && !isLoading && (
+            <div className="w-full z-10 relative mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <div className="drop-shadow-[8px_8px_0px_#1A1A1A] w-full">
+                <div className="bg-[#B9D2B5] border-[6px] border-[#1A1A1A] rounded-none p-6 pt-8 relative z-10">
+                  <div className="absolute right-[100%] bottom-10 flex flex-row items-end z-10">
+                    <div className="w-[6px] h-[12px] bg-[#1A1A1A] mb-[12px]"></div>
+                    <div className="w-[12px] h-[24px] bg-[#B9D2B5] border-y-[6px] border-[#1A1A1A]"></div>
+                    <div className="w-[6px] h-[24px] bg-[#B9D2B5]"></div>
+                  </div>
+                  <span className="absolute -top-4 left-6 bg-[#1A1A1A] text-[#B9D2B5] text-lg font-sniglet font-extrabold uppercase tracking-widest px-4 py-1.5 rounded-none shadow-[3px_3px_0px_0px_#B9D2B5] inline-flex w-max items-center gap-2">
+                    <svg width="14" height="14" viewBox="0 0 100 100" className="shrink-0"><path d="M 50 10 C 50 40, 60 50, 90 50 C 60 50, 50 60, 50 90 C 50 60, 40 50, 10 50 C 40 50, 50 40, 50 10 Z" fill="#B9D2B5" stroke="#B9D2B5" strokeWidth="5" strokeLinejoin="round" /></svg> CONTEXT
+                  </span>
+                  <p className="text-2xl font-qtpi text-[#1A1A1A] leading-snug whitespace-pre-wrap">
+                    {conversationContext}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {inputMode === 'word' && (funFact || isLoadingFunFact) && !isLoading && (
             <div className="w-full z-10 relative mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
               <div className="drop-shadow-[8px_8px_0px_#1A1A1A] w-full">
@@ -1264,7 +1291,7 @@ export default function App() {
                     <div className="w-[12px] h-[24px] bg-[#DBC27C] border-y-[6px] border-[#1A1A1A]"></div>
                     <div className="w-[6px] h-[24px] bg-[#DBC27C]"></div>
                   </div>
-                  <span className="absolute -top-4 left-6 bg-[#1A1A1A] text-[#DBC27C] text-lg font-sniglet font-extrabold uppercase tracking-widest px-4 py-1.5 rounded-none shadow-[3px_3px_0px_0px_#DBC27C] flex items-center gap-2">
+                  <span className="absolute -top-4 left-6 bg-[#1A1A1A] text-[#DBC27C] text-lg font-sniglet font-extrabold uppercase tracking-widest px-4 py-1.5 rounded-none shadow-[3px_3px_0px_0px_#DBC27C] inline-flex w-max items-center gap-2">
                     <Lightbulb className="w-4 h-4 stroke-[3]" /> DID YOU KNOW?
                   </span>
                   {isLoadingFunFact ? (
