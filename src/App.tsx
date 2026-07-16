@@ -386,7 +386,7 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
         </div>
       )}
 
-      {punchState === 'done' && activeTab === 'camera' && (
+      {punchState !== 'punching' && activeTab === 'camera' && (
         <div className="mt-20 flex flex-row justify-center gap-5 w-full max-w-sm z-30 px-2">
           <motion.button
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
@@ -611,8 +611,6 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
 
 // Character Components
 
-
-
 const LeftWing = () => (
   <motion.svg width="90" height="90" viewBox="0 0 100 100" className="overflow-visible"
     animate={{ rotate: [0, -10, 0], y: [0, -4, 0] }}
@@ -634,9 +632,6 @@ const RightWing = () => (
     <path d="M 15 72 C 30 65, 38 72, 30 80" fill="none" stroke="#1A1A1A" strokeWidth="3" strokeLinecap="round" />
   </motion.svg>
 );
-
-
-
 
 const Sparkle = () => (
   <motion.svg width="60" height="60" viewBox="0 0 100 100"
@@ -680,11 +675,7 @@ const KRFlag = ({ className = "" }: { className?: string }) => (
   </svg>
 );
 
-
-
 export default function App() {
-
-
   const [isLensOpen, setIsLensOpen] = useState(false);
   const [showStampMachine, setShowStampMachine] = useState(false);
   const [lensHasCapture, setLensHasCapture] = useState(false);
@@ -717,8 +708,6 @@ export default function App() {
 
   const [exampleCooldown, setExampleCooldown] = useState<number | null>(null);
 
-
-
   const englishSuggestions = ['hello', 'how are you?', 'thank you', 'good morning', 'I love you'];
   const koreanSuggestions = ['안녕하세요', '감사합니다', '대박', '사랑해', '안녕'];
 
@@ -738,8 +727,6 @@ export default function App() {
   const currentPlaceholder = direction === 'en-ko'
     ? englishSuggestions[placeholderIndex % englishSuggestions.length]
     : koreanSuggestions[placeholderIndex % koreanSuggestions.length];
-
-
 
   const handleSwap = () => {
     setDirection(prev => prev === 'en-ko' ? 'ko-en' : 'en-ko');
@@ -765,8 +752,6 @@ export default function App() {
     setExampleAudioUrl(null);
     setErrorMsg(null);
   };
-
-
 
   const handleCopy = async () => {
     if (!translation) return;
@@ -956,11 +941,30 @@ export default function App() {
       </style>
 
       <main
-        className="min-h-[100dvh] font-sans p-6 pb-[calc(4.5rem+env(safe-area-inset-bottom))] flex flex-col items-center justify-start overflow-x-hidden relative text-[#1A1A1A] selection:bg-[#93C5FD]"
+        className="min-h-[100dvh] font-sans p-6 pb-[calc(4.5rem+env(safe-area-inset-bottom))] flex flex-col items-center justify-start overflow-x-hidden relative text-[#1A1A1A] selection:bg-[#DBC27C]"
       >
+        {/* ============================================================================
+                                      JOSEON PALACE CANVAS
+            ============================================================================ */}
+        {/* LAYER 1: Warm Hanji Ivory Base Paint */}
+        <div className="fixed inset-0 -z-30 pointer-events-none bg-[#F8F6F0]" />
+
+        {/* LAYER 2: Solid-Filled Seigaiha Waves (Small, Dense, & Subtle) */}
         <div
-          className="fixed inset-0 -z-20 pointer-events-none"
-          style={{ backgroundColor: '#796CE3', backgroundImage: 'radial-gradient(circle, rgba(255, 255, 255, 0.15) 3px, transparent 3px)', backgroundSize: '30px 30px' }}
+          className="fixed inset-0 -z-20 pointer-events-none opacity-[0.65]"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='50' viewBox='0 0 100 50'%3E%3Crect width='100' height='50' fill='%23F8F6F0'/%3E%3Cdefs%3E%3Cg id='w'%3E%3Ccircle cx='0' cy='0' r='48' fill='%23F8F6F0' stroke='%23DCD3C0' stroke-width='2.5'/%3E%3Ccircle cx='0' cy='0' r='40' fill='%23F8F6F0' stroke='%23DCD3C0' stroke-width='2.5'/%3E%3Ccircle cx='0' cy='0' r='32' fill='%23F8F6F0' stroke='%23DCD3C0' stroke-width='2.5'/%3E%3Ccircle cx='0' cy='0' r='24' fill='%23F8F6F0' stroke='%23DCD3C0' stroke-width='2.5'/%3E%3Ccircle cx='0' cy='0' r='16' fill='%23F8F6F0' stroke='%23DCD3C0' stroke-width='2.5'/%3E%3Ccircle cx='0' cy='0' r='8' fill='%23F8F6F0' stroke='%23DCD3C0' stroke-width='2.5'/%3E%3C/g%3E%3C/defs%3E%3Cuse href='%23w' x='-50' y='-25'/%3E%3Cuse href='%23w' x='50' y='-25'/%3E%3Cuse href='%23w' x='150' y='-25'/%3E%3Cuse href='%23w' x='0' y='0'/%3E%3Cuse href='%23w' x='100' y='0'/%3E%3Cuse href='%23w' x='-50' y='25'/%3E%3Cuse href='%23w' x='50' y='25'/%3E%3Cuse href='%23w' x='150' y='25'/%3E%3Cuse href='%23w' x='0' y='50'/%3E%3Cuse href='%23w' x='100' y='50'/%3E%3Cuse href='%23w' x='-50' y='75'/%3E%3Cuse href='%23w' x='50' y='75'/%3E%3Cuse href='%23w' x='150' y='75'/%3E%3C/svg%3E")`,
+            backgroundSize: '90px 45px',
+            backgroundRepeat: 'repeat'
+          }}
+        />
+
+        {/* LAYER 3: Tactile Film Grain Overlay (Warm Cinematic Vignette Overlay) */}
+        <div
+          className="fixed inset-0 -z-10 pointer-events-none opacity-[0.18] mix-blend-overlay"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.80' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`
+          }}
         />
 
         <div className="w-full max-w-4xl flex justify-between items-center z-40 mb-2 relative">
@@ -1071,8 +1075,8 @@ export default function App() {
               <button
                 onClick={() => handleInputModeChange('word')}
                 className={`flex-1 px-8 py-2.5 text-xl font-bubbly font-extrabold uppercase rounded-full transition-all duration-150 ${inputMode === 'word'
-                    ? 'bg-[#1A1A1A] text-white'
-                    : 'text-[#1A1A1A] hover:bg-[#1A1A1A]/10'
+                  ? 'bg-[#1A1A1A] text-white'
+                  : 'text-[#1A1A1A] hover:bg-[#1A1A1A]/10'
                   }`}
               >
                 Word
@@ -1080,8 +1084,8 @@ export default function App() {
               <button
                 onClick={() => handleInputModeChange('conversation')}
                 className={`flex-1 px-8 py-2.5 text-xl font-bubbly font-extrabold uppercase rounded-full transition-all duration-150 ${inputMode === 'conversation'
-                    ? 'bg-[#1A1A1A] text-white'
-                    : 'text-[#1A1A1A] hover:bg-[#1A1A1A]/10'
+                  ? 'bg-[#1A1A1A] text-white'
+                  : 'text-[#1A1A1A] hover:bg-[#1A1A1A]/10'
                   }`}
               >
                 Conversation
@@ -1388,8 +1392,6 @@ export default function App() {
             </div>
           )}
         </div>
-
-
 
         <AnimatePresence>
           {isLensOpen && (
