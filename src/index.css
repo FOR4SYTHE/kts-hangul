@@ -9,6 +9,14 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'LotteriaChwapttaenggyeo';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/LOTTERIACHAB.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 textarea#english-input {
   font-family: 'QTPI', 'Gaegu', sans-serif !important;
 }
@@ -21,6 +29,7 @@ textarea#english-input {
   --font-joseon: 'East Sea Dokdo', cursive;
   --font-qtpi: 'QTPI', 'Gaegu', sans-serif;
   --font-sniglet: 'Sniglet', 'Jua', sans-serif;
+  --font-lotteria: 'LotteriaChwapttaenggyeo', sans-serif;
 }
 
 @layer utilities {

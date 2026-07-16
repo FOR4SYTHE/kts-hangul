@@ -1026,15 +1026,37 @@ export default function App() {
               <svg viewBox="0 0 200 80" className="w-[280px] h-auto -mb-[35px] z-10 overflow-visible translate-y-[10px]">
                 <path id="curve" d="M 10 70 Q 100 0 190 70" fill="transparent" />
                 <text width="200">
-                  <textPath href="#curve" startOffset="50%" textAnchor="middle" className="fill-[#CD2E3A] text-[56px]" style={{ fontFamily: "'East Sea Dokdo', cursive" }}>
-                    모던 한글
+                  <textPath 
+                    href="#curve" 
+                    startOffset="50%" 
+                    textAnchor="middle" 
+                    className="text-[56px]" 
+                    style={{ 
+                      fontFamily: "'East Sea Dokdo', cursive",
+                      stroke: '#F6F5F2',
+                      strokeWidth: '10px',
+                      paintOrder: 'stroke fill',
+                      strokeLinejoin: 'round',
+                      strokeLinecap: 'round'
+                    }}
+                  >
+                    <tspan fill="#CD2E3A">모던</tspan>
+                    <tspan fill="none" stroke="none"> </tspan>
+                    <tspan fill="#0047A0">한글</tspan>
                   </textPath>
                 </text>
               </svg>
-              <img src="/kcharacters.webp" alt="Traditional Korean Dancers" className="w-[240px] object-contain drop-shadow-md z-0" />
+              <img 
+                src="/kcharacters.webp" 
+                alt="Traditional Korean Dancers" 
+                className="w-[240px] object-contain z-0" 
+                style={{ 
+                  filter: 'drop-shadow(3px 0 0 #F6F5F2) drop-shadow(-3px 0 0 #F6F5F2) drop-shadow(0 3px 0 #F6F5F2) drop-shadow(0 -3px 0 #F6F5F2) drop-shadow(2px 2px 0 #F6F5F2) drop-shadow(-2px -2px 0 #F6F5F2) drop-shadow(2px -2px 0 #F6F5F2) drop-shadow(-2px 2px 0 #F6F5F2) drop-shadow(4px 4px 6px rgba(0, 0, 0, 0.4))'
+                }} 
+              />
             </div>
             <div className="mt-8 flex flex-col items-center w-full px-4">
-              <span className="text-[11px] xs:text-[13px] sm:text-[15px] tracking-[0.15em] sm:tracking-[0.25em] uppercase font-bold text-[#CD2E3A] whitespace-nowrap text-center" style={{ fontFamily: "var(--font-bubbly)" }}>
+              <span className="text-[11px] xs:text-[13px] sm:text-[15px] tracking-[0.15em] sm:tracking-[0.25em] uppercase font-bold text-[#F6F5F2] whitespace-nowrap text-center drop-shadow-[2px_2px_0px_#1A1A1A]" style={{ fontFamily: "var(--font-lotteria)" }}>
                 — KOREAN TRANSLATOR SUPREME —
               </span>
             </div>
