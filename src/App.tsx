@@ -8,7 +8,8 @@ import {
   playTapSound,
   playOpenLensSound,
   playSnapStampSound,
-  playResultBamSound
+  playResultBamSound,
+  playSaveBookSound
 } from './utils/sounds';
 
 // ============================================================================
@@ -428,7 +429,7 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
 
           <motion.button
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-            onClick={handleSaveToArchive}
+            onClick={() => { playSaveBookSound(); handleSaveToArchive(); }}
             className="w-[90px] h-[90px] bg-[#FED141] text-[#1A1A1A] border-[4px] border-[#1A1A1A] rounded-3xl shadow-[4px_4px_0px_0px_#1A1A1A] flex flex-col items-center justify-center gap-2 transition-all active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
           >
             <svg width="32" height="32" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round">
