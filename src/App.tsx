@@ -214,7 +214,11 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
     let stream: MediaStream | null = null;
     const startCamera = async () => {
       try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: facingMode } } });
+        if (videoRef.current?.srcObject) {
+          const oldStream = videoRef.current.srcObject as MediaStream;
+          oldStream.getTracks().forEach(track => track.stop());
+        }
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: facingMode } });
         if (videoRef.current) videoRef.current.srcObject = stream;
       } catch (err) {
         console.error("Camera access denied", err);
@@ -348,7 +352,7 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
                   </label>
                 ) : (
                   <>
-                    <video ref={videoRef} autoPlay playsInline muted className={`absolute inset-0 w-full h-full object-cover opacity-90 transition-transform ${facingMode === 'user' ? 'scale-x-[-1]' : ''}`} />
+                    <video ref={videoRef} autoPlay playsInline muted className="absolute inset-0 w-full h-full object-cover opacity-90" style={{ transform: facingMode === 'user' ? 'scaleX(-1) translateZ(0)' : 'translateZ(0)', willChange: 'transform' }} />
                     {hqImage && punchState === 'punching' && (
                       <img src={hqImage} className="absolute inset-0 w-full h-full object-cover z-10" alt="frozen frame" />
                     )}
@@ -1120,7 +1124,7 @@ export default function App() {
             <div className="flex bg-[#F6F5F2] border-[4px] border-[#1A1A1A] p-[3px] rounded-full shadow-[5px_5px_0px_0px_#1A1A1A] self-start z-10 w-full sm:w-auto mb-6 shrink-0">
               <button
                 onClick={() => handleInputModeChange('word')}
-                className={`flex-1 px-8 py-2.5 text-xl font-bubbly font-extrabold uppercase rounded-full transition-all duration-150 ${inputMode === 'word'
+                className={`flex-1 px-2 sm:px-4 py-2.5 text-sm sm:text-base font-bubbly font-extrabold uppercase rounded-full transition-all duration-150 ${inputMode === 'word'
                   ? 'bg-[#1A1A1A] text-white'
                   : 'text-[#1A1A1A] hover:bg-[#1A1A1A]/10'
                   }`}
@@ -1129,7 +1133,7 @@ export default function App() {
               </button>
               <button
                 onClick={() => handleInputModeChange('conversation')}
-                className={`flex-1 px-8 py-2.5 text-xl font-bubbly font-extrabold uppercase rounded-full transition-all duration-150 ${inputMode === 'conversation'
+                className={`flex-1 px-2 sm:px-4 py-2.5 text-sm sm:text-base font-bubbly font-extrabold uppercase rounded-full transition-all duration-150 ${inputMode === 'conversation'
                   ? 'bg-[#1A1A1A] text-white'
                   : 'text-[#1A1A1A] hover:bg-[#1A1A1A]/10'
                   }`}
@@ -1137,7 +1141,7 @@ export default function App() {
                 Conversation
               </button>
             </div>
-            <div className="flex items-center justify-between px-2 mb-4 shrink-0">
+            <div className="w-full flex items-center justify-between mb-3 sm:mb-4 px-1 sm:px-2 shrink-0">
               <AnimatePresence mode="wait">
                 <motion.label
                   key={direction}
@@ -1153,7 +1157,7 @@ export default function App() {
               </AnimatePresence>
               <button
                 onClick={handleSwap}
-                className="flex items-center justify-center gap-3 bg-[#FED141] border-[6px] border-[#1A1A1A] rounded-none px-4 py-2 text-xl font-bubbly font-extrabold uppercase hover:bg-[#E5BC3A] active:translate-y-[4px] active:translate-x-[4px] shadow-[6px_6px_0px_0px_#1A1A1A] active:shadow-none transition-all"
+                className="flex items-center justify-center gap-3 bg-[#FED141] border-[6px] border-[#1A1A1A] rounded-none px-2 sm:px-3 py-1 sm:py-2 text-sm sm:text-base font-bubbly font-extrabold uppercase hover:bg-[#E5BC3A] active:translate-y-[4px] active:translate-x-[4px] shadow-[6px_6px_0px_0px_#1A1A1A] active:shadow-none transition-all shrink-0"
                 title="Swap Translation Direction"
               >
                 {direction === 'en-ko' ? (

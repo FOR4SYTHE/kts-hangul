@@ -299,15 +299,15 @@ export default function SupremeLens({ onClose, onCapturedChange, onInfoToggle, o
       <div className="w-full flex justify-between items-center p-4 pt-6 pb-2 relative z-30 shrink-0">
 
         {/* Left Side: Info & Flash */}
-        <div className="flex gap-3 w-1/3 justify-start">
-          <button onClick={() => setShowInfo(true)} className="w-12 h-12 bg-[#F6F5F2] rounded-3xl border-[4px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all flex items-center justify-center text-[#1A1A1A]">
+        <div className="flex gap-1 sm:gap-3 w-1/3 justify-start">
+          <button onClick={() => setShowInfo(true)} className="w-12 h-12 shrink-0 bg-[#F6F5F2] rounded-3xl border-[4px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all flex items-center justify-center text-[#1A1A1A]">
             <Info strokeWidth={4} size={22} />
           </button>
 
           {/* Cartoon Slide Toggle for Flash */}
           <button
             onClick={() => setFlashOn(!flashOn)}
-            className={`relative w-20 h-12 rounded-full border-[4px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all p-1 flex items-center overflow-hidden ${flashOn ? 'bg-[#FED141]' : 'bg-[#EF4444]'}`}
+            className={`relative w-20 h-12 shrink-0 rounded-full border-[4px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all p-1 flex items-center overflow-hidden ${flashOn ? 'bg-[#FED141]' : 'bg-[#EF4444]'}`}
           >
             <motion.div
               animate={{ x: flashOn ? 25 : 0 }}
@@ -320,7 +320,7 @@ export default function SupremeLens({ onClose, onCapturedChange, onInfoToggle, o
         </div>
 
         {/* Center: Mode Pill */}
-        <div className="flex justify-center w-1/3">
+        <div className="flex justify-center w-1/3 shrink-0 scale-90 sm:scale-100 origin-right">
           <div className="flex bg-[#F6F5F2] border-[4px] border-[#1A1A1A] p-[3px] rounded-full shadow-[5px_5px_0px_0px_#1A1A1A] z-10 relative select-none">
             {['EN', 'KO'].map((m) => {
               const isActive = mode === m;
@@ -398,7 +398,7 @@ export default function SupremeLens({ onClose, onCapturedChange, onInfoToggle, o
         style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)', transform: 'translateZ(0)' }}
       >
         {!capturedImage ? (
-          <video ref={videoRef} autoPlay playsInline style={{ transform: `scale(${zoomLevel})` }} className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 ease-out" />
+          <video ref={videoRef} autoPlay playsInline style={{ transform: `scale(${zoomLevel}) translateZ(0)`, willChange: 'transform' }} className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 ease-out" />
         ) : (
           <img src={capturedImage} alt="Snap" className="absolute inset-0 w-full h-full object-cover" />
         )}
