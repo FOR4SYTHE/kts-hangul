@@ -297,12 +297,12 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
           {/* Cartoon Slide Toggle for Flash */}
           <button
             onClick={() => setFlashOn(!flashOn)}
-            className={`relative w-20 h-12 rounded-full border-[4px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all p-1 flex items-center ${flashOn ? 'bg-[#FED141]' : 'bg-[#EF4444]'}`}
+            className={`relative w-20 h-12 rounded-full border-[4px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all p-1 flex items-center overflow-hidden ${flashOn ? 'bg-[#FED141]' : 'bg-[#EF4444]'}`}
           >
             <motion.div
-              animate={{ x: flashOn ? 32 : 0 }}
+              animate={{ x: flashOn ? 25 : 0 }}
               transition={{ type: "spring", stiffness: 500, damping: 25 }}
-              className="w-8 h-8 bg-[#F6F5F2] border-[3px] border-[#1A1A1A] rounded-full flex items-center justify-center z-10"
+              className="w-8 h-8 bg-[#F6F5F2] border-[3px] border-[#1A1A1A] rounded-full flex items-center justify-center z-10 shrink-0"
             >
               {flashOn ? <Zap fill="#1A1A1A" size={16} /> : <ZapOff size={16} />}
             </motion.div>
@@ -537,7 +537,7 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
                 <li className="flex items-center gap-4"><Zap strokeWidth={4} className="text-[#EF4444]" /> Hardware Flash Toggle</li>
                 <li className="flex flex-col items-start gap-2">
                   <div className="flex items-center gap-4">
-                    <span className="px-3 py-1 bg-[#1A1A1A] text-[#FED141] rounded-lg">EN/KO</span> 
+                    <span className="px-3 py-1 bg-[#1A1A1A] text-[#FED141] rounded-lg">EN/KO</span>
                     <span>Translation Engine</span>
                   </div>
                   <div className="pl-16 text-sm font-sans font-extrabold text-[#1A1A1A]/70 normal-case tracking-normal space-y-2">
