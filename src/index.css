@@ -1,10 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Gaegu:wght@400;700&family=Jua&family=East+Sea+Dokdo&family=Black+Han+Sans&family=Sniglet:wght@400;800&family=Chewy&family=DynaPuff:wght@400..700&family=Bagel+Fat+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Gaegu:wght@300;400;700&family=Jua&family=East+Sea+Dokdo&family=Black+Han+Sans&family=Sniglet:wght@400;800&family=Chewy&family=DynaPuff:wght@400..700&family=Bagel+Fat+One&display=swap');
 @import "tailwindcss";
 
 @font-face {
   font-family: 'QTPI';
   src: url('https://zephyo.github.io/5fonts10hours/qtpi/qtpi.otf') format('opentype'),
-       url('https://raw.githubusercontent.com/zephyo/5fonts10hours/master/qtpi/qtpi.otf') format('opentype');
+    url('https://raw.githubusercontent.com/zephyo/5fonts10hours/master/qtpi/qtpi.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
 }

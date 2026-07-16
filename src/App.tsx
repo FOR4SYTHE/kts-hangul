@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Mic, Volume2, Loader2, Copy, Check, History, X, ArrowLeftRight, Download, Lightbulb, Camera } from 'lucide-react'; // Added Camera
+import { Mic, Volume2, Loader2, Copy, Check, History, X, ArrowLeftRight, Download, Lightbulb, Camera } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import html2canvas from 'html2canvas';
 import { toPng } from 'html-to-image';
-import SupremeLens from './SupremeLens'; // Added SupremeLens component
+import SupremeLens from './SupremeLens';
 
 // ============================================================================
 // SUPREME ARCHITECT: LIVE CAMERA STAMP MACHINE (AWWWARDS SOTD FINAL)
@@ -20,7 +20,6 @@ const generateStampPath = (width: number, height: number) => {
 
 const MAX_ARCHIVE = 18;
 
-// Simple seeded random function to keep scrapbook layouts consistent across renders
 const seededRandom = (seed: number) => {
   const x = Math.sin(seed + 1.1) * 10000;
   return x - Math.floor(x);
@@ -28,16 +27,12 @@ const seededRandom = (seed: number) => {
 
 const renderDoodles = (idx: number) => {
   const elements = [];
-  // Pass 1: Structural (Binder clips, Paper clips, Tape) - Top edge priority
   const doodle1 = generateSingleDoodle(idx, 1);
   if (doodle1) elements.push(doodle1);
-  // Pass 2: Contextual Text (Torn paper scraps, Location pins, Stacked text)
   const doodle2 = generateSingleDoodle(idx, 2);
   if (doodle2) elements.push(doodle2);
-  // Pass 3: Decorative SVGs (Thick stroke Stars, Smiley, Butterfly, Coffee, Hearts)
   const doodle3 = generateSingleDoodle(idx, 3);
   if (doodle3) elements.push(doodle3);
-  // Pass 4: Wildcard Connectors (Dotted trails, Zig-zags bridging the photos)
   const doodle4 = generateSingleDoodle(idx, 4);
   if (doodle4) elements.push(doodle4);
   return elements;
@@ -46,25 +41,18 @@ const renderDoodles = (idx: number) => {
 const generateSingleDoodle = (idx: number, pass: number) => {
   const seed = idx * 100 + pass;
   const rand = seededRandom(seed);
-
-  // Advanced Z-Index strategy: Mix of extreme under-layering, mid-layering, and top-clipping
   const zLayer = seededRandom(seed + 1);
-  let zClass = 'z-0'; // Default bottom
-  if (zLayer > 0.7) zClass = 'z-40'; // High overlap
-  else if (zLayer > 0.4) zClass = 'z-20'; // Mid overlap
+  let zClass = 'z-0';
+  if (zLayer > 0.7) zClass = 'z-40';
+  else if (zLayer > 0.4) zClass = 'z-20';
 
   const rotation = seededRandom(seed + 2) * 35 - 17.5;
   const fontPick = seededRandom(seed + 3) > 0.5 ? "'Gloria Hallelujah', cursive" : "'Permanent Marker', cursive";
 
-  // ---------------------------------------------------------
-  // PASS 1: STRUCTURAL BINDERS & TAPE (Top Edge Anchor)
-  // ---------------------------------------------------------
   if (pass === 1) {
-    if (rand < 0.15) return null; // 15% empty for breathing room
-    const leftPos = '50%'; // Perfectly centered horizontally
-
+    if (rand < 0.15) return null;
+    const leftPos = '50%';
     if (rand < 0.5) {
-      // Premium Black Binder Clip (Awwwards/Editorial Vibe)
       return (
         <div key={seed} className="absolute z-50 pointer-events-none drop-shadow-[0_6px_8px_rgba(0,0,0,0.35)]" style={{ top: '-10%', left: leftPos, transform: `translateX(-50%) rotate(${rotation * 0.15}deg)` }}>
           <svg width="45" height="55" viewBox="0 0 60 80" fill="none" stroke="#1A1A1A" strokeLinecap="round" strokeLinejoin="round">
@@ -76,7 +64,6 @@ const generateSingleDoodle = (idx: number, pass: number) => {
         </div>
       );
     } else if (rand < 0.75) {
-      // Elongated Paperclip
       return (
         <div key={seed} className="absolute z-50 pointer-events-none drop-shadow-md" style={{ top: '-6%', left: leftPos, transform: `translateX(-50%) rotate(${rotation}deg)` }}>
           <svg width="32" height="65" viewBox="0 0 40 80" fill="none" stroke="#1A1A1A" strokeWidth="5.5" strokeLinecap="round" strokeLinejoin="round">
@@ -85,7 +72,6 @@ const generateSingleDoodle = (idx: number, pass: number) => {
         </div>
       );
     } else {
-      // Raw Torn Tape Edge
       return (
         <div key={seed} className="absolute z-40 bg-[#F6F5F2]/80 backdrop-blur-md shadow-sm pointer-events-none border border-black/10 flex items-center justify-center overflow-hidden" style={{ width: '100px', height: '26px', top: '-4%', left: leftPos, transform: `translateX(-50%) rotate(${rotation}deg)` }}>
           <div className="w-full h-full opacity-15" style={{ backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 3px, #1A1A1A 3px, #1A1A1A 6px)' }}></div>
@@ -94,9 +80,6 @@ const generateSingleDoodle = (idx: number, pass: number) => {
     }
   }
 
-  // ---------------------------------------------------------
-  // PASS 2: TYPOGRAPHY, SCRAPS, & LOCATION PINS
-  // ---------------------------------------------------------
   if (pass === 2) {
     if (rand < 0.2) return null;
     const topPos = `${seededRandom(seed + 1) * 110 - 5}%`;
@@ -104,7 +87,6 @@ const generateSingleDoodle = (idx: number, pass: number) => {
     const textRand = seededRandom(seed + 4);
 
     if (textRand < 0.35) {
-      // Contextual Pin / Timestamps
       const locations = ["📍 Wonosobo", "📍 Dieng", "10 Nov 2023", "📍 MNL", "company visit", "safety first"];
       const text = locations[Math.floor(seededRandom(seed + 5) * locations.length)];
       return (
@@ -113,7 +95,6 @@ const generateSingleDoodle = (idx: number, pass: number) => {
         </div>
       );
     } else if (textRand < 0.65) {
-      // Hand-cut Paper Scrap
       const notes = ["hot tea is necessary", "perlu kesini lagi", "a day in my life", "w/@linuu", "sehari jadi"];
       const text = notes[Math.floor(seededRandom(seed + 5) * notes.length)];
       return (
@@ -122,7 +103,6 @@ const generateSingleDoodle = (idx: number, pass: number) => {
         </div>
       );
     } else {
-      // Stacked Vertical Typography (Premium Streetwear alignment)
       return (
         <div key={seed} className={`absolute ${zClass} text-[#1A1A1A] font-black text-[15px] flex flex-col leading-[0.9] pointer-events-none opacity-90`} style={{ top: topPos, left: leftPos, transform: `rotate(${rotation}deg)`, fontFamily: "'Permanent Marker', cursive" }}>
           <span>how cool</span>
@@ -133,28 +113,18 @@ const generateSingleDoodle = (idx: number, pass: number) => {
     }
   }
 
-  // ---------------------------------------------------------
-  // PASS 3: THICK STROKE PREMIUM SVGS
-  // ---------------------------------------------------------
   if (pass === 3) {
     if (rand < 0.25) return null;
     const topPos = `${seededRandom(seed + 1) * 110 - 5}%`;
     const leftPos = `${seededRandom(seed + 2) * 120 - 10}%`;
 
     const doodleTypes = [
-      // 0: Perfect Smiley 
       <svg width="48" height="48" viewBox="0 0 100 100" fill="none" stroke="#1A1A1A" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"><circle cx="50" cy="50" r="42" /><path d="M 35 40 L 35 48 M 65 40 L 65 48" strokeWidth="7" /><path d="M 30 65 Q 50 82 70 65" strokeWidth="5.5" /></svg>,
-      // 1: 3-Star Cluster
       <svg width="65" height="65" viewBox="0 0 100 100" fill="none" stroke="#1A1A1A" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round"><path d="M 25 10 L 30 25 L 45 30 L 30 35 L 25 50 L 20 35 L 5 30 L 20 25 Z" /><path d="M 75 30 L 78 40 L 88 43 L 78 46 L 75 56 L 72 46 L 62 43 L 72 40 Z" strokeWidth="3.5" /><path d="M 50 65 L 52 72 L 59 74 L 52 76 L 50 83 L 48 76 L 41 74 L 48 72 Z" strokeWidth="3.5" /></svg>,
-      // 2: Outline Butterfly
       <svg width="55" height="55" viewBox="0 0 100 100" fill="none" stroke="#1A1A1A" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><path d="M 50 20 L 50 80" strokeWidth="6.5" /><path d="M 50 35 C 10 10, 5 50, 50 50 Z" /><path d="M 50 35 C 90 10, 95 50, 50 50 Z" /><path d="M 50 50 C 20 50, 20 85, 50 75 Z" /><path d="M 50 50 C 80 50, 80 85, 50 75 Z" /><path d="M 50 20 Q 35 5 30 15 M 50 20 Q 65 5 70 15" strokeWidth="3.5" /></svg>,
-      // 3: PH Sun 
       <svg width="50" height="50" viewBox="0 0 100 100" fill="none" stroke="#1A1A1A" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><circle cx="50" cy="50" r="16" /><path d="M 50 5 L 50 24 M 50 95 L 50 76 M 5 50 L 24 50 M 95 50 L 76 50 M 18 18 L 31 31 M 82 82 L 69 69 M 18 82 L 31 69 M 82 18 L 69 31" strokeWidth="5.5" /></svg>,
-      // 4: Minimalist Flower
       <svg width="45" height="45" viewBox="0 0 100 100" fill="none" stroke="#1A1A1A" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="50" cy="50" r="11" /><path d="M 50 40 C 30 -10, 70 -10, 50 40 Z" /><path d="M 50 60 C 30 110, 70 110, 50 60 Z" /><path d="M 40 50 C -10 30, -10 70, 40 50 Z" /><path d="M 60 50 C 110 30, 110 70, 60 50 Z" /></svg>,
-      // 5: Coffee Cup
       <svg width="48" height="48" viewBox="0 0 100 100" fill="none" stroke="#1A1A1A" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><path d="M 25 40 L 25 70 C 25 85, 65 85, 65 70 L 65 40 Z" strokeWidth="5.5" /><path d="M 15 80 C 15 90, 75 90, 75 80" /><path d="M 65 45 C 80 45, 80 65, 65 65" strokeWidth="5" /><path d="M 35 30 Q 40 15 35 5 M 45 30 Q 50 15 45 5 M 55 30 Q 60 15 55 5" strokeWidth="3.5" /></svg>,
-      // 6: Fluid Heart
       <svg width="38" height="38" viewBox="0 0 100 100" fill="none" stroke="#1A1A1A" strokeWidth="5.5" strokeLinecap="round" strokeLinejoin="round"><path d="M 50 30 C 50 30 45 5 25 5 C -5 5 -5 45 50 95 C 105 45 105 5 75 5 C 55 5 50 30 50 30 Z" /></svg>
     ];
 
@@ -166,9 +136,6 @@ const generateSingleDoodle = (idx: number, pass: number) => {
     );
   }
 
-  // ---------------------------------------------------------
-  // PASS 4: SPATIAL CONNECTORS (Spanning multiple items)
-  // ---------------------------------------------------------
   if (pass === 4) {
     if (rand < 0.45) return null;
     const topPos = `${seededRandom(seed + 1) * 80 + 10}%`;
@@ -176,7 +143,6 @@ const generateSingleDoodle = (idx: number, pass: number) => {
     const connectorRand = seededRandom(seed + 3);
 
     if (connectorRand < 0.35) {
-      // Overlapping Smiley Face
       return (
         <div key={seed} className="absolute z-50 pointer-events-none drop-shadow-md" style={{ top: topPos, left: '-10%', transform: `rotate(${rotation * 1.5}deg)` }}>
           <svg width="80" height="80" viewBox="0 0 100 100" fill="none" stroke="#1A1A1A" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round">
@@ -187,7 +153,6 @@ const generateSingleDoodle = (idx: number, pass: number) => {
         </div>
       );
     } else if (connectorRand < 0.75) {
-      // Overlapping Butterfly
       return (
         <div key={seed} className={`absolute z-40 pointer-events-none opacity-90`} style={{ top: '-10%', left: leftPos, transform: `rotate(${rotation}deg)` }}>
           <svg width="75" height="75" viewBox="0 0 100 100" fill="none" stroke="#1A1A1A" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
@@ -201,7 +166,6 @@ const generateSingleDoodle = (idx: number, pass: number) => {
         </div>
       );
     } else {
-      // DiModern Seoul Indicator Arrow
       return (
         <div key={seed} className={`absolute ${zClass} pointer-events-none drop-shadow-sm`} style={{ top: topPos, left: leftPos, transform: `rotate(${rotation * 2.5}deg)` }}>
           <svg width="65" height="65" viewBox="0 0 100 100" fill="none" stroke="#1A1A1A" strokeWidth="5.5" strokeLinecap="round" strokeLinejoin="round">
@@ -286,7 +250,6 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
       sY = (video.videoHeight - sH) / 2;
     }
 
-    // HQ Render
     canvas.width = targetW * 3; canvas.height = targetH * 3;
     const ctx = canvas.getContext('2d');
     if (ctx) {
@@ -294,7 +257,6 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
       ctx.drawImage(video, sX, sY, sW, sH, 0, 0, canvas.width, canvas.height);
       setHqImage(canvas.toDataURL('image/jpeg', 1.0));
 
-      // Low-Res Render
       const lowResCanvas = document.createElement('canvas');
       lowResCanvas.width = targetW; lowResCanvas.height = targetH;
       const lrCtx = lowResCanvas.getContext('2d');
@@ -306,19 +268,19 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
     }
 
     setPunchState('punching');
-    setTimeout(() => setPunchState('done'), 600); // Exact mechanical delay
+    setTimeout(() => setPunchState('done'), 600);
   };
 
   const handleDownload = () => {
     if (!stampRef.current) return;
-    toPng(stampRef.current, { 
-      cacheBust: true, 
-      pixelRatio: 4, 
+    toPng(stampRef.current, {
+      cacheBust: true,
+      pixelRatio: 4,
       skipFonts: true,
       width: stampWidth,
       height: stampHeight,
-      style: { transform: 'scale(1) rotate(0deg) translateY(0px)' } 
-    }) 
+      style: { transform: 'scale(1) rotate(0deg) translateY(0px)' }
+    })
       .then((dataUrl) => {
         const link = document.createElement('a'); link.download = `supreme-stamp-${Date.now()}.png`; link.href = dataUrl; link.click();
       });
@@ -342,12 +304,10 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
   return (
     <div className={`fixed inset-0 z-[1000] flex flex-col items-center justify-center p-4 transition-colors duration-500 overflow-hidden ${activeTab === 'archive' ? 'bg-[#F4F0EB]' : 'bg-black/95 backdrop-blur-md'}`}>
 
-      {/* Texture Layer for Scrapbook */}
       {activeTab === 'archive' && (
         <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
       )}
 
-      {/* Cartoon Sketch Close X */}
       <button onClick={onClose} className={`absolute top-8 right-8 z-50 transition-transform active:scale-90 ${activeTab === 'archive' ? 'text-[#1A1A1A] drop-shadow-[2px_2px_0px_rgba(0,0,0,0.2)]' : 'text-[#F6F5F2] hover:text-[#BF0D3E] drop-shadow-[4px_4px_0px_rgba(0,0,0,1)]'}`}>
         <svg width="40" height="40" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round">
           <path d="M 20 20 L 80 80 M 80 20 L 20 80" />
@@ -356,11 +316,8 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
 
       <canvas ref={canvasRef} className="hidden" />
 
-      {/* ---------------- CAMERA / MACHINE VIEW ---------------- */}
       {activeTab === 'camera' && (
         <div className="relative w-[340px] h-[420px] flex items-center justify-center mt-4">
-
-          {/* Heavy Metallic Die-Punch Frame (Disappears instantly on 'done') */}
           {punchState !== 'done' && (
             <motion.div
               onPointerDown={punchState === 'viewfinder' && !hasCameraError ? handlePunch : undefined}
@@ -377,13 +334,9 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
                 ) : (
                   <>
                     <video ref={videoRef} autoPlay playsInline muted className={`absolute inset-0 w-full h-full object-cover opacity-90 transition-transform ${facingMode === 'user' ? 'scale-x-[-1]' : ''}`} />
-
-                    {/* Anti-Flicker: Instantly overlay the captured image during the punch hold */}
                     {hqImage && punchState === 'punching' && (
                       <img src={hqImage} className="absolute inset-0 w-full h-full object-cover z-10" alt="frozen frame" />
                     )}
-
-                    {/* Fixed Scalloped Teeth Overlay - Removed active CSS to prevent glitching */}
                     <div className="absolute inset-0 z-20 drop-shadow-[0_4px_10px_rgba(0,0,0,0.9)] pointer-events-none">
                       <svg width="100%" height="100%" viewBox={`0 0 ${stampWidth} ${stampHeight}`} className="absolute inset-0 w-full h-full">
                         <path fill="#2a2a2a" fillRule="evenodd" d={`M -100,-100 L ${stampWidth + 100},-100 L ${stampWidth + 100},${stampHeight + 100} L -100,${stampHeight + 100} Z ${stampPath}`} />
@@ -397,7 +350,6 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
             </motion.div>
           )}
 
-          {/* Cartoon Flip Camera Button */}
           {punchState === 'viewfinder' && !hasCameraError && (
             <motion.button
               whileHover={{ scale: 1.1, rotate: 15 }} whileTap={{ scale: 0.9 }}
@@ -414,7 +366,6 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
             </motion.button>
           )}
 
-          {/* The Final Punched Stamp Output */}
           {hqImage && punchState === 'done' && (
             <motion.div
               initial={{ scale: 0.95, y: 15, opacity: 1 }}
@@ -422,7 +373,6 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
               transition={{ type: "spring", stiffness: 400, damping: 15 }}
               className="absolute z-30 flex items-center justify-center"
             >
-              {/* ISOLATED EXPORT WRAPPER: ref goes here to avoid transform clipping */}
               <div ref={stampRef} className="relative flex items-center justify-center bg-transparent" style={{ width: stampWidth, height: stampHeight }}>
                 <svg width={stampWidth} height={stampHeight} viewBox={`0 0 ${stampWidth} ${stampHeight}`} className="absolute inset-0">
                   <path fill="#F6F5F2" d={stampPath} />
@@ -436,10 +386,8 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
         </div>
       )}
 
-      {/* ---------------- RETAKE / SAVE CONTROLS ---------------- */}
       {punchState === 'done' && activeTab === 'camera' && (
         <div className="mt-20 flex flex-row justify-center gap-5 w-full max-w-sm z-30 px-2">
-          {/* RETAKE */}
           <motion.button
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
             onClick={() => { setHqImage(null); setArchiveImage(null); setPunchState('viewfinder'); }}
@@ -454,7 +402,6 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
             <span className="text-[12px] font-bold uppercase tracking-widest leading-none" style={{ fontFamily: "'Mali', cursive" }}>Retake</span>
           </motion.button>
 
-          {/* EXPORT */}
           <motion.button
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
             onClick={handleDownload}
@@ -468,7 +415,6 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
             <span className="text-[12px] font-bold uppercase tracking-widest leading-none" style={{ fontFamily: "'Mali', cursive" }}>Export</span>
           </motion.button>
 
-          {/* SAVE TO BOOK */}
           <motion.button
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
             onClick={handleSaveToArchive}
@@ -477,9 +423,7 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
             <svg width="32" height="32" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round">
               <path d="M 15 25 C 25 15, 40 15, 50 25 C 60 15, 75 15, 85 25 L 85 80 C 75 70, 60 70, 50 80 C 40 70, 25 70, 15 80 Z" />
               <path d="M 50 25 L 50 80" />
-              {/* Plus Sign */}
               <path d="M 32 45 L 32 65 M 22 55 L 42 55" />
-              {/* Squiggles */}
               <path d="M 60 45 Q 68 40 75 45 M 60 60 Q 68 55 75 60" />
             </svg>
             <span className="text-[12px] font-bold uppercase tracking-widest leading-none" style={{ fontFamily: "'Mali', cursive" }}>Save</span>
@@ -487,7 +431,6 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
         </div>
       )}
 
-      {/* ---------------- SCRAPBOOK ARCHIVE VIEW ---------------- */}
       {activeTab === 'archive' && (
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4 }}
@@ -518,14 +461,12 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
                       <span className="text-[#1A1A1A] font-bold text-lg uppercase tracking-widest inline-block" style={{ fontFamily: "'Mali', cursive", transform: 'rotate(-1deg)' }}>
                         {entry.date}
                       </span>
-                      {/* Pen Scribbled Line */}
                       <svg className="absolute bottom-0 left-0 w-full h-2 opacity-30" preserveAspectRatio="none" viewBox="0 0 100 10" fill="none" stroke="#1A1A1A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M 2 5 C 20 2, 40 8, 60 4 C 80 0, 95 6, 98 4" />
                       </svg>
                     </div>
                   )}
                   <div className="flex flex-col items-center relative z-10">
-                    {/* Random Scrapbook Doodles! */}
                     {renderDoodles(idx)}
                     <motion.div
                       initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }}
@@ -533,11 +474,9 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
                       className="relative aspect-[260/340] w-full flex items-center justify-center drop-shadow-[4px_6px_8px_rgba(0,0,0,0.15)] hover:scale-105 hover:z-50 transition-transform cursor-pointer"
                       style={{ transform: `rotate(${seededRandom(idx * 8) * 6 - 3}deg)` }}
                     >
-                      {/* Masking Tape Overlay - Only show if Pass 1 didn't generate a top binder/clip */}
                       {seededRandom(idx * 100 + 1) < 0.15 && (
                         <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-5 bg-white/70 backdrop-blur-sm shadow-sm z-40 border border-black/5" style={{ transform: `rotate(${seededRandom(idx * 9) * 10 - 5}deg)` }}></div>
                       )}
-
                       <svg width="100%" height="100%" viewBox={`0 0 ${stampWidth} ${stampHeight}`} className="absolute inset-0">
                         <path fill="#F6F5F2" d={stampPath} />
                       </svg>
@@ -553,7 +492,6 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
         </motion.div>
       )}
 
-      {/* ---------------- CENTERED BOTTOM NAVIGATION BAR ---------------- */}
       {punchState !== 'punching' && (
         <div className="absolute inset-x-0 bottom-8 flex justify-center z-[9999] pointer-events-none">
           <div className="flex bg-[#E5E7EB] border-[4px] border-[#1A1A1A] rounded-full p-2 shadow-[4px_4px_0px_rgba(0,0,0,1)] pointer-events-auto">
@@ -561,13 +499,9 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
               onClick={() => { setActiveTab('camera'); setPunchState('viewfinder'); setHqImage(null); }}
               className={`w-[120px] flex items-center justify-center gap-2 py-3 rounded-full transition-colors duration-200 ${activeTab === 'camera' ? 'bg-[#1A1A1A] text-[#F6F5F2]' : 'text-[#1A1A1A] hover:bg-[#D1D5DB]'}`}
             >
-              {/* Cartoon Sketch Stamp Icon */}
               <svg width="22" height="22" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round">
-                {/* Stamp Base */}
                 <path d="M 20 80 Q 50 90 80 80 L 80 65 L 20 65 Z" />
-                {/* Stamp Stem */}
                 <path d="M 40 65 L 45 35 M 60 65 L 55 35" />
-                {/* Stamp Knob */}
                 <path d="M 35 35 L 65 35 C 70 15, 30 15, 35 35 Z" />
               </svg>
               <span className="text-[14px] font-bold uppercase tracking-widest mt-1" style={{ fontFamily: "'Mali', cursive", transform: 'rotate(-2deg)' }}>Stamp</span>
@@ -576,7 +510,6 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
               onClick={() => setActiveTab('archive')}
               className={`w-[120px] flex items-center justify-center gap-2 py-3 rounded-full transition-colors duration-200 ${activeTab === 'archive' ? 'bg-[#1A1A1A] text-[#F6F5F2]' : 'text-[#1A1A1A] hover:bg-[#D1D5DB]'}`}
             >
-              {/* Cartoon Sketch Book Icon */}
               <svg width="22" height="22" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M 15 25 C 25 15, 40 15, 50 25 C 60 15, 75 15, 85 25 L 85 80 C 75 70, 60 70, 50 80 C 40 70, 25 70, 15 80 Z" />
                 <path d="M 50 25 L 50 80" />
@@ -591,7 +524,6 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
         </div>
       )}
 
-      {/* ---------------- STAMP ZOOM MODAL ---------------- */}
       <AnimatePresence>
         {selectedStampIndex !== null && archive[selectedStampIndex] && (
           <motion.div
@@ -608,7 +540,6 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
               onClick={(e) => e.stopPropagation()}
               className="flex flex-col items-center gap-6"
             >
-              {/* Larger Stamp Display */}
               <div className="relative flex items-center justify-center" style={{ width: stampWidth * 1.2, height: stampHeight * 1.2 }}>
                 <div className="drop-shadow-[0_20px_40px_rgba(0,0,0,0.8)]" style={{ transform: 'scale(1.2)' }}>
                   <div ref={zoomedStampRef} className="relative flex items-center justify-center bg-transparent" style={{ width: stampWidth, height: stampHeight }}>
@@ -622,7 +553,6 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
                 </div>
               </div>
 
-              {/* Action Buttons */}
               <div className="flex gap-4">
                 <button
                   onClick={() => {
@@ -644,7 +574,6 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
                   className="w-[60px] h-[60px] bg-[#F6F5F2] hover:bg-[#FED141] text-[#1A1A1A] border-[4px] border-[#1A1A1A] rounded-2xl flex items-center justify-center shadow-[4px_4px_0px_#1A1A1A] transition-colors active:translate-x-1 active:translate-y-1 active:shadow-none"
                   title="Download"
                 >
-                  {/* Cartoon Download Icon */}
                   <svg width="32" height="32" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M 50 20 L 50 65" />
                     <path d="M 30 45 L 50 65 L 70 45" />
@@ -662,7 +591,6 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
                   className="w-[60px] h-[60px] bg-[#F6F5F2] hover:bg-[#BF0D3E] hover:text-[#F6F5F2] text-[#1A1A1A] border-[4px] border-[#1A1A1A] rounded-2xl flex items-center justify-center shadow-[4px_4px_0px_#1A1A1A] transition-colors active:translate-x-1 active:translate-y-1 active:shadow-none"
                   title="Delete"
                 >
-                  {/* Cartoon Trash Icon */}
                   <svg width="32" height="32" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M 30 30 L 70 30" />
                     <path d="M 45 30 L 45 20 L 55 20 L 55 30" />
@@ -682,40 +610,14 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
 };
 
 // Character Components
-const HaiChar = () => (
-  <motion.svg width="90" height="80" viewBox="0 0 130 110"
-    animate={{ rotate: [-3, 3] }}
-    transition={{ repeat: Infinity, repeatType: "mirror", duration: 2.5, ease: "easeInOut" }}
-    className="overflow-visible"
-  >
-    {/* ── 하 — white fill, black border ── */}
-    <text x="35" y="75" textAnchor="middle"
-      fontFamily="'Black Han Sans','Do Hyeon',sans-serif"
-      fontSize="72" fontWeight="900"
-      fill="white" stroke="#1A1A1A" strokeWidth="8" strokeLinejoin="round"
-      transform="rotate(-10, 35, 75)"
-      style={{ paintOrder: 'stroke fill' }}
-    >하</text>
 
-    {/* ── 이 — white fill, black border ── */}
-    <text x="92" y="82" textAnchor="middle"
-      fontFamily="'Black Han Sans','Do Hyeon',sans-serif"
-      fontSize="65" fontWeight="900"
-      fill="white" stroke="#1A1A1A" strokeWidth="8" strokeLinejoin="round"
-      transform="rotate(8, 92, 82)"
-      style={{ paintOrder: 'stroke fill' }}
-    >이</text>
-  </motion.svg>
-);
 
 
 const LeftWing = () => (
   <motion.svg width="90" height="90" viewBox="0 0 100 100" className="overflow-visible"
     animate={{ rotate: [0, -10, 0], y: [0, -4, 0] }}
     transition={{ repeat: Infinity, duration: 2.2, ease: "easeInOut" }}>
-    {/* Sketch Outline of wing */}
     <path d="M 90 50 C 40 10, 10 30, 20 60 C 25 75, 45 80, 60 70 C 45 85, 65 90, 80 80 C 75 90, 85 92, 90 90 C 85 75, 88 60, 90 50 Z" fill="#FFF" stroke="#1A1A1A" strokeWidth="5.5" strokeLinecap="round" strokeLinejoin="round" />
-    {/* Feathery sketch lines */}
     <path d="M 80 52 C 50 30, 30 45, 40 65" fill="none" stroke="#1A1A1A" strokeWidth="3" strokeLinecap="round" />
     <path d="M 82 62 C 60 50, 48 62, 55 72" fill="none" stroke="#1A1A1A" strokeWidth="3" strokeLinecap="round" />
     <path d="M 85 72 C 70 65, 62 72, 70 80" fill="none" stroke="#1A1A1A" strokeWidth="3" strokeLinecap="round" />
@@ -726,9 +628,7 @@ const RightWing = () => (
   <motion.svg width="90" height="90" viewBox="0 0 100 100" className="overflow-visible"
     animate={{ rotate: [0, 10, 0], y: [0, -4, 0] }}
     transition={{ repeat: Infinity, duration: 2.2, ease: "easeInOut" }}>
-    {/* Sketch Outline of wing */}
     <path d="M 10 50 C 60 10, 90 30, 80 60 C 75 75, 55 80, 40 70 C 55 85, 35 90, 20 80 C 25 90, 15 92, 10 90 C 15 75, 12 60, 10 50 Z" fill="#FFF" stroke="#1A1A1A" strokeWidth="5.5" strokeLinecap="round" strokeLinejoin="round" />
-    {/* Feathery sketch lines */}
     <path d="M 20 52 C 50 30, 70 45, 60 65" fill="none" stroke="#1A1A1A" strokeWidth="3" strokeLinecap="round" />
     <path d="M 18 62 C 40 50, 52 62, 45 72" fill="none" stroke="#1A1A1A" strokeWidth="3" strokeLinecap="round" />
     <path d="M 15 72 C 30 65, 38 72, 30 80" fill="none" stroke="#1A1A1A" strokeWidth="3" strokeLinecap="round" />
@@ -736,32 +636,7 @@ const RightWing = () => (
 );
 
 
-const CartoonCamera = () => (
-  <motion.svg width="90" height="90" viewBox="0 0 100 100"
-    whileHover={{ scale: 1.05, rotate: 3 }}
-    whileTap={{ scale: 0.95, rotate: -5 }}
-    className="overflow-visible"
-  >
-    {/* Red Shutter Button */}
-    <path d="M 22 42 L 34 38 L 32 33 L 20 37 Z" fill="#EF4444" stroke="#1A1A1A" strokeWidth="4" strokeLinejoin="round" />
 
-    {/* Camera Body */}
-    <path d="M 16 46 C 16 42, 28 38, 38 34 C 44 28, 52 28, 58 34 C 68 38, 84 42, 84 46 C 88 60, 86 74, 80 78 C 70 84, 30 84, 20 78 C 12 74, 12 60, 16 46 Z" fill="#2C2825" stroke="#1A1A1A" strokeWidth="5" strokeLinejoin="round" />
-
-    {/* Yellow Flash */}
-    <rect x="68" y="48" width="6" height="4" rx="2" fill="#EAB308" />
-
-    {/* Lens Outer Grey Ring */}
-    <circle cx="48" cy="58" r="20" fill="#6B7280" stroke="#1A1A1A" strokeWidth="4" />
-
-    {/* Lens Inner Blue Glass */}
-    <circle cx="48" cy="58" r="14" fill="#38BDF8" stroke="#1A1A1A" strokeWidth="3" />
-
-    {/* Glass Glare / Scribbles */}
-    <path d="M 40 52 C 45 49, 52 52, 54 54" fill="none" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" />
-    <path d="M 38 58 C 42 56, 48 59, 48 59" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" />
-  </motion.svg>
-);
 
 const Sparkle = () => (
   <motion.svg width="60" height="60" viewBox="0 0 100 100"
@@ -784,24 +659,19 @@ const UKFlag = ({ className = "" }: { className?: string }) => (
 const KRFlag = ({ className = "" }: { className?: string }) => (
   <svg width="32" height="24" viewBox="0 0 28 20" className={`inline-block rounded-[3px] shadow-[2px_2px_0px_0px_#1A1A1A] bg-white ${className}`}>
     <g stroke="#1A1A1A" strokeWidth="1">
-      {/* Geon: 3 solid (Top-Left) */}
       <g transform="translate(6, 5) rotate(32)">
         <path d="M -2 -2.5 L -2 2.5 M 0 -2.5 L 0 2.5 M 2 -2.5 L 2 2.5" />
       </g>
-      {/* Gam: broken, solid, broken (Top-Right) */}
       <g transform="translate(22, 5) rotate(148)">
         <path d="M -2 -2.5 L -2 -0.5 M -2 0.5 L -2 2.5 M 0 -2.5 L 0 2.5 M 2 -2.5 L 2 -0.5 M 2 0.5 L 2 2.5" />
       </g>
-      {/* Ri: solid, broken, solid (Bottom-Left) */}
       <g transform="translate(6, 15) rotate(-32)">
         <path d="M -2 -2.5 L -2 2.5 M 0 -2.5 L 0 -0.5 M 0 0.5 L 0 2.5 M 2 -2.5 L 2 2.5" />
       </g>
-      {/* Gon: 3 broken (Bottom-Right) */}
       <g transform="translate(22, 15) rotate(-148)">
         <path d="M -2 -2.5 L -2 -0.5 M -2 0.5 L -2 2.5 M 0 -2.5 L 0 -0.5 M 0 0.5 L 0 2.5 M 2 -2.5 L 2 -0.5 M 2 0.5 L 2 2.5" />
       </g>
     </g>
-    {/* Taegeuk Center */}
     <g transform="translate(14, 10) rotate(32)">
       <circle cx="0" cy="0" r="4.5" fill="#ef4444" />
       <path d="M -4.5 0 A 2.25 2.25 0 0 0 0 0 A 2.25 2.25 0 0 1 4.5 0 A 4.5 4.5 0 0 1 -4.5 0 Z" fill="#3b82f6" />
@@ -810,71 +680,19 @@ const KRFlag = ({ className = "" }: { className?: string }) => (
   </svg>
 );
 
-// --- SVGs for Hangul Mode ---
-const SejongSun = () => (
-  <svg width="120" height="120" viewBox="0 0 100 100" className="opacity-80">
-    <circle cx="50" cy="50" r="15" fill="none" stroke="currentColor" strokeWidth="4" />
-    <circle cx="50" cy="50" r="8" fill="currentColor" />
-    {[0, 45, 90, 135, 180, 225, 270, 315].map((angle) => (
-      <path key={angle} d="M 50 30 L 50 10 M 45 15 L 50 10 L 55 15" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ transformOrigin: '50px 50px', transform: `rotate(${angle}deg)` }} />
-    ))}
-  </svg>
-);
 
-const SejongPetroglyph1 = () => (
-  <svg width="100" height="150" viewBox="0 0 100 150" className="text-[#2C2825] opacity-15">
-    {/* Wave & Sun Motif */}
-    <path d="M 20 40 L 35 55 L 50 40 L 65 55 L 80 40 M 20 55 L 35 70 L 50 55 L 65 70 L 80 55" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
-    <circle cx="50" cy="100" r="12" fill="none" stroke="currentColor" strokeWidth="4" />
-    {[0, 45, 90, 135, 180, 225, 270, 315].map(angle => (
-      <line key={angle} x1="50" y1="80" x2="50" y2="72" stroke="currentColor" strokeWidth="3" strokeLinecap="round" style={{ transformOrigin: '50px 100px', transform: `rotate(${angle}deg)` }} />
-    ))}
-    <path d="M 40 10 L 50 20 L 60 10 M 50 20 L 50 30" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
-
-const SejongPetroglyph2 = () => (
-  <svg width="80" height="180" viewBox="0 0 80 180" className="text-[#2C2825] opacity-15">
-    {/* Centipede (Alupihan) & Diamond Motif */}
-    <path d="M 40 20 L 25 35 M 40 20 L 55 35 M 40 35 L 25 50 M 40 35 L 55 50 M 40 50 L 25 65 M 40 50 L 55 65 M 40 20 L 40 65" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M 40 90 L 55 105 L 40 120 L 25 105 Z" fill="none" stroke="currentColor" strokeWidth="4" strokeLinejoin="round" />
-    <circle cx="40" cy="105" r="4" fill="currentColor" />
-    <path d="M 30 140 L 40 130 L 50 140 M 30 155 L 40 145 L 50 155 M 30 170 L 40 160 L 50 170 M 40 130 L 40 170" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
-
-// --- Hangul Converter Logic ---
-const toHangul = (text: string) => {
-  if (!text) return "";
-  let str = text.toUpperCase();
-  const charMap: Record<string, string> = {
-    'A': '아', 'B': '비', 'C': '씨', 'D': '디', 'E': '이', 'F': '에프', 'G': '지', 'H': '에이치', 'I': '아이', 'J': '제이', 'K': '케이', 'L': '엘', 'M': '엠', 'N': '엔', 'O': '오', 'P': '피', 'Q': '큐', 'R': '알', 'S': '에스', 'T': '티', 'U': '유', 'V': '브이', 'W': '더블유', 'X': '엑스', 'Y': '와이', 'Z': '제트'
-  };
-  let result = "";
-  for (let char of str) {
-    if (charMap[char]) result += charMap[char];
-    else result += char;
-  }
-  return result;
-};
 
 export default function App() {
-  // App Mode State
-  const [appMode, setAppMode] = useState<'translator' | 'hangul'>('translator');
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [nextMode, setNextMode] = useState<'translator' | 'hangul'>('translator');
 
-  // Lens State (Added for Supreme Lens)
+
   const [isLensOpen, setIsLensOpen] = useState(false);
   const [showStampMachine, setShowStampMachine] = useState(false);
   const [lensHasCapture, setLensHasCapture] = useState(false);
 
-  // Translator States
   const [englishWord, setEnglishWord] = useState('');
   const [translation, setTranslation] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // Fun Fact States
   const [funFact, setFunFact] = useState<string | null>(null);
   const [isLoadingFunFact, setIsLoadingFunFact] = useState(false);
 
@@ -898,22 +716,7 @@ export default function App() {
 
   const [exampleCooldown, setExampleCooldown] = useState<number | null>(null);
 
-  // Hangul States
-  const [hangulMode, setHangulMode] = useState<'encode' | 'decode'>('encode');
-  const [decodeTarget, setDecodeTarget] = useState<'KO' | 'EN'>('KO');
-  const [decodedCache, setDecodedCache] = useState<{ TL?: string, EN?: string }>({});
-  const [isDecoding, setIsDecoding] = useState(false);
 
-  const [hangulInput, setHangulInput] = useState('');
-  const [hangulOutput, setHangulOutput] = useState('');
-  const [isHangulCopied, setIsHangulCopied] = useState(false);
-
-  const [isArtMode, setIsArtMode] = useState(false);
-  const [isGeneratingArt, setIsGeneratingArt] = useState(false);
-  const [artBgIndex, setArtBgIndex] = useState(1);
-
-  const [hangulHistory, setHangulHistory] = useState<{ input: string, output: string }[]>([]);
-  const [showHangulHistory, setShowHangulHistory] = useState(false);
 
   const englishSuggestions = ['hello', 'how are you?', 'thank you', 'good morning', 'I love you'];
   const koreanSuggestions = ['안녕하세요', '감사합니다', '대박', '사랑해', '안녕'];
@@ -935,19 +738,11 @@ export default function App() {
     ? englishSuggestions[placeholderIndex % englishSuggestions.length]
     : koreanSuggestions[placeholderIndex % koreanSuggestions.length];
 
-  const handleModeSwitch = (mode: 'translator' | 'hangul') => {
-    if (mode === appMode) return;
-    setNextMode(mode);
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setAppMode(mode);
-      setIsTransitioning(false);
-    }, 800);
-  };
+
 
   const handleSwap = () => {
     setDirection(prev => prev === 'en-ko' ? 'ko-en' : 'en-ko');
-    setEnglishWord(''); // New strict clear
+    setEnglishWord('');
     setTranslation('');
     setExample(null);
     setFunFact(null);
@@ -968,103 +763,7 @@ export default function App() {
     setErrorMsg(null);
   };
 
-  const handleGenerateHangul = () => {
-    if (!hangulInput.trim()) return;
-    const output = toHangul(hangulInput);
-    setHangulOutput(output);
-    setHangulHistory(prev => [{ input: hangulInput, output: output }, ...prev]);
-    setIsArtMode(false);
-  };
 
-  const handleDecodeHangul = async (targetOverride?: 'KO' | 'EN') => {
-    if (!hangulInput.trim()) return;
-
-    const target = targetOverride || decodeTarget;
-    if (targetOverride) setDecodeTarget(target);
-
-    if (decodedCache[target]) {
-      setHangulOutput(decodedCache[target]!);
-      return;
-    }
-
-    setIsDecoding(true);
-    setHangulOutput('');
-    try {
-      const direction = target === 'KO' ? 'han-ko' : 'han-en';
-      const response = await fetch('/api/translate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ word: hangulInput, direction })
-      });
-
-      if (!response.ok) {
-        const errData = await response.json().catch(() => ({}));
-        throw new Error(errData.error || `Server returned ${response.status}`);
-      }
-
-      const data = await response.json();
-      if (data.translation) {
-        setDecodedCache(prev => ({ ...prev, [target]: data.translation }));
-        setHangulOutput(data.translation);
-        if (!targetOverride) {
-          setHangulHistory(prev => [{ input: hangulInput, output: data.translation }, ...prev]);
-        }
-        setIsArtMode(false);
-      }
-    } catch (error: any) {
-      console.error('Decode error:', error);
-      if (error.message === 'server_busy') {
-        setHangulOutput("ORACLE OVERLOADED: GOOGLE SERVERS BUSY. PLEASE TRY AGAIN LATER.");
-      } else if (error.message === 'rate_limited') {
-        setHangulOutput("Error: Rate Limited");
-      } else {
-        setHangulOutput("Error communicating with the oracle.");
-      }
-    } finally {
-      setIsDecoding(false);
-    }
-  };
-
-  const hangulRef = useRef<HTMLDivElement>(null);
-
-  const handleDownloadImage = () => {
-    if (!hangulRef.current) return;
-    toPng(hangulRef.current, { 
-      cacheBust: true, 
-      pixelRatio: 4, 
-      // skipFonts removed to allow Hangul font embedding
-      style: { transform: 'scale(1) rotate(0deg) translateY(0px)' } 
-    })
-      .then((dataUrl) => {
-        const link = document.createElement('a');
-        link.download = `sinaunang-hangul-${Date.now()}.png`;
-        link.href = dataUrl;
-        link.click();
-      })
-      .catch((err) => console.error('Failed to export image', err));
-  };
-
-  const handleMorphToArt = () => {
-    if (isArtMode) return;
-    setIsGeneratingArt(true);
-    // Fake loading sequence
-    setTimeout(() => {
-      setArtBgIndex(Math.floor(Math.random() * 11) + 1);
-      setIsArtMode(true);
-      setIsGeneratingArt(false);
-    }, 3500); // 3.5 second anticipation
-  };
-
-  const handleCopyHangul = async () => {
-    if (!hangulOutput) return;
-    try {
-      await navigator.clipboard.writeText(hangulOutput);
-      setIsHangulCopied(true);
-      setTimeout(() => setIsHangulCopied(false), 2000);
-    } catch (err) {
-      console.error('Failed to copy text', err);
-    }
-  };
 
   const handleCopy = async () => {
     if (!translation) return;
@@ -1252,133 +951,41 @@ export default function App() {
         `}
       </style>
 
-      {/* Loading Transition Overlay */}
-      <AnimatePresence>
-        {isTransitioning && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className={`fixed inset-0 z-50 flex flex-col items-center justify-center ${nextMode === 'hangul' ? 'bg-[#12100E]' : 'bg-[#EEF2FF]'}`}
-          >
-            {nextMode === 'hangul' ? (
-              <div className="flex flex-col items-center text-white">
-                <motion.div
-                  animate={{ rotate: 360, scale: [1, 1.1, 1] }}
-                  transition={{ rotate: { duration: 3, repeat: Infinity, ease: "linear" }, scale: { duration: 1.5, repeat: Infinity } }}
-                  className="mb-8"
-                >
-                  <SejongSun />
-                </motion.div>
-                <motion.p
-                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                  className="font-bold text-2xl tracking-[0.2em] opacity-80"
-                >
-                  GENERATING HANGUL...
-                </motion.p>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center text-[#1A1A1A]">
-                <motion.div
-                  animate={{ y: [0, -20, 0], scale: [1, 1.05, 1], rotate: [-2, 2, -2] }}
-                  transition={{ duration: 0.6, repeat: Infinity }}
-                  className="mb-8 bg-white border-[6px] border-[#1A1A1A] p-6 rounded-[20px] shadow-[8px_8px_0px_0px_#1A1A1A]"
-                >
-                  <Sparkle />
-                </motion.div>
-                <motion.p
-                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                  className="font-black text-2xl uppercase tracking-widest text-center"
-                >
-                  RETURNING TO KOREAN SUPREME TRANSLATOR...
-                </motion.p>
-              </div>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Main App Container */}
       <main
-        className={`min-h-[100dvh] font-sans p-6 pb-[calc(4.5rem+env(safe-area-inset-bottom))] flex flex-col items-center justify-start overflow-x-hidden relative ${appMode === 'translator' ? 'text-[#1A1A1A] selection:bg-[#93C5FD]' : 'text-[#2C2825] selection:bg-[#D4C3A3]'}`}
+        className="min-h-[100dvh] font-sans p-6 pb-[calc(4.5rem+env(safe-area-inset-bottom))] flex flex-col items-center justify-start overflow-x-hidden relative text-[#1A1A1A] selection:bg-[#93C5FD]"
       >
-        <motion.div
-          className="fixed inset-0 -z-10 pointer-events-none"
-          animate={isGeneratingArt ? {
-            filter: "invert(1) hue-rotate(180deg)",
-            backgroundPositionY: ["0px", "100px", "0px", "-100px", "0px"]
-          } : {
-            filter: "invert(0) hue-rotate(0deg)",
-            backgroundPositionY: "0px"
-          }}
-          transition={isGeneratingArt ? {
-            backgroundPositionY: { repeat: Infinity, duration: 3.5, ease: "linear" },
-            filter: { duration: 0.4 }
-          } : { duration: 0.4 }}
-          style={appMode === 'translator'
-            ? { backgroundColor: '#796CE3', backgroundImage: 'radial-gradient(circle, rgba(255, 255, 255, 0.15) 3px, transparent 3px)', backgroundSize: '30px 30px' }
-            : { backgroundColor: '#796CE3', backgroundImage: 'radial-gradient(circle, rgba(255, 255, 255, 0.15) 3px, transparent 3px)', backgroundSize: '30px 30px' }
-          }
+        <div
+          className="fixed inset-0 -z-20 pointer-events-none"
+          style={{ backgroundColor: '#796CE3', backgroundImage: 'radial-gradient(circle, rgba(255, 255, 255, 0.15) 3px, transparent 3px)', backgroundSize: '30px 30px' }}
         />
 
-        {/* Top Controls */}
         <div className="w-full max-w-4xl flex justify-between items-center z-40 mb-2 relative">
           <button
-            onClick={() => handleModeSwitch(appMode === 'translator' ? 'hangul' : 'translator')}
-            className={`flex items-center justify-center w-12 h-12 transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none rounded-3xl doodle-shadow border-4 border-black text-white ${appMode === 'translator'
-              ? 'bg-[#CD2E3A] hover:bg-[#B0212E]'
-              : 'bg-[#0047A0] hover:bg-[#0032A0]'
-              }`}
-            title={appMode === 'translator' ? 'Reveal the past...' : 'Return to translator'}
+            onClick={() => setIsLensOpen(true)}
+            className="flex items-center justify-center w-12 h-12 transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none rounded-3xl doodle-shadow border-4 border-black text-white bg-[#CD2E3A] hover:bg-[#B0212E]"
+            title="Supreme Lens"
           >
-            {appMode === 'translator' ? (
-              <svg width="26" height="26" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="50" cy="50" r="10" />
-                {[0, 45, 90, 135, 180, 225, 270, 315].map(angle => (
-                  <g key={angle} style={{ transformOrigin: '50px 50px', transform: `rotate(${angle}deg)` }}>
-                    <path d="M 46 41 C 30 15 40 2 50 2 C 60 2 70 15 54 41" />
-                    <path d="M 47.5 39 C 42 22 46 12 50 12 C 54 12 58 22 52.5 39" />
-                  </g>
-                ))}
-              </svg>
-            ) : (
-              <svg width="26" height="26" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="50" cy="50" r="16" />
-                {[0, 72, 144, 216, 288].map(angle => (
-                  <g key={angle} style={{ transformOrigin: '50px 50px', transform: `rotate(${angle}deg)` }}>
-                    <path d="M 41 37 C 25 15 40 2 50 2 C 60 2 75 15 59 37" />
-                  </g>
-                ))}
-                <circle cx="50" cy="50" r="2.5" fill="currentColor" stroke="none" />
-                {[0, 60, 120, 180, 240, 300].map(angle => (
-                  <circle key={angle} cx="50" cy="41" r="2.5" fill="currentColor" stroke="none" style={{ transformOrigin: '50px 50px', transform: `rotate(${angle}deg)` }} />
-                ))}
-              </svg>
-            )}
+            <svg width="26" height="26" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="50" cy="50" r="10" />
+              {[0, 45, 90, 135, 180, 225, 270, 315].map(angle => (
+                <g key={angle} style={{ transformOrigin: '50px 50px', transform: `rotate(${angle}deg)` }}>
+                  <path d="M 46 41 C 30 15 40 2 50 2 C 60 2 70 15 54 41" />
+                  <path d="M 47.5 39 C 42 22 46 12 50 12 C 54 12 58 22 52.5 39" />
+                </g>
+              ))}
+            </svg>
           </button>
 
-          {appMode === 'translator' ? (
-            <button
-              onClick={() => setShowHistory(true)}
-              className="w-12 h-12 bg-white border-4 border-black rounded-3xl doodle-shadow flex items-center justify-center transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none hover:bg-gray-50"
-              title="History"
-            >
-              <History className="w-5 h-5 stroke-[4] text-[#1A1A1A]" />
-            </button>
-          ) : (
-            <button
-              onClick={() => setShowHangulHistory(true)}
-              className="w-12 h-12 bg-[#F6F5F2] border-4 border-[#2C2825] rounded-3xl doodle-shadow flex items-center justify-center transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none hover:bg-[#EAE6DF]"
-              title="Hangul History"
-            >
-              <History className="w-6 h-6 stroke-[3] text-[#2C2825]" />
-            </button>
-          )}
+          <button
+            onClick={() => setShowHistory(true)}
+            className="w-12 h-12 bg-white border-4 border-black rounded-3xl doodle-shadow flex items-center justify-center transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none hover:bg-gray-50"
+            title="History"
+          >
+            <History className="w-5 h-5 stroke-[4] text-[#1A1A1A]" />
+          </button>
         </div>
 
-        {/* History Modal (Translator) */}
-        {showHistory && appMode === 'translator' && (
+        {showHistory && (
           <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
             <div className="bg-white border-[6px] border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] rounded-[25px] p-6 w-full max-w-md relative max-h-[80vh] flex flex-col">
               <button
@@ -1413,63 +1020,48 @@ export default function App() {
           </div>
         )}
 
-        {/* History Modal (Hangul) */}
-        {showHangulHistory && appMode === 'hangul' && (
-          <div className="fixed inset-0 bg-[#F6F5F2]/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-            <div className="bg-[#F6F5F2] border-[6px] border-[#2C2825] shadow-[12px_12px_0px_0px_#2C2825] rounded-[255px_25px_225px_25px/25px_225px_25px_255px] p-6 w-full max-w-md relative max-h-[80vh] flex flex-col">
-              <button
-                onClick={() => setShowHangulHistory(false)}
-                className="absolute top-4 right-4 w-10 h-10 bg-[#F6F5F2] border-[4px] border-[#2C2825] shadow-[4px_4px_0px_0px_#2C2825] rounded-[255px_15px_225px_15px/15px_225px_15px_255px] flex items-center justify-center transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none hover:bg-[#EAE6DF] z-10"
-              >
-                <X className="w-6 h-6 stroke-[3] text-[#2C2825]" />
-              </button>
-              <h2 className="text-2xl font-bold text-[#2C2825] mb-6 uppercase tracking-wider pr-12">Script History</h2>
-              <div className="overflow-y-auto flex-1 pr-2 space-y-4">
-                {hangulHistory.length === 0 ? (
-                  <p className="text-[#2C2825]/60 font-text text-xl text-xl text-center italic py-8 uppercase tracking-widest">No scripts carved yet.</p>
-                ) : (
-                  hangulHistory.map((item, index) => (
-                    <div key={index} className="bg-[#F6F5F2] border-[4px] border-[#2C2825] rounded-[255px_15px_225px_15px/15px_225px_15px_255px] p-4 flex flex-col gap-2 cursor-pointer hover:bg-[#EAE6DF] transition-colors" onClick={() => {
-                      setHangulInput(item.input);
-                      setHangulOutput(item.output);
-                      setShowHangulHistory(false);
-                    }}>
-                      <span className="text-lg font-text text-xl text-[#2C2825]/60 uppercase tracking-widest">{item.input}</span>
-                      <span className="text-4xl text-[#2C2825] text-left" style={{ fontFamily: "'Black Han Sans', sans-serif" }}>{item.output}</span>
-                    </div>
-                  ))
-                )}
-              </div>
+        <div className="w-full max-w-md z-10 flex flex-col items-center pt-4 pb-12 animate-in fade-in duration-500">
+          <div className="w-full flex flex-col items-center justify-center relative mb-12 mt-6 select-none">
+            <div className="relative flex flex-col items-center justify-center w-[320px] -mb-2">
+              <svg viewBox="0 0 200 80" className="w-[280px] h-auto -mb-[35px] z-10 overflow-visible translate-y-[10px]">
+                <path id="curve" d="M 10 70 Q 100 0 190 70" fill="transparent" />
+                <text width="200">
+                  <textPath href="#curve" startOffset="50%" textAnchor="middle" className="fill-[#CD2E3A] text-[56px]" style={{ fontFamily: "'East Sea Dokdo', cursive" }}>
+                    모던 한글
+                  </textPath>
+                </text>
+              </svg>
+              <img src="/kcharacters.webp" alt="Traditional Korean Dancers" className="w-[240px] object-contain drop-shadow-md z-0" />
+            </div>
+            <div className="mt-8 flex flex-col items-center w-full px-4">
+              <span className="text-[11px] xs:text-[13px] sm:text-[15px] tracking-[0.15em] sm:tracking-[0.25em] uppercase font-bold text-[#CD2E3A] whitespace-nowrap text-center" style={{ fontFamily: "var(--font-bubbly)" }}>
+                — KOREAN TRANSLATOR SUPREME —
+              </span>
             </div>
           </div>
-        )}
 
-        {/* Translator Mode Layout */}
-        {appMode === 'translator' && (
-          <div className="w-full max-w-md z-10 flex flex-col items-center pt-4 pb-12 animate-in fade-in duration-500">
-            {/* Header */}
-            <div className="w-full flex flex-col items-center justify-center relative mb-12 mt-6 select-none">
-              <div className="relative inline-block transform -rotate-3 text-center">
-                <h1
-                  className="text-[3.2rem] sm:text-[4.5rem] md:text-[6rem] font-title leading-[1.1] tracking-normal sm:tracking-wide relative z-10 smooth-title-outline"
-                >
-                  <span className="text-[#0047A0] relative inline-block">
-                    KOREAN
-                    <div className="absolute -top-8 -left-15 sm:-top-12 sm:-left-18 z-20 pointer-events-none">
-                      <HaiChar />
-                    </div>
-                  </span><br />
-                  <span className="text-[#CD2E3A]">TRANSLATOR</span><br />
-                  <span className="text-[#0A0A0A]">SUPREME</span>
-                </h1>
-              </div>
-            </div>
-
-            {/* Input Box */}
             <div className="w-full space-y-3 z-10 relative mb-8">
-              <div className="flex bg-[#F6F5F2] border-[6px] border-[#1A1A1A] rounded-none p-1 mb-4 shadow-[8px_8px_0px_0px_#1A1A1A] self-start z-10 w-full sm:w-auto">
-                <button onClick={() => handleInputModeChange('word')} className={`flex-1 px-8 py-3 text-xl font-bubbly font-extrabold uppercase rounded-none transition-colors ${inputMode === 'word' ? 'bg-[#1A1A1A] text-white' : 'text-[#1A1A1A] hover:bg-gray-200'}`}>Word</button>
-                <button onClick={() => handleInputModeChange('conversation')} className={`flex-1 px-8 py-3 text-xl font-bubbly font-extrabold uppercase rounded-none transition-colors ${inputMode === 'conversation' ? 'bg-[#1A1A1A] text-white' : 'text-[#1A1A1A] hover:bg-gray-200'}`}>Conversation</button>
+              <div className="flex bg-[#F6F5F2] border-[4px] border-[#1A1A1A] p-[3px] rounded-full shadow-[5px_5px_0px_0px_#1A1A1A] self-start z-10 w-full sm:w-auto mb-6">
+                <button
+                  onClick={() => handleInputModeChange('word')}
+                  className={`flex-1 px-8 py-2.5 text-xl font-bubbly font-extrabold uppercase rounded-full transition-all duration-150 ${
+                    inputMode === 'word'
+                      ? 'bg-[#1A1A1A] text-white'
+                      : 'text-[#1A1A1A] hover:bg-[#1A1A1A]/10'
+                  }`}
+                >
+                  Word
+                </button>
+                <button
+                  onClick={() => handleInputModeChange('conversation')}
+                  className={`flex-1 px-8 py-2.5 text-xl font-bubbly font-extrabold uppercase rounded-full transition-all duration-150 ${
+                    inputMode === 'conversation'
+                      ? 'bg-[#1A1A1A] text-white'
+                      : 'text-[#1A1A1A] hover:bg-[#1A1A1A]/10'
+                  }`}
+                >
+                  Conversation
+                </button>
               </div>
               <div className="flex items-center justify-between px-2 mb-2">
                 <AnimatePresence mode="wait">
@@ -1539,10 +1131,8 @@ export default function App() {
                   </button>
                 </div>
               </div>
-
             </div>
 
-            {/* Translate Button */}
             <div className="relative self-center z-10 w-full mb-12 mt-4">
               <motion.button
                 whileHover={isLoading ? {} : { scale: 1.02 }}
@@ -1571,7 +1161,6 @@ export default function App() {
               )}
             </div>
 
-            {/* Output Box */}
             {(translation || isLoading) && (
               <div className="w-full space-y-3 z-10 relative mb-12 animate-in fade-in slide-in-from-bottom-6 duration-300">
                 <div className="flex items-center justify-between px-2 mb-2">
@@ -1646,7 +1235,6 @@ export default function App() {
               </div>
             )}
 
-            {/* Fun Fact Card */}
             {inputMode === 'word' && (funFact || isLoadingFunFact) && !isLoading && (
               <div className="w-full z-10 relative mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="drop-shadow-[8px_8px_0px_#1A1A1A] w-full">
@@ -1675,11 +1263,8 @@ export default function App() {
               </div>
             )}
 
-            {/* Example Section */}
             {inputMode === 'word' && translation && !isLoading && (
               <div className="w-full relative z-10 animate-in fade-in slide-in-from-bottom-8 duration-300">
-
-                {/* Cooldown UI or normal button */}
                 {!example && (
                   exampleCooldown ? (
                     <div className="drop-shadow-[8px_8px_0px_#1A1A1A] w-full mb-8">
@@ -1756,243 +1341,9 @@ export default function App() {
               </div>
             )}
           </div>
-        )}
 
-        {/* Hangul Mode Layout */}
-        {appMode === 'hangul' && (
-          <div
-            className={`w-full max-w-md z-10 flex flex-col items-center pt-8 pb-12 animate-in fade-in duration-500 relative ${isGeneratingArt ? 'text-[#F6F5F2]' : 'text-[#1A1A1A]'}`}
-          >
 
-            {/* Background Petroglyphs */}
-            <div className="absolute top-0 left-[-60px]"><SejongPetroglyph1 /></div>
-            <div className="absolute top-[40%] right-[-70px]"><SejongPetroglyph2 /></div>
 
-            {/* Header */}
-            <div className="text-center relative z-10 w-full mb-12 flex flex-col items-center">
-              <div className="flex items-center gap-4 mb-2 opacity-90">
-                <div className="w-6 h-1.5 bg-[#2C2825] rounded-sm"></div>
-                <span className="font-text text-xl text-xl md:text-2xl tracking-[0.3em] uppercase text-[#2C2825] font-black">
-                  Sinaunang
-                </span>
-                <div className="w-6 h-1.5 bg-[#2C2825] rounded-sm"></div>
-              </div>
-
-              <h1 className="text-[4rem] md:text-[5rem] font-bold text-[#F6F5F2] text-center leading-[1] tracking-wider uppercase mb-1"
-                style={{
-                  WebkitTextStroke: '2px #2C2825',
-                  filter: 'drop-shadow(6px 6px 0px #2C2825)'
-                }}>
-                Hangul
-              </h1>
-
-              <div className="flex items-center gap-4 mt-4 opacity-90">
-                <div className="w-10 h-1 bg-[#2C2825] rounded-sm"></div>
-                <span className="font-text text-xl text-lg md:text-xl tracking-[0.2em] uppercase text-[#2C2825] font-bold">
-                  Script Generator
-                </span>
-                <div className="w-10 h-1 bg-[#2C2825] rounded-sm"></div>
-              </div>
-
-              {/* Mode Toggle */}
-              <div className="flex mt-8 bg-transparent border-[4px] border-[#2C2825] p-1 rounded-[255px_15px_225px_15px/15px_225px_15px_255px]">
-                <button
-                  onClick={() => { setHangulMode('encode'); setHangulInput(''); setHangulOutput(''); setDecodedCache({}); setIsArtMode(false); setIsGeneratingArt(false); }}
-                  className={`px-4 py-2 font-text text-xl font-bold uppercase tracking-widest transition-colors rounded-xl ${hangulMode === 'encode' ? 'bg-[#2C2825] text-[#F6F5F2]' : 'text-[#2C2825] hover:bg-[#2C2825]/10'}`}
-                >
-                  CARVE (To Hangul)
-                </button>
-                <button
-                  onClick={() => { setHangulMode('decode'); setHangulInput(''); setHangulOutput(''); setDecodedCache({}); setIsArtMode(false); setIsGeneratingArt(false); }}
-                  className={`px-4 py-2 font-text text-xl font-bold uppercase tracking-widest transition-colors rounded-xl ${hangulMode === 'decode' ? 'bg-[#2C2825] text-[#F6F5F2]' : 'text-[#2C2825] hover:bg-[#2C2825]/10'}`}
-                >
-                  DECODE (From Hangul)
-                </button>
-              </div>
-            </div>
-
-            {/* Input Box */}
-            <div className="w-full space-y-3 z-10 relative mb-10">
-              <label htmlFor="hangul-input" className="text-2xl font-text text-xl text-[#2C2825] uppercase tracking-[0.1em] px-2 block font-bold">
-                {hangulMode === 'decode' ? 'Paste Hangul Characters' : 'Enter Word or Name'}
-              </label>
-              <div className="bg-transparent border-[8px] border-[#2C2825] p-6 relative">
-                <input
-                  id="hangul-input"
-                  type="text"
-                  value={hangulInput}
-                  onChange={(e) => {
-                    setHangulInput(e.target.value);
-                    setHangulOutput('');
-                    setDecodedCache({});
-                  }}
-                  onKeyDown={(e) => e.key === 'Enter' && (hangulMode === 'decode' ? handleDecodeHangul() : handleGenerateHangul())}
-                  className="flex-1 bg-transparent text-3xl font-text text-xl font-bold outline-none placeholder:text-[#2C2825]/40 w-full text-[#2C2825]"
-                  placeholder={hangulMode === 'decode' ? 'e.g. \u170E\u1700\u170C\u1700' : 'e.g. malaya'}
-                />
-                <div className="absolute -top-2 -left-2 w-4 h-4 bg-[#F6F5F2] border-r-4 border-b-4 border-[#2C2825] transform rotate-45"></div>
-                <div className="absolute -bottom-2 -right-2 w-4 h-4 bg-[#F6F5F2] border-l-4 border-t-4 border-[#2C2825] transform rotate-45"></div>
-              </div>
-            </div>
-
-            {/* Generate Button */}
-            <button
-              onClick={() => hangulMode === 'decode' ? handleDecodeHangul() : handleGenerateHangul()}
-              disabled={!hangulInput.trim() || isDecoding}
-              className="w-full bg-[#2C2825] hover:bg-[#1A1815] text-[#F6F5F2] text-3xl font-text text-xl font-bold py-6 border-4 border-transparent active:border-[#2C2825] active:bg-transparent active:text-[#2C2825] transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed mb-12 uppercase tracking-widest flex items-center justify-center"
-            >
-              {isDecoding ? <Loader2 className="w-8 h-8 mr-3 animate-spin stroke-[4]" /> : null}
-              {hangulMode === 'decode' ? 'DECODE SCRIPT!' : 'Generate Characters!'}
-            </button>
-
-            {/* Output Box */}
-            {hangulOutput && (
-              <div className="w-full relative z-10 animate-in fade-in slide-in-from-bottom-8 duration-300">
-                <motion.div
-                  ref={hangulRef}
-                  animate={isGeneratingArt ? { x: [-2, 2, -2, 2, 0], transition: { repeat: Infinity, duration: 0.2 } } : {}}
-                  className={`relative flex flex-col items-center justify-center transition-all duration-500 w-full min-h-[200px] sm:min-h-[250px] ${ 
-                    isArtMode 
-                      ? 'drop-shadow-[0_15px_30px_rgba(0,0,0,0.6)] p-[24px]' 
-                      : 'bg-[#F6F5F2] border-[8px] border-[#2C2825] p-[2.5rem]'
-                  }`}
-                >
-                  {/* ISOLATED MASK LAYER: Only cuts the background, leaving image and text perfectly solid */}
-                  {isArtMode && (
-                    <div 
-                      className="absolute inset-0 z-0 bg-[#F6F5F2]"
-                      style={{
-                        WebkitMaskImage: 'linear-gradient(black, black), radial-gradient(circle at 10px 10px, transparent 5px, black 5.5px)',
-                        maskImage: 'linear-gradient(black, black), radial-gradient(circle at 10px 10px, transparent 5px, black 5.5px)',
-                        WebkitMaskSize: 'calc(100% - 20px) calc(100% - 20px), 20px 20px',
-                        maskSize: 'calc(100% - 20px) calc(100% - 20px), 20px 20px',
-                        WebkitMaskPosition: 'center, -10px -10px',
-                        maskPosition: 'center, -10px -10px',
-                        WebkitMaskRepeat: 'no-repeat, round',
-                        maskRepeat: 'no-repeat, round',
-                        WebkitMaskComposite: 'source-over',
-                        maskComposite: 'add',
-                      }}
-                    />
-                  )}
-                  
-                  {/* The Tiny Floating Trigger Button (Hidden during Art Mode or Loading) */}
-                  {!isArtMode && !isGeneratingArt && hangulMode === 'encode' && (
-                    <motion.button 
-                      onClick={handleMorphToArt}
-                      className="absolute -right-3 -top-3 z-50 bg-[#F6F5F2] border-[3px] border-[#1A1A1A] w-10 h-10 rounded-sm flex items-center justify-center hover:bg-[#1A1A1A] hover:text-[#F6F5F2] transition-colors shadow-[2px_2px_0px_0px_#1A1A1A] text-[#1A1A1A]"
-                      title="Imprint Art Background"
-                      animate={{ rotate: [0, -15, 15, -15, 15, 0], scale: [1, 1.1, 1.1, 1] }}
-                      transition={{ duration: 0.6, delay: 1, repeat: 2, repeatDelay: 3 }}
-                    >
-                      <motion.span 
-                        initial={{ opacity: 0, y: 0 }} 
-                        animate={{ opacity: [0, 1, 1, 0], y: [0, -35, -35, -35] }} 
-                        transition={{ duration: 3.5, delay: 0.5, ease: "easeOut" }} 
-                        className="absolute left-1/2 -translate-x-1/2 text-xs font-black text-[#BF0D3E] whitespace-nowrap pointer-events-none drop-shadow-md"
-                      >
-                        TRY ME!
-                      </motion.span>
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                         <path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"/>
-                      </svg>
-                    </motion.button>
-                  )}
-                  
-                  {/* Loading State Overlay */}
-                  {isGeneratingArt && (
-                    <div className="absolute inset-0 z-40 bg-[#F6F5F2]/80 backdrop-blur-sm flex items-center justify-center font-black uppercase text-[#1A1A1A] animate-pulse">
-                      Visualizing...
-                    </div>
-                  )}
-
-                  {/* Art Mode Inner Wrapper (Z-10: Sits safely ON TOP of the mask) */}
-                  {isArtMode && (
-                    <div className="absolute inset-[24px] border-[2px] border-[#1A1A1A] overflow-hidden z-10 bg-white shadow-inner">
-                      <img src={`/art/${artBgIndex}.webp`} alt="Art Background" className="absolute inset-0 w-full h-full object-cover opacity-90" crossOrigin="anonymous" />
-                      <div className="absolute inset-0 bg-black/40"></div>
-                    </div>
-                  )}
-
-                  {/* Original Tape Corners (Hide in Art Mode) */}
-                  {!isArtMode && (
-                    <>
-                      <div className="absolute -top-3 -right-3 w-6 h-6 bg-[#F6F5F2] border-l-8 border-b-8 border-[#2C2825] transform -rotate-12 z-20"></div>
-                      <div className="absolute -bottom-3 -right-3 w-6 h-6 bg-[#F6F5F2] border-r-8 border-t-8 border-[#2C2825] transform -rotate-12 z-20"></div>
-                    </>
-                  )}
-
-                  {hangulMode === 'decode' && !isArtMode && (
-                    <div className="absolute top-4 border-[4px] border-[#2C2825] shadow-[4px_4px_0px_#2C2825] rounded-[255px_15px_225px_15px/15px_225px_15px_255px] flex p-1 mb-6 z-20">
-                      {['KO', 'EN'].map((lang) => (
-                        <button
-                          key={lang}
-                          onClick={() => handleDecodeHangul(lang as 'KO' | 'EN')}
-                          className={`px-4 py-1.5 rounded-xl font-text text-xl font-bold text-lg tracking-widest transition-all ${decodeTarget === lang
-                            ? 'bg-[#2C2825] text-[#F6F5F2]'
-                            : 'text-[#2C2825] hover:bg-[#2C2825]/10'
-                            }`}
-                        >
-                          {lang}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* The Hangul Characters (Adaptive Color) */}
-                  <div className={`relative z-20 flex flex-wrap justify-center items-center gap-2 w-full ${isArtMode
-                      ? 'text-[#F6F5F2] drop-shadow-[0_4px_12px_rgba(0,0,0,1)]'
-                      : 'text-[#2C2825]'
-                    }`}>
-                    {/* DO NOT TOUCH: The actual Hangul text MUST remain Noto Sans Korean */}
-                    {hangulMode === 'encode' ? (
-                      <span className="text-7xl mb-10 text-center break-words w-full block" style={{ fontFamily: "'Black Han Sans', sans-serif" }}>
-                        {hangulOutput}
-                      </span>
-                    ) : (
-                      <span className="text-4xl mt-12 mb-10 text-center break-words w-full block font-text text-xl tracking-widest uppercase font-bold">
-                        {hangulOutput}
-                      </span>
-                    )}
-                  </div>
-
-                </motion.div>
-
-                <div className="flex flex-col gap-3 mt-6">
-                  <button
-                    onClick={handleCopyHangul}
-                    className="flex items-center gap-3 bg-transparent hover:bg-[#2C2825] hover:text-[#F6F5F2] text-[#2C2825] px-6 py-4 border-4 border-[#2C2825] text-xl font-text text-xl font-bold uppercase transition-colors duration-150 tracking-wider w-full justify-center"
-                  >
-                    {isHangulCopied ? <Check className="w-6 h-6 stroke-[3]" /> : <Copy className="w-6 h-6 stroke-[3]" />}
-                    {isHangulCopied ? 'COPIED!' : 'COPY CHARACTERS'}
-                  </button>
-                  {hangulMode === 'encode' && (
-                    <button
-                      onClick={handleDownloadImage}
-                      className="flex items-center gap-3 bg-transparent hover:bg-[#2C2825] hover:text-[#F6F5F2] text-[#2C2825] px-6 py-4 border-4 border-[#2C2825] text-xl font-text text-xl font-bold uppercase transition-colors duration-150 tracking-wider w-full justify-center"
-                    >
-                      <Download className="w-6 h-6 stroke-[3]" />
-                      SAVE AS IMAGE
-                    </button>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Floating Action Button - Fixed bottom center (Standalone Cartoon Lens) */}
-        <div className="absolute bottom-6 left-0 w-full flex justify-center z-40 pointer-events-none">
-          <button
-            onClick={() => setIsLensOpen(true)}
-            className="pointer-events-auto cursor-pointer drop-shadow-[4px_4px_0px_#1A1A1A] hover:drop-shadow-[6px_6px_0px_#1A1A1A] active:drop-shadow-[0px_0px_0px_#1A1A1A] transition-all duration-150 outline-none bg-transparent border-none p-0"
-            title="Supreme Lens"
-          >
-            <CartoonCamera />
-          </button>
-        </div>
-
-        {/* Mount Supreme Lens Overlay */}
         <AnimatePresence>
           {isLensOpen && (
             <SupremeLens
@@ -2002,7 +1353,6 @@ export default function App() {
           )}
         </AnimatePresence>
 
-        {/* The Stamp Gallery Button - Hidden when Stamp Machine is active */}
         {isLensOpen && !showStampMachine && !lensHasCapture && (
           <motion.button
             whileHover={{ scale: 1.05 }}
@@ -2011,7 +1361,6 @@ export default function App() {
             className="fixed bottom-12 left-8 z-[9999] bg-[#E5E7EB] text-[#1A1A1A] w-[68px] h-[68px] rounded-xl border-[3px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] flex items-center justify-center overflow-hidden hover:bg-[#D1D5DB] transition-colors"
             title="Open Stamp Gallery"
           >
-            {/* Gallery Thumbnail Vibe */}
             <div className="absolute inset-1 border-[2px] border-dashed border-[#9CA3AF] rounded-md pointer-events-none"></div>
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="z-10 text-[#4B5563]">
               <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
