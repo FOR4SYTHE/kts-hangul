@@ -959,26 +959,34 @@ export default function App() {
         className="min-h-[100dvh] font-sans p-6 pb-[calc(4.5rem+env(safe-area-inset-bottom))] flex flex-col items-center justify-start overflow-x-hidden relative text-[#1A1A1A] selection:bg-[#7D0A3C] selection:text-white"
       >
         {/* ============================================================================
-            TWILIGHT BOLASAEK CANVAS
+            TWILIGHT BOLASAEK CANVAS (HARDWARE ACCELERATED & OPTIMIZED FOR MOBILE/TABLET)
             ============================================================================ */}
-        {/* LAYER 1: Deep Twilight Indigo-Purple Base Paint */}
-        <div className="fixed inset-0 -z-30 pointer-events-none bg-[#12324F]" />
+        {/* LAYER 1: Solid Twilight Indigo-Purple Base Paint */}
+        <div 
+          className="fixed inset-0 -z-30 pointer-events-none bg-[#12324F]" 
+          style={{ transform: 'translateZ(0)' }} /* ◄ Forces hardware GPU acceleration */
+        />
 
-        {/* LAYER 2: Solid-Filled Seigaiha Waves (Superfine, Highly Subtle & Deep Twilight) */}
+        {/* LAYER 2: Opaque Seigaiha Waves (GPU Layer Cached) */}
         <div
           className="fixed inset-0 -z-20 pointer-events-none opacity-[0.35]"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='50' viewBox='0 0 100 50'%3E%3Crect width='100' height='50' fill='%2312324F'/%3E%3Cdefs%3E%3Cg id='w'%3E%3Ccircle cx='0' cy='0' r='48' fill='%2312324F' stroke='%231E4366' stroke-width='2.5'/%3E%3Ccircle cx='0' cy='0' r='40' fill='%2312324F' stroke='%231E4366' stroke-width='2.5'/%3E%3Ccircle cx='0' cy='0' r='32' fill='%2312324F' stroke='%231E4366' stroke-width='2.5'/%3E%3Ccircle cx='0' cy='0' r='24' fill='%2312324F' stroke='%231E4366' stroke-width='2.5'/%3E%3Ccircle cx='0' cy='0' r='16' fill='%2312324F' stroke='%231E4366' stroke-width='2.5'/%3E%3Ccircle cx='0' cy='0' r='8' fill='%2312324F' stroke='%231E4366' stroke-width='2.5'/%3E%3C/g%3E%3C/defs%3E%3Cuse href='%23w' x='-50' y='-25'/%3E%3Cuse href='%23w' x='50' y='-25'/%3E%3Cuse href='%23w' x='150' y='-25'/%3E%3Cuse href='%23w' x='0' y='0'/%3E%3Cuse href='%23w' x='100' y='0'/%3E%3Cuse href='%23w' x='-50' y='25'/%3E%3Cuse href='%23w' x='50' y='25'/%3E%3Cuse href='%23w' x='150' y='25'/%3E%3Cuse href='%23w' x='0' y='50'/%3E%3Cuse href='%23w' x='100' y='50'/%3E%3Cuse href='%23w' x='-50' y='75'/%3E%3Cuse href='%23w' x='50' y='75'/%3E%3Cuse href='%23w' x='150' y='75'/%3E%3C/svg%3E")`,
             backgroundSize: '76px 38px',
-            backgroundRepeat: 'repeat'
+            backgroundRepeat: 'repeat',
+            transform: 'translateZ(0)', /* ◄ Keeps layer composited in GPU memory */
+            willChange: 'transform',
+            contentVisibility: 'auto'   /* ◄ Browser containment rule to skip hidden paints */
           }}
         />
 
-        {/* LAYER 3: Tactile Film Grain Overlay (Warm Cinematic Vignette Overlay) */}
+        {/* LAYER 3: Static Film Grain Overlay (Optimized Texture Map) */}
         <div
-          className="fixed inset-0 -z-10 pointer-events-none opacity-[0.18] mix-blend-overlay"
+          className="fixed inset-0 -z-10 pointer-events-none opacity-[0.15]"
           style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.80' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.80' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+            transform: 'translateZ(0)',
+            mixBlendMode: 'overlay' /* ◄ Kept inline explicitly to separate background blending */
           }}
         />
 
