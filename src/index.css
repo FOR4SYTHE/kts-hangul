@@ -17,6 +17,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'ABeePudding';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_five@2.0/UhBeepuding.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 textarea#english-input {
   font-family: 'QTPI', 'Gaegu', sans-serif !important;
 }
@@ -30,6 +38,7 @@ textarea#english-input {
   --font-qtpi: 'QTPI', 'Gaegu', sans-serif;
   --font-sniglet: 'Sniglet', 'Jua', sans-serif;
   --font-lotteria: 'LotteriaChwapttaenggyeo', sans-serif;
+  --font-pudding: 'DynaPuff', 'ABeePudding', cursive;
 }
 
 @layer utilities {

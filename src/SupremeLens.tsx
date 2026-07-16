@@ -3,36 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import gsap from 'gsap';
 import { X, Info, Zap, ZapOff, RefreshCcw, Camera, Copy, Check } from 'lucide-react';
 
-const toBaybayin = (text: string) => {
-  if (!text) return "";
-  let str = text.toLowerCase().replace(/f/g, 'p').replace(/v/g, 'b').replace(/z/g, 's').replace(/j/g, 'dy').replace(/c/g, 'k').replace(/x/g, 'ks').replace(/q/g, 'k');
-  const vowels: Record<string, string> = { 'a': '\u1700', 'e': '\u1701', 'i': '\u1701', 'o': '\u1702', 'u': '\u1702' };
-  const consonants: Record<string, string> = { 'k': '\u1703', 'g': '\u1704', 'ng': '\u1705', 't': '\u1706', 'd': '\u1707', 'r': '\u1707', 'n': '\u1708', 'p': '\u1709', 'b': '\u170A', 'm': '\u170B', 'y': '\u170C', 'l': '\u170E', 'w': '\u170F', 's': '\u1710', 'h': '\u1711' };
-  let result = ""; let i = 0;
-  while (i < str.length) {
-    let char = str[i]; let nextChar = str[i + 1]; let twoChar = char + (nextChar || "");
-    if (twoChar === 'ng' && consonants['ng']) {
-      let third = str[i + 2];
-      if (vowels[third]) {
-        if (third === 'a') result += consonants['ng'];
-        else if (third === 'e' || third === 'i') result += consonants['ng'] + '\u1712';
-        else if (third === 'o' || third === 'u') result += consonants['ng'] + '\u1713';
-        i += 3;
-      } else { result += consonants['ng'] + '\u1714'; i += 2; }
-      continue;
-    }
-    if (consonants[char]) {
-      if (vowels[nextChar]) {
-        if (nextChar === 'a') result += consonants[char];
-        else if (nextChar === 'e' || nextChar === 'i') result += consonants[char] + '\u1712';
-        else if (nextChar === 'o' || nextChar === 'u') result += consonants[char] + '\u1713';
-        i += 2;
-      } else { result += consonants[char] + '\u1714'; i += 1; }
-    } else if (vowels[char]) { result += vowels[char]; i += 1; }
-    else { result += char; i += 1; }
-  }
-  return result;
-};
 
 // Hand-drawn sparkle decoration
 const CartoonSparkle = () => (
@@ -53,7 +23,7 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
   const [resultText, setResultText] = useState('');
   const [displayedText, setDisplayedText] = useState('');
 
-  const [scanData, setScanData] = useState<{ text: string, lang: 'EN' | 'TL' } | null>(null);
+  const [scanData, setScanData] = useState<{ text: string, lang: 'EN' | 'KO' } | null>(null);
 
   const [scanTime, setScanTime] = useState(0);
   const [lensCooldown, setLensCooldown] = useState<number | null>(null);
@@ -62,12 +32,18 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
   // Hardware States
   const [flashOn, setFlashOn] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(1);
-  const [mode, setMode] = useState<'EN' | 'TL' | 'BAY'>('EN');
+  const [mode, setMode] = useState<'EN' | 'KO'>('EN');
   const [showInfo, setShowInfo] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const scanlineRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (mode !== 'EN' && mode !== 'KO') {
+      setMode('EN');
+    }
+  }, [mode]);
 
   useEffect(() => {
     onCapturedChange?.(!!capturedImage);
@@ -152,7 +128,7 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
     }
   }, [isProcessing]);
 
-  const translateCachedText = async (text: string, direction: 'en-tl' | 'tl-en') => {
+  const translateCachedText = async (text: string, direction: 'en-ko' | 'ko-en') => {
     const response = await fetch('/api/translate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -233,10 +209,8 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
       // BEYOND PLUS ULTRA: Strip markdown asterisks and hashtags for a premium, clean look
       text = text.replace(/[*#]/g, '');
 
-      const extractedLang = mode === 'BAY' ? 'TL' : mode;
+      const extractedLang = mode;
       setScanData({ text, lang: extractedLang });
-
-      if (mode === 'BAY') text = toBaybayin(text);
 
       setResultText(text);
     } catch (error) {
@@ -267,12 +241,12 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
       let i = 0;
       const interval = setInterval(() => {
         setDisplayedText(resultText.slice(0, i));
-        i += mode === 'BAY' ? 1 : 2;
+        i += 2;
         if (i > resultText.length) clearInterval(interval);
       }, 10);
       return () => clearInterval(interval);
     }
-  }, [resultText, isProcessing, mode]);
+  }, [resultText, isProcessing]);
 
   const getWaitingMessage = (time: number) => {
     if (time > 25) return "ALMOST THERE, PROMISE... 😅";
@@ -287,8 +261,8 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
 
   return (
     <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 50 }}
-      className="fixed inset-0 z-50 flex flex-col font-sans bg-[#EEF2FF] overflow-hidden"
-      style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M0 0h20v20H0zM20 20h20v20H20z\' fill=\'%23E0E7FF\' fill-opacity=\'0.6\'/%3E%3C/svg%3E")' }}
+      className="fixed inset-0 z-50 flex flex-col font-sans bg-[#796CE3] overflow-hidden"
+      style={{ backgroundImage: 'radial-gradient(circle, rgba(255, 255, 255, 0.15) 3px, transparent 3px)', backgroundSize: '30px 30px' }}
     >
 
       {/* CARTOON TOP DASHBOARD */}
@@ -296,14 +270,14 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
 
         {/* Left Side: Info & Flash */}
         <div className="flex gap-3">
-          <button onClick={() => setShowInfo(true)} className="w-12 h-12 bg-[#F6F5F2] rounded-[15px_225px_15px_255px/255px_15px_225px_15px] border-[4px] border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] active:translate-y-1 active:translate-x-1 active:shadow-none transition-all flex items-center justify-center text-[#1A1A1A]">
+          <button onClick={() => setShowInfo(true)} className="w-12 h-12 bg-[#F6F5F2] rounded-3xl border-[4px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all flex items-center justify-center text-[#1A1A1A]">
             <Info strokeWidth={4} size={22} />
           </button>
 
           {/* Cartoon Slide Toggle for Flash */}
           <button
             onClick={() => setFlashOn(!flashOn)}
-            className={`relative w-20 h-12 rounded-full border-[4px] border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] active:translate-y-1 active:translate-x-1 active:shadow-none transition-all p-1 flex items-center ${flashOn ? 'bg-[#FDE047]' : 'bg-[#EF4444]'}`}
+            className={`relative w-20 h-12 rounded-full border-[4px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all p-1 flex items-center ${flashOn ? 'bg-[#FED141]' : 'bg-[#EF4444]'}`}
           >
             <motion.div
               animate={{ x: flashOn ? 32 : 0 }}
@@ -315,73 +289,77 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
           </button>
         </div>
 
-        {/* Center: Wobbly Mode Pill */}
-        <div className="bg-[#F6F5F2] border-[4px] border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-[255px_15px_225px_15px/15px_225px_15px_255px] flex p-1">
-          {['EN', 'TL', 'BAY'].map((m) => (
-            <button
-              key={m}
-              onClick={async () => {
-                const newMode = m as 'EN' | 'TL' | 'BAY';
-                if (newMode === mode) return;
+        {/* Center: Mode Pill */}
+        <div className="flex bg-[#F6F5F2] border-[4px] border-[#1A1A1A] p-[3px] rounded-full shadow-[5px_5px_0px_0px_#1A1A1A] z-10 relative select-none">
+          {['EN', 'KO'].map((m) => {
+            const isActive = mode === m;
+            return (
+              <button
+                key={m}
+                onClick={async () => {
+                  const newMode = m as 'EN' | 'KO';
+                  if (newMode === mode) return;
 
-                if (!capturedImage || !scanData) {
-                  setMode(newMode);
-                  return;
-                }
-
-                setMode(newMode);
-                setDisplayedText('');
-                setResultText('');
-
-                const targetLang = newMode === 'BAY' ? 'TL' : newMode;
-                let finalRawText = scanData.text;
-
-                if (scanData.lang !== targetLang) {
-                  setIsProcessing(true);
-                  try {
-                    const direction = scanData.lang === 'EN' ? 'en-tl' : 'tl-en';
-                    finalRawText = await translateCachedText(scanData.text, direction);
-                    setScanData({ text: finalRawText, lang: targetLang });
-                  } catch (e: any) {
-                    console.error(e);
-                    if (e.message === "429") {
-                      return; // Stop execution, cooldown triggered
-                    }
-                    if (e.message === "503") {
-                      finalRawText = "ORACLE OVERLOADED: GOOGLE SERVERS BUSY. PLEASE TRY AGAIN LATER.";
-                    } else {
-                      finalRawText = "Error communicating with the oracle.";
-                    }
-                  } finally {
-                    setIsProcessing(false);
+                  if (!capturedImage || !scanData) {
+                    setMode(newMode);
+                    return;
                   }
-                }
 
-                if (finalRawText !== "Error communicating with the oracle." && finalRawText !== "ORACLE OVERLOADED: GOOGLE SERVERS BUSY. PLEASE TRY AGAIN LATER.") {
-                  setResultText(newMode === 'BAY' ? toBaybayin(finalRawText) : finalRawText);
-                } else {
+                  setMode(newMode);
+                  setDisplayedText('');
+                  setResultText('');
+
+                  const targetLang = newMode;
+                  let finalRawText = scanData.text;
+
+                  if (scanData.lang !== targetLang) {
+                    setIsProcessing(true);
+                    try {
+                      const direction = scanData.lang === 'EN' ? 'en-ko' : 'ko-en';
+                      finalRawText = await translateCachedText(scanData.text, direction);
+                      setScanData({ text: finalRawText, lang: targetLang });
+                    } catch (e: any) {
+                      console.error(e);
+                      if (e.message === "429") {
+                        return; // Stop execution, cooldown triggered
+                      }
+                      if (e.message === "503") {
+                        finalRawText = "ORACLE OVERLOADED: GOOGLE SERVERS BUSY. PLEASE TRY AGAIN LATER.";
+                      } else {
+                        finalRawText = "Error communicating with the oracle.";
+                      }
+                    } finally {
+                      setIsProcessing(false);
+                    }
+                  }
+
                   setResultText(finalRawText);
-                }
-              }}
-              className={`px-4 py-2 rounded-xl font-black text-sm tracking-widest transition-all ${mode === m
-                ? 'bg-[#1A1A1A] text-[#FDE047] shadow-[inset_0px_4px_0px_rgba(255,255,255,0.2)]'
-                : 'text-[#1A1A1A] hover:bg-gray-200'
-                }`}
-            >
-              {m}
-            </button>
-          ))}
+                }}
+                className="relative flex-1 w-16 px-4 py-2 rounded-full font-bubbly font-extrabold text-sm uppercase transition-colors duration-150 z-10 flex items-center justify-center outline-none"
+                style={{ color: isActive ? '#F6F5F2' : '#1A1A1A' }}
+              >
+                {isActive && (
+                  <motion.div
+                    layoutId="activeTabIndicator"
+                    className="absolute inset-0 bg-[#1A1A1A] rounded-full -z-10 shadow-[inset_0px_4px_0px_rgba(255,255,255,0.2)]"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+                {m}
+              </button>
+            );
+          })}
         </div>
 
         {/* Right Side: Close */}
-        <button onClick={onClose} className="w-12 h-12 bg-[#F6F5F2] rounded-[255px_15px_225px_15px/15px_225px_15px_255px] border-[4px] border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] active:translate-y-1 active:translate-x-1 active:shadow-none transition-all flex items-center justify-center text-[#1A1A1A]">
+        <button onClick={onClose} className="w-12 h-12 bg-[#F6F5F2] rounded-3xl border-[4px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all flex items-center justify-center text-[#1A1A1A]">
           <X strokeWidth={4} size={24} />
         </button>
 
       </div>
 
-      {/* MASSIVE CARTOON VIEWFINDER (Fills Space) */}
-      <div className="relative flex-grow mx-4 my-2 bg-black rounded-3xl border-[6px] border-[#1A1A1A] shadow-[8px_8px_0px_#1A1A1A] overflow-hidden flex flex-col">
+      {/* MASSIVE VIEWFINDER (Fills Space) */}
+      <div className="relative flex-grow mx-4 my-2 bg-black rounded-[32px] border-[6px] border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] overflow-hidden flex flex-col">
         {!capturedImage ? (
           <video ref={videoRef} autoPlay playsInline style={{ transform: `scale(${zoomLevel})` }} className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 ease-out" />
         ) : (
@@ -411,7 +389,7 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
         {isProcessing && (
           <>
             <div className="absolute inset-0 bg-black/50 z-10" />
-            <div ref={scanlineRef} className="absolute top-0 left-0 w-full h-4 bg-[#FDE047] shadow-[0_0_20px_#FDE047] opacity-80 z-20" />
+            <div ref={scanlineRef} className="absolute top-0 left-0 w-full h-4 bg-[#FED141] shadow-[0_0_20px_#FED141] opacity-80 z-20" />
             <div className="absolute inset-0 z-30 flex flex-col items-center justify-center pointer-events-none px-6">
 
               <div className="relative flex justify-center items-center w-full mb-4">
@@ -425,7 +403,7 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
               </div>
 
               {scanTime > 0 && (
-                <span className="text-[#FDE047] font-black text-xl tracking-widest border-[3px] border-[#1A1A1A] bg-[#1A1A1A]/80 px-5 py-1.5 rounded-full shadow-[4px_4px_0px_#1A1A1A]">
+                <span className="text-[#FED141] font-black text-xl tracking-widest border-[3px] border-[#1A1A1A] bg-[#1A1A1A]/80 px-5 py-1.5 rounded-full shadow-[4px_4px_0px_#1A1A1A]">
                   {scanTime}s
                 </span>
               )}
@@ -440,7 +418,7 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
             <span className="text-white font-title text-3xl tracking-widest uppercase text-center" style={{ WebkitTextStroke: '1px #1A1A1A' }}>
               LENS COOLING DOWN
             </span>
-            <span className="text-[#FDE047] font-black text-4xl mt-2">
+            <span className="text-[#FED141] font-black text-4xl mt-2">
               {lensCooldown}s
             </span>
           </div>
@@ -456,7 +434,7 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
         {/* Left: Retake Button */}
         <div className="w-20">
           {capturedImage && (
-            <button onClick={() => { setCapturedImage(null); setResultText(''); setDisplayedText(''); setScanData(null); }} className="w-16 h-16 bg-[#F6F5F2] rounded-full border-[5px] border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] active:translate-y-1 active:translate-x-1 active:shadow-none flex items-center justify-center text-[#1A1A1A] transition-all">
+            <button onClick={() => { setCapturedImage(null); setResultText(''); setDisplayedText(''); setScanData(null); }} className="w-16 h-16 bg-[#F6F5F2] rounded-3xl border-[5px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none flex items-center justify-center text-[#1A1A1A] transition-all">
               <RefreshCcw strokeWidth={4} size={24} />
             </button>
           )}
@@ -466,7 +444,7 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
         {!capturedImage ? (
           <div className="relative">
             <CartoonSparkle />
-            <button onClick={handleSnap} className="w-[100px] h-[100px] bg-[#FDE047] rounded-[255px_225px_255px_225px/225px_255px_225px_255px] border-[6px] border-[#1A1A1A] shadow-[6px_6px_0px_#1A1A1A] active:translate-y-2 active:translate-x-2 active:shadow-none transition-all flex items-center justify-center outline-none hover:bg-[#FDF08A]">
+            <button onClick={handleSnap} className="w-[100px] h-[100px] bg-[#FED141] hover:bg-[#E5BC3A] rounded-full border-[6px] border-[#1A1A1A] shadow-[6px_6px_0px_0px_#1A1A1A] active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all flex items-center justify-center outline-none">
               <div className="w-14 h-14 rounded-full border-[5px] border-[#1A1A1A] bg-[#F6F5F2]"></div>
             </button>
           </div>
@@ -477,13 +455,13 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
         {/* Right: iPhone-style Discrete Zoom Switch (Cartoonified) */}
         <div className="w-20 flex justify-end">
           {!capturedImage && (
-            <div className="bg-[#F6F5F2] border-[4px] border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-full flex flex-col p-1 gap-1">
+            <div className="bg-[#F6F5F2] border-[4px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] rounded-3xl flex flex-col p-1 gap-1">
               {[3, 2, 1].map((z) => (
                 <button
                   key={z}
                   onClick={() => setZoomLevel(z)}
-                  className={`w-10 h-10 rounded-full font-black text-sm tracking-tighter transition-all flex items-center justify-center ${zoomLevel === z
-                    ? 'bg-[#1A1A1A] text-[#FDE047]'
+                  className={`w-10 h-10 rounded-full font-bubbly font-extrabold text-sm transition-all flex items-center justify-center ${zoomLevel === z
+                    ? 'bg-[#1A1A1A] text-[#FED141]'
                     : 'text-[#1A1A1A] hover:bg-gray-200'
                     }`}
                 >
@@ -498,14 +476,14 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
       {/* TEXT OUTPUT BOARD */}
       <AnimatePresence>
         {displayedText && (
-          <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="absolute bottom-[20%] left-6 right-6 bg-[#F6F5F2] border-[6px] border-[#1A1A1A] rounded-[255px_15px_225px_15px/15px_225px_15px_255px] p-6 shadow-[8px_8px_0px_#1A1A1A] z-40 max-h-[40vh] flex flex-col">
+          <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="absolute bottom-[20%] left-6 right-6 bg-[#D3D6CB] border-[6px] border-[#1A1A1A] rounded-[32px] p-6 shadow-[8px_8px_0px_0px_#1A1A1A] z-40 max-h-[40vh] flex flex-col">
 
             {/* Copy Button Header */}
             {!isErrorState && (
               <div className="w-full flex justify-end mb-2">
                 <button
                   onClick={handleCopyLens}
-                  className="flex items-center gap-2 bg-white hover:bg-gray-100 text-[#1A1A1A] px-3 py-1.5 border-[3px] border-[#1A1A1A] shadow-[2px_2px_0px_0px_#1A1A1A] rounded-[15px_225px_15px_255px/255px_15px_225px_15px] text-xs font-black uppercase transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+                  className="flex items-center gap-2 bg-[#E8E6D9] hover:bg-[#D9D7C8] text-[#1A1A1A] px-4 py-2 border-[3px] border-[#1A1A1A] shadow-[2px_2px_0px_0px_#1A1A1A] rounded-xl text-xs font-bubbly font-extrabold uppercase transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
                 >
                   {isLensCopied ? <Check className="w-4 h-4 text-green-600" strokeWidth={4} /> : <Copy className="w-4 h-4" strokeWidth={4} />}
                   {isLensCopied ? 'COPIED' : 'COPY'}
@@ -514,7 +492,7 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
             )}
 
             <div className="overflow-y-auto pr-2">
-              <p className={`text-[#1A1A1A] font-medium leading-relaxed whitespace-pre-wrap ${mode === 'BAY' ? 'text-5xl font-["Noto_Sans_Tagalog"] text-center mt-4' : 'text-xl font-box'}`}>
+              <p className="text-[#1A1A1A] leading-relaxed whitespace-pre-wrap text-2xl font-qtpi">
                 {displayedText}
               </p>
             </div>
@@ -526,14 +504,29 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
       <AnimatePresence>
         {showInfo && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/60 z-50 flex items-center justify-center p-6 backdrop-blur-sm">
-            <div className="bg-[#F6F5F2] border-[6px] border-[#1A1A1A] p-8 rounded-[25px_125px_25px_125px/125px_25px_125px_25px] shadow-[12px_12px_0px_#1A1A1A] relative max-w-sm w-full">
-              <button onClick={() => setShowInfo(false)} className="absolute top-4 right-4 w-10 h-10 bg-white border-[4px] border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-full flex items-center justify-center active:translate-y-1 active:translate-x-1 active:shadow-none transition-all">
+            <div className="bg-[#F6F5F2] border-[6px] border-[#1A1A1A] p-8 rounded-[32px] shadow-[8px_8px_0px_0px_#1A1A1A] relative max-w-sm w-full">
+              <button onClick={() => setShowInfo(false)} className="absolute top-4 right-4 w-10 h-10 bg-white border-[4px] border-[#1A1A1A] shadow-[3px_3px_0px_0px_#1A1A1A] rounded-full flex items-center justify-center active:translate-y-[3px] active:translate-x-[3px] active:shadow-none transition-all">
                 <X strokeWidth={4} />
               </button>
               <h3 className="text-3xl font-title uppercase mb-6 text-[#1A1A1A] border-b-[4px] border-[#1A1A1A] pb-2 inline-block">LENS GUIDE</h3>
-              <ul className="space-y-6 text-lg font-black text-[#1A1A1A] uppercase tracking-tight">
+              <ul className="space-y-6 text-lg font-bubbly font-extrabold text-[#1A1A1A] uppercase tracking-tight">
                 <li className="flex items-center gap-4"><Zap strokeWidth={4} className="text-[#EF4444]" /> Hardware Flash Toggle</li>
-                <li className="flex items-center gap-4"><span className="px-3 py-1 bg-[#1A1A1A] text-[#FDE047] rounded-lg">EN/TL</span> Translation Engine</li>
+                <li className="flex flex-col items-start gap-2">
+                  <div className="flex items-center gap-4">
+                    <span className="px-3 py-1 bg-[#1A1A1A] text-[#FED141] rounded-lg">EN/KO</span> 
+                    <span>Translation Engine</span>
+                  </div>
+                  <div className="pl-16 text-sm font-sans font-extrabold text-[#1A1A1A]/70 normal-case tracking-normal space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span className="px-1.5 py-0.5 bg-[#1A1A1A] text-[#FED141] rounded text-[10px] font-bubbly">EN</span>
+                      <span>Translate scan to English</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="px-1.5 py-0.5 bg-[#1A1A1A] text-[#FED141] rounded text-[10px] font-bubbly">KO</span>
+                      <span>Translate scan to Korean</span>
+                    </div>
+                  </div>
+                </li>
                 <li className="flex items-center gap-4"><span className="w-8 h-8 rounded-full border-[4px] border-[#1A1A1A] flex items-center justify-center text-sm bg-white">1x</span> Camera Zoom Scale</li>
                 <li className="flex items-center gap-4"><Camera strokeWidth={4} className="text-[#38BDF8]" /> Snap to translate!</li>
               </ul>
