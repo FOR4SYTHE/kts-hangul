@@ -211,16 +211,18 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
   });
 
   useEffect(() => {
+    if (activeTab === 'archive') {
+      if (videoRef.current?.srcObject) {
+        const oldStream = videoRef.current.srcObject as MediaStream;
+        oldStream.getTracks().forEach(track => track.stop());
+        videoRef.current.srcObject = null;
+      }
+    }
+  }, [activeTab]);
+
+  useEffect(() => {
     let stream: MediaStream | null = null;
     const startCamera = async () => {
-      if (activeTab === 'archive') {
-        if (videoRef.current?.srcObject) {
-          const oldStream = videoRef.current.srcObject as MediaStream;
-          oldStream.getTracks().forEach(track => track.stop());
-          videoRef.current.srcObject = null;
-        }
-        return;
-      }
       try {
         if (videoRef.current?.srcObject) {
           const oldStream = videoRef.current.srcObject as MediaStream;
@@ -237,7 +239,7 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
     };
     if (punchState === 'viewfinder' && activeTab === 'camera') startCamera();
     return () => { if (stream) stream.getTracks().forEach(track => track.stop()); };
-  }, [punchState, facingMode, activeTab]);
+  }, [punchState, activeTab]);
 
   const handleFallbackUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -450,7 +452,6 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4 }}
           className="absolute inset-0 pt-24 pb-36 px-4 overflow-y-auto flex flex-col items-center z-20"
-          style={{ transform: 'translateZ(0)', willChange: 'transform' }}
         >
           <div className="relative mb-12">
             <h2 className="text-[#1A1A1A] font-bubbly font-extrabold text-[2.5rem] uppercase tracking-widest text-center">
@@ -497,7 +498,7 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
                         <path fill="#F6F5F2" d={stampPath} />
                       </svg>
                       <div className="relative z-10 w-[84%] h-[88%] border-[2px] border-[#1A1A1A] overflow-hidden bg-white">
-                        <img src={entry.data} className="w-full h-full object-cover grayscale-[0.1] contrast-[1.1]" loading="lazy" decoding="async" />
+                        <img src={entry.data} className="w-full h-full object-cover grayscale-[0.1] contrast-[1.1]" />
                       </div>
                     </motion.div>
                   </div>
