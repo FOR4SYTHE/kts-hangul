@@ -723,6 +723,11 @@ export default function App() {
 
   const [exampleCooldown, setExampleCooldown] = useState<number | null>(null);
 
+  const translateButtonRef = useRef<HTMLDivElement>(null);
+  const resultSectionRef = useRef<HTMLDivElement>(null);
+  const exampleSectionRef = useRef<HTMLDivElement>(null);
+
+
   const englishSuggestions = ['hello', 'how are you?', 'thank you', 'good morning', 'I love you'];
   const koreanSuggestions = ['안녕하세요', '감사합니다', '대박', '사랑해', '안녕'];
 
@@ -852,6 +857,9 @@ export default function App() {
       const data = await response.json();
       if (data.translation) {
         setTranslation(data.translation);
+        setTimeout(() => {
+          resultSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 150);
         playResultBamSound();
         setConversationContext(data.context || null);
         setHistory(prev => {
@@ -934,6 +942,9 @@ export default function App() {
           koreanSentence: targetSentence,
           englishTranslation: data.sourceTranslation || data.englishTranslation
         });
+        setTimeout(() => {
+          exampleSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 150);
         // Example sentence: ko-en = English male, en-ko = Korean female.
         prefetchAudio(targetSentence, setExampleAudioUrl, direction === 'ko-en' ? 'en-US' : 'ko-KR', direction === 'ko-en' ? 'male' : 'female');
       }
@@ -964,15 +975,15 @@ export default function App() {
         {/* ============================================================================
             TWILIGHT BOLASAEK CANVAS (HARDWARE ACCELERATED & OPTIMIZED FOR MOBILE/TABLET)
             ============================================================================ */}
-        {/* LAYER 1: Solid Twilight Indigo-Purple Base Paint */}
+        {/* LAYER 1: Deep Twilight Indigo-Purple Base */}
         <div
-          className="fixed inset-0 -z-30 pointer-events-none bg-[#12324F]"
+          className="fixed w-[100vw] h-[120vh] top-[-10vh] left-0 -z-30 pointer-events-none bg-[#12324F]"
           style={{ transform: 'translateZ(0)' }} /* ◄ Forces hardware GPU acceleration */
         />
 
         {/* LAYER 2: Opaque Seigaiha Waves (GPU Layer Cached) */}
         <div
-          className="fixed inset-0 -z-20 pointer-events-none opacity-[0.35]"
+          className="fixed w-[100vw] h-[120vh] top-[-10vh] left-0 -z-20 pointer-events-none opacity-[0.35]"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='50' viewBox='0 0 100 50'%3E%3Crect width='100' height='50' fill='%2312324F'/%3E%3Cdefs%3E%3Cg id='w'%3E%3Ccircle cx='0' cy='0' r='48' fill='%2312324F' stroke='%231E4366' stroke-width='2.5'/%3E%3Ccircle cx='0' cy='0' r='40' fill='%2312324F' stroke='%231E4366' stroke-width='2.5'/%3E%3Ccircle cx='0' cy='0' r='32' fill='%2312324F' stroke='%231E4366' stroke-width='2.5'/%3E%3Ccircle cx='0' cy='0' r='24' fill='%2312324F' stroke='%231E4366' stroke-width='2.5'/%3E%3Ccircle cx='0' cy='0' r='16' fill='%2312324F' stroke='%231E4366' stroke-width='2.5'/%3E%3Ccircle cx='0' cy='0' r='8' fill='%2312324F' stroke='%231E4366' stroke-width='2.5'/%3E%3C/g%3E%3C/defs%3E%3Cuse href='%23w' x='-50' y='-25'/%3E%3Cuse href='%23w' x='50' y='-25'/%3E%3Cuse href='%23w' x='150' y='-25'/%3E%3Cuse href='%23w' x='0' y='0'/%3E%3Cuse href='%23w' x='100' y='0'/%3E%3Cuse href='%23w' x='-50' y='25'/%3E%3Cuse href='%23w' x='50' y='25'/%3E%3Cuse href='%23w' x='150' y='25'/%3E%3Cuse href='%23w' x='0' y='50'/%3E%3Cuse href='%23w' x='100' y='50'/%3E%3Cuse href='%23w' x='-50' y='75'/%3E%3Cuse href='%23w' x='50' y='75'/%3E%3Cuse href='%23w' x='150' y='75'/%3E%3C/svg%3E")`,
             backgroundSize: '76px 38px',
@@ -985,7 +996,7 @@ export default function App() {
 
         {/* LAYER 3: Static Film Grain Overlay (Optimized Texture Map) */}
         <div
-          className="fixed inset-0 -z-10 pointer-events-none opacity-[0.06]"
+          className="fixed w-[100vw] h-[120vh] top-[-10vh] left-0 -z-10 pointer-events-none opacity-[0.06]"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.80' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
             transform: 'translateZ(0)'
@@ -1162,6 +1173,11 @@ export default function App() {
                 <textarea
                   id="english-input"
                   value={englishWord}
+                  onFocus={() => {
+                    setTimeout(() => {
+                      translateButtonRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 350);
+                  }}
                   onChange={(e) => {
                     let val = e.target.value;
                     if (inputMode === 'conversation' && val.length > 500) {
@@ -1200,21 +1216,23 @@ export default function App() {
           </div>
 
           <div className="relative self-center z-10 w-full mb-12 mt-4">
-            <motion.button
-              whileHover={isLoading ? {} : { scale: 1.02 }}
-              whileTap={isLoading ? {} : { scale: 0.96, x: 4, y: 4, boxShadow: "0px 0px 0px 0px #1A1A1A" }}
-              animate={{ backgroundColor: isLoading ? ["#C6CDB9", "#F6F5F2", "#CD2E3A", "#0047A0", "#C6CDB9"] : "#C6CDB9" }}
-              transition={{ backgroundColor: isLoading ? { repeat: Infinity, duration: 0.6, ease: "linear" } : { duration: 0.1 } }}
-              onClick={() => { playTapSound(); handleTranslate(); }}
-              disabled={isLoading || !englishWord.trim()}
-              className="w-full text-[#1A1A1A] text-3xl sm:text-4xl font-bubbly font-extrabold py-4 sm:py-5 border-[6px] border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] rounded-none disabled:opacity-70 disabled:cursor-not-allowed min-h-[60px] uppercase tracking-wider flex items-center justify-center shrink-0"
-            >
-              {isLoading ? (
-                <Loader2 className="w-10 h-10 animate-spin stroke-[4]" />
-              ) : (
-                'Translate!'
-              )}
-            </motion.button>
+            <div ref={translateButtonRef} className="w-full shrink-0 flex items-center justify-center">
+              <motion.button
+                whileHover={isLoading ? {} : { scale: 1.02 }}
+                whileTap={isLoading ? {} : { scale: 0.96, x: 4, y: 4, boxShadow: "0px 0px 0px 0px #1A1A1A" }}
+                animate={{ backgroundColor: isLoading ? ["#C6CDB9", "#F6F5F2", "#CD2E3A", "#0047A0", "#C6CDB9"] : "#C6CDB9" }}
+                transition={{ backgroundColor: isLoading ? { repeat: Infinity, duration: 0.6, ease: "linear" } : { duration: 0.1 } }}
+                onClick={() => { playTapSound(); handleTranslate(); }}
+                disabled={isLoading || !englishWord.trim()}
+                className="w-full text-[#1A1A1A] text-3xl sm:text-4xl font-bubbly font-extrabold py-4 sm:py-5 border-[6px] border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] rounded-none disabled:opacity-70 disabled:cursor-not-allowed min-h-[60px] uppercase tracking-wider flex items-center justify-center shrink-0"
+              >
+                {isLoading ? (
+                  <Loader2 className="w-10 h-10 animate-spin stroke-[4]" />
+                ) : (
+                  'Translate!'
+                )}
+              </motion.button>
+            </div>
             <motion.div className="absolute -top-6 -right-5 z-20 pointer-events-none" animate={{ scale: [0.9, 1.2, 0.9], rotate: [0, 15, 0] }} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}>
               <Sparkle />
             </motion.div>
@@ -1227,9 +1245,10 @@ export default function App() {
             )}
           </div>
 
-          {(translation || isLoading) && (
-            <div className="w-full space-y-3 z-10 relative mb-12 animate-in fade-in slide-in-from-bottom-6 duration-300">
-              <div className="flex items-center justify-between px-2 mb-2">
+          <div ref={resultSectionRef} className="w-full">
+            {(translation || isLoading) && (
+              <div className="w-full space-y-3 z-10 relative mb-12 animate-in fade-in slide-in-from-bottom-6 duration-300">
+                <div className="flex items-center justify-between px-2 mb-2">
                 <AnimatePresence mode="wait">
                   <motion.span
                     key={direction}
@@ -1348,6 +1367,7 @@ export default function App() {
               </div>
             </div>
           )}
+          </div>
 
           {inputMode === 'word' && translation && !isLoading && (
             <div className="w-full relative z-10 animate-in fade-in slide-in-from-bottom-8 duration-300">
@@ -1383,9 +1403,10 @@ export default function App() {
                 )
               )}
 
-              {example && (
-                <div className="w-full space-y-3 z-10 relative mb-8 animate-in zoom-in-95 duration-300">
-                  <div className="flex items-center justify-between px-2">
+              <div ref={exampleSectionRef} className="w-full">
+                {example && (
+                  <div className="w-full space-y-3 z-10 relative mb-8 animate-in zoom-in-95 duration-300">
+                    <div className="flex items-center justify-between px-2">
                     <span className="text-2xl font-sniglet font-extrabold text-white tracking-widest uppercase" style={{ textShadow: '4px 4px 0px #1A1A1A', WebkitTextStroke: '2px #1A1A1A' }}>
                       Context
                     </span>
@@ -1424,6 +1445,7 @@ export default function App() {
                   </div>
                 </div>
               )}
+              </div>
             </div>
           )}
         </div>
