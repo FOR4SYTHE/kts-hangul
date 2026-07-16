@@ -775,12 +775,12 @@ export default function App() {
     }
   };
 
-  const prefetchAudio = async (text: string, setter: React.Dispatch<React.SetStateAction<string | null>>, lang: string = 'ko-KR') => {
+  const prefetchAudio = async (text: string, setter: React.Dispatch<React.SetStateAction<string | null>>, lang: string = 'ko-KR', voice: string = 'female') => {
     try {
       const res = await fetch('/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, lang })
+        body: JSON.stringify({ text, lang, voice })
       });
       if (res.ok) {
         const blob = await res.blob();
@@ -844,7 +844,8 @@ export default function App() {
           return [newEntry, ...filtered].slice(0, 10);
         });
 
-        prefetchAudio(data.translation, setAudioUrl, direction === 'en-ko' ? 'ko-KR' : 'en-US');
+        // en-ko: Korean female voice. ko-en: English male voice.
+        prefetchAudio(data.translation, setAudioUrl, direction === 'en-ko' ? 'ko-KR' : 'en-US', direction === 'en-ko' ? 'female' : 'male');
         fetchFunFact(englishWord, data.translation);
       }
     } catch (error: any) {
@@ -917,7 +918,8 @@ export default function App() {
           koreanSentence: targetSentence,
           englishTranslation: data.sourceTranslation || data.englishTranslation
         });
-        prefetchAudio(targetSentence, setExampleAudioUrl, direction === 'en-ko' ? 'ko-KR' : 'en-US');
+        // Example sentence: ko-en = English male, en-ko = Korean female.
+        prefetchAudio(targetSentence, setExampleAudioUrl, direction === 'ko-en' ? 'en-US' : 'ko-KR', direction === 'ko-en' ? 'male' : 'female');
       }
     } catch (error) {
       console.error('Example generation error:', error);
