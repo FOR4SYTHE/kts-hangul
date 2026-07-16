@@ -269,7 +269,7 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
       <div className="w-full flex justify-between items-center p-4 pt-10 relative z-30">
 
         {/* Left Side: Info & Flash */}
-        <div className="flex gap-3">
+        <div className="flex gap-3 w-1/3 justify-start">
           <button onClick={() => setShowInfo(true)} className="w-12 h-12 bg-[#F6F5F2] rounded-3xl border-[4px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all flex items-center justify-center text-[#1A1A1A]">
             <Info strokeWidth={4} size={22} />
           </button>
@@ -290,71 +290,75 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
         </div>
 
         {/* Center: Mode Pill */}
-        <div className="flex bg-[#F6F5F2] border-[4px] border-[#1A1A1A] p-[3px] rounded-full shadow-[5px_5px_0px_0px_#1A1A1A] z-10 relative select-none">
-          {['EN', 'KO'].map((m) => {
-            const isActive = mode === m;
-            return (
-              <button
-                key={m}
-                onClick={async () => {
-                  const newMode = m as 'EN' | 'KO';
-                  if (newMode === mode) return;
+        <div className="flex justify-center w-1/3">
+          <div className="flex bg-[#F6F5F2] border-[4px] border-[#1A1A1A] p-[3px] rounded-full shadow-[5px_5px_0px_0px_#1A1A1A] z-10 relative select-none">
+            {['EN', 'KO'].map((m) => {
+              const isActive = mode === m;
+              return (
+                <button
+                  key={m}
+                  onClick={async () => {
+                    const newMode = m as 'EN' | 'KO';
+                    if (newMode === mode) return;
 
-                  if (!capturedImage || !scanData) {
-                    setMode(newMode);
-                    return;
-                  }
-
-                  setMode(newMode);
-                  setDisplayedText('');
-                  setResultText('');
-
-                  const targetLang = newMode;
-                  let finalRawText = scanData.text;
-
-                  if (scanData.lang !== targetLang) {
-                    setIsProcessing(true);
-                    try {
-                      const direction = scanData.lang === 'EN' ? 'en-ko' : 'ko-en';
-                      finalRawText = await translateCachedText(scanData.text, direction);
-                      setScanData({ text: finalRawText, lang: targetLang });
-                    } catch (e: any) {
-                      console.error(e);
-                      if (e.message === "429") {
-                        return; // Stop execution, cooldown triggered
-                      }
-                      if (e.message === "503") {
-                        finalRawText = "ORACLE OVERLOADED: GOOGLE SERVERS BUSY. PLEASE TRY AGAIN LATER.";
-                      } else {
-                        finalRawText = "Error communicating with the oracle.";
-                      }
-                    } finally {
-                      setIsProcessing(false);
+                    if (!capturedImage || !scanData) {
+                      setMode(newMode);
+                      return;
                     }
-                  }
 
-                  setResultText(finalRawText);
-                }}
-                className="relative flex-1 w-16 px-4 py-2 rounded-full font-bubbly font-extrabold text-sm uppercase transition-colors duration-150 z-10 flex items-center justify-center outline-none"
-                style={{ color: isActive ? '#F6F5F2' : '#1A1A1A' }}
-              >
-                {isActive && (
-                  <motion.div
-                    layoutId="activeTabIndicator"
-                    className="absolute inset-0 bg-[#1A1A1A] rounded-full -z-10 shadow-[inset_0px_4px_0px_rgba(255,255,255,0.2)]"
-                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                  />
-                )}
-                {m}
-              </button>
-            );
-          })}
+                    setMode(newMode);
+                    setDisplayedText('');
+                    setResultText('');
+
+                    const targetLang = newMode;
+                    let finalRawText = scanData.text;
+
+                    if (scanData.lang !== targetLang) {
+                      setIsProcessing(true);
+                      try {
+                        const direction = scanData.lang === 'EN' ? 'en-ko' : 'ko-en';
+                        finalRawText = await translateCachedText(scanData.text, direction);
+                        setScanData({ text: finalRawText, lang: targetLang });
+                      } catch (e: any) {
+                        console.error(e);
+                        if (e.message === "429") {
+                          return; // Stop execution, cooldown triggered
+                        }
+                        if (e.message === "503") {
+                          finalRawText = "ORACLE OVERLOADED: GOOGLE SERVERS BUSY. PLEASE TRY AGAIN LATER.";
+                        } else {
+                          finalRawText = "Error communicating with the oracle.";
+                        }
+                      } finally {
+                        setIsProcessing(false);
+                      }
+                    }
+
+                    setResultText(finalRawText);
+                  }}
+                  className="relative flex-1 w-16 px-4 py-2 rounded-full font-bubbly font-extrabold text-sm uppercase transition-colors duration-150 z-10 flex items-center justify-center outline-none"
+                  style={{ color: isActive ? '#F6F5F2' : '#1A1A1A' }}
+                >
+                  {isActive && (
+                    <motion.div
+                      layoutId="activeTabIndicator"
+                      className="absolute inset-0 bg-[#1A1A1A] rounded-full -z-10 shadow-[inset_0px_4px_0px_rgba(255,255,255,0.2)]"
+                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    />
+                  )}
+                  {m}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Right Side: Close */}
-        <button onClick={onClose} className="w-12 h-12 bg-[#F6F5F2] rounded-3xl border-[4px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all flex items-center justify-center text-[#1A1A1A]">
-          <X strokeWidth={4} size={24} />
-        </button>
+        <div className="flex justify-end w-1/3">
+          <button onClick={onClose} className="w-12 h-12 bg-[#F6F5F2] rounded-3xl border-[4px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all flex items-center justify-center text-[#1A1A1A]">
+            <X strokeWidth={4} size={24} />
+          </button>
+        </div>
 
       </div>
 
