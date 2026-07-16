@@ -369,7 +369,7 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
             <motion.button
               whileHover={{ scale: 1.1, rotate: 15 }} whileTap={{ scale: 0.9 }}
               onClick={(e) => { e.stopPropagation(); setFacingMode(prev => prev === 'environment' ? 'user' : 'environment'); }}
-              className="absolute -bottom-24 right-4 z-50 text-[#1A1A1A] bg-[#F6F5F2] border-[4px] border-[#1A1A1A] rounded-3xl p-3 shadow-[4px_4px_0px_0px_#1A1A1A] hover:bg-[#FED141] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all"
+              className={`absolute -top-20 left-4 z-50 text-[#1A1A1A] ${facingMode === 'user' ? 'bg-[#FED141]' : 'bg-[#F6F5F2]'} border-[4px] border-[#1A1A1A] rounded-3xl p-3 shadow-[4px_4px_0px_0px_#1A1A1A] ${facingMode === 'user' ? 'hover:bg-[#E2B935]' : 'hover:bg-[#E8E6D9]'} active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all`}
               title="Flip Camera"
             >
               <svg width="32" height="32" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round">
