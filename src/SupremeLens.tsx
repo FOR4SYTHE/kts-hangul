@@ -15,9 +15,11 @@ const CartoonSparkle = () => (
 interface SupremeLensProps {
   onClose: () => void;
   onCapturedChange?: (captured: boolean) => void;
+  onInfoToggle?: (open: boolean) => void;
+  onOpenGallery?: () => void;
 }
 
-export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensProps) {
+export default function SupremeLens({ onClose, onCapturedChange, onInfoToggle, onOpenGallery }: SupremeLensProps) {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -35,6 +37,12 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
   const [zoomLevel, setZoomLevel] = useState(1);
   const [mode, setMode] = useState<'EN' | 'KO'>('EN');
   const [showInfo, setShowInfo] = useState(false);
+
+  useEffect(() => {
+    if (onInfoToggle) {
+      onInfoToggle(showInfo);
+    }
+  }, [showInfo, onInfoToggle]);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -288,7 +296,7 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
 
 
       {/* CARTOON TOP DASHBOARD */}
-      <div className="w-full flex justify-between items-center p-4 pt-10 relative z-30">
+      <div className="w-full flex justify-between items-center p-4 pt-6 pb-2 relative z-30 shrink-0">
 
         {/* Left Side: Info & Flash */}
         <div className="flex gap-3 w-1/3 justify-start">
@@ -474,7 +482,7 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
       </div>
 
       {/* CARTOON BOTTOM DASHBOARD */}
-      <div className="w-full px-6 pb-10 pt-4 flex justify-between items-center relative z-30">
+      <div className="w-full px-6 pb-6 pt-2 flex justify-between items-center relative z-30 shrink-0">
 
         {/* Left: Retake Button */}
         <div className="w-20">
@@ -549,12 +557,13 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
       <AnimatePresence>
         {showInfo && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/60 z-50 flex items-center justify-center p-6 backdrop-blur-sm">
-            <div className="bg-[#F6F5F2] border-[6px] border-[#1A1A1A] p-8 rounded-[32px] shadow-[8px_8px_0px_0px_#1A1A1A] relative max-w-sm w-full">
+            <div className="bg-[#F6F5F2] border-[6px] border-[#1A1A1A] p-6 sm:p-8 rounded-[32px] shadow-[8px_8px_0px_0px_#1A1A1A] relative max-w-sm w-full max-h-[85vh] flex flex-col">
               <button onClick={() => setShowInfo(false)} className="absolute top-4 right-4 w-10 h-10 bg-white border-[4px] border-[#1A1A1A] shadow-[3px_3px_0px_0px_#1A1A1A] rounded-full flex items-center justify-center active:translate-y-[3px] active:translate-x-[3px] active:shadow-none transition-all">
                 <X strokeWidth={4} />
               </button>
-              <h3 className="text-3xl font-title uppercase mb-6 text-[#1A1A1A] border-b-[4px] border-[#1A1A1A] pb-2 inline-block">LENS GUIDE</h3>
-              <ul className="space-y-6 text-lg font-bubbly font-extrabold text-[#1A1A1A] uppercase tracking-tight">
+              <h3 className="text-3xl font-title uppercase mb-4 text-[#1A1A1A] border-b-[4px] border-[#1A1A1A] pb-2 inline-block shrink-0">LENS GUIDE</h3>
+              <div className="overflow-y-auto pr-2 pb-16">
+                <ul className="space-y-6 text-lg font-bubbly font-extrabold text-[#1A1A1A] uppercase tracking-tight">
                 <li className="flex items-center gap-4"><Zap strokeWidth={4} className="text-[#EF4444]" /> Hardware Flash Toggle</li>
                 <li className="flex flex-col items-start gap-2">
                   <div className="flex items-center gap-4">
@@ -585,9 +594,27 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
                 </li>
               </ul>
             </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {!capturedImage && onOpenGallery && (
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={onOpenGallery}
+          className="absolute bottom-12 left-8 z-30 bg-[#E5E7EB] text-[#1A1A1A] w-[68px] h-[68px] rounded-xl border-[3px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] flex items-center justify-center overflow-hidden hover:bg-[#D1D5DB] transition-colors"
+          title="Open Stamp Gallery"
+        >
+          <div className="absolute inset-1 border-[2px] border-dashed border-[#9CA3AF] rounded-md pointer-events-none"></div>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="z-10 text-[#4B5563]">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+            <circle cx="8.5" cy="8.5" r="1.5" />
+            <polyline points="21 15 16 10 5 21" />
+          </svg>
+        </motion.button>
+      )}
 
     </motion.div>
   );

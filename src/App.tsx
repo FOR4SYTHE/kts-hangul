@@ -1137,7 +1137,7 @@ export default function App() {
                 Conversation
               </button>
             </div>
-            <div className="flex items-center justify-between px-2 mb-2">
+            <div className="flex items-center justify-between px-2 mb-4 shrink-0">
               <AnimatePresence mode="wait">
                 <motion.label
                   key={direction}
@@ -1164,7 +1164,7 @@ export default function App() {
               </button>
             </div>
             <div className="drop-shadow-[8px_8px_0px_#1A1A1A] w-full shrink-0">
-              <div className="bg-[#E8E6D9] border-[6px] border-[#1A1A1A] rounded-[32px] p-6 flex items-center relative min-h-[100px] z-10">
+              <div className="bg-[#E8E6D9] border-[6px] border-[#1A1A1A] rounded-[32px] p-6 flex items-center relative min-h-[140px] z-10">
                 <div className="absolute top-[100%] left-10 flex flex-col items-start z-10">
                   <div className="w-[24px] h-[6px] bg-[#E8E6D9]"></div>
                   <div className="w-[24px] h-[12px] bg-[#E8E6D9] border-x-[6px] border-[#1A1A1A]"></div>
@@ -1455,26 +1455,10 @@ export default function App() {
             <SupremeLens
               onClose={() => { setIsLensOpen(false); setLensHasCapture(false); }}
               onCapturedChange={setLensHasCapture}
+              onOpenGallery={() => setShowStampMachine(true)}
             />
           )}
         </AnimatePresence>
-
-        {isLensOpen && !showStampMachine && !lensHasCapture && (
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setShowStampMachine(true)}
-            className="fixed bottom-12 left-8 z-[9999] bg-[#E5E7EB] text-[#1A1A1A] w-[68px] h-[68px] rounded-xl border-[3px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] flex items-center justify-center overflow-hidden hover:bg-[#D1D5DB] transition-colors"
-            title="Open Stamp Gallery"
-          >
-            <div className="absolute inset-1 border-[2px] border-dashed border-[#9CA3AF] rounded-md pointer-events-none"></div>
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="z-10 text-[#4B5563]">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-              <circle cx="8.5" cy="8.5" r="1.5" />
-              <polyline points="21 15 16 10 5 21" />
-            </svg>
-          </motion.button>
-        )}
 
         {showStampMachine && <StampMachine onClose={() => setShowStampMachine(false)} />}
 
