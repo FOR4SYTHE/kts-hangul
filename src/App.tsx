@@ -688,32 +688,22 @@ const HaiChar = () => (
     transition={{ repeat: Infinity, repeatType: "mirror", duration: 2.5, ease: "easeInOut" }}
     className="overflow-visible"
   >
-    {/* ── 하 — white fill, black border only ── */}
+    {/* ── 하 — white fill, black border ── */}
     <text x="35" y="75" textAnchor="middle"
       fontFamily="'Black Han Sans','Do Hyeon',sans-serif"
       fontSize="72" fontWeight="900"
-      fill="white" stroke="white" strokeWidth="10" strokeLinejoin="round"
+      fill="white" stroke="#1A1A1A" strokeWidth="8" strokeLinejoin="round"
       transform="rotate(-10, 35, 75)"
-    >하</text>
-    <text x="35" y="75" textAnchor="middle"
-      fontFamily="'Black Han Sans','Do Hyeon',sans-serif"
-      fontSize="72" fontWeight="900"
-      fill="white" stroke="#1A1A1A" strokeWidth="5" strokeLinejoin="round"
-      transform="rotate(-10, 35, 75)"
+      style={{ paintOrder: 'stroke fill' }}
     >하</text>
 
-    {/* ── 이 — white fill, black border only ── */}
+    {/* ── 이 — white fill, black border ── */}
     <text x="92" y="82" textAnchor="middle"
       fontFamily="'Black Han Sans','Do Hyeon',sans-serif"
       fontSize="65" fontWeight="900"
-      fill="white" stroke="white" strokeWidth="10" strokeLinejoin="round"
+      fill="white" stroke="#1A1A1A" strokeWidth="8" strokeLinejoin="round"
       transform="rotate(8, 92, 82)"
-    >이</text>
-    <text x="92" y="82" textAnchor="middle"
-      fontFamily="'Black Han Sans','Do Hyeon',sans-serif"
-      fontSize="65" fontWeight="900"
-      fill="white" stroke="#1A1A1A" strokeWidth="5" strokeLinejoin="round"
-      transform="rotate(8, 92, 82)"
+      style={{ paintOrder: 'stroke fill' }}
     >이</text>
   </motion.svg>
 );
@@ -1460,13 +1450,15 @@ export default function App() {
             {/* Header */}
             <div className="w-full flex flex-col items-center justify-center relative mb-12 mt-6 select-none">
               <div className="relative inline-block transform -rotate-3 text-center">
-                <div className="absolute -top-12 -left-12 sm:-top-16 sm:-left-16 z-20 pointer-events-none">
-                  <HaiChar />
-                </div>
                 <h1
                   className="text-[3.2rem] sm:text-[4.5rem] md:text-[6rem] font-title leading-[1.1] tracking-normal sm:tracking-wide relative z-10 smooth-title-outline"
                 >
-                  <span className="text-[#0047A0]">KOREAN</span><br />
+                  <span className="text-[#0047A0] relative inline-block">
+                    KOREAN
+                    <div className="absolute -top-8 -left-15 sm:-top-12 sm:-left-18 z-20 pointer-events-none">
+                      <HaiChar />
+                    </div>
+                  </span><br />
                   <span className="text-[#CD2E3A]">TRANSLATOR</span><br />
                   <span className="text-[#0A0A0A]">SUPREME</span>
                 </h1>
