@@ -386,7 +386,7 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
         </div>
       )}
 
-      {punchState !== 'punching' && activeTab === 'camera' && (
+      {punchState === 'done' && activeTab === 'camera' && (
         <div className="mt-20 flex flex-row justify-center gap-5 w-full max-w-sm z-30 px-2">
           <motion.button
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
@@ -941,20 +941,20 @@ export default function App() {
       </style>
 
       <main
-        className="min-h-[100dvh] font-sans p-6 pb-[calc(4.5rem+env(safe-area-inset-bottom))] flex flex-col items-center justify-start overflow-x-hidden relative text-[#1A1A1A] selection:bg-[#DBC27C]"
+        className="min-h-[100dvh] font-sans p-6 pb-[calc(4.5rem+env(safe-area-inset-bottom))] flex flex-col items-center justify-start overflow-x-hidden relative text-[#1A1A1A] selection:bg-[#7D0A3C] selection:text-white"
       >
         {/* ============================================================================
-                                      JOSEON PALACE CANVAS
+            TWILIGHT BOLASAEK CANVAS
             ============================================================================ */}
-        {/* LAYER 1: Warm Hanji Ivory Base Paint */}
-        <div className="fixed inset-0 -z-30 pointer-events-none bg-[#F8F6F0]" />
+        {/* LAYER 1: Deep Twilight Indigo-Purple Base Paint */}
+        <div className="fixed inset-0 -z-30 pointer-events-none bg-[#12324F]" />
 
-        {/* LAYER 2: Solid-Filled Seigaiha Waves (Small, Dense, & Subtle) */}
+        {/* LAYER 2: Solid-Filled Seigaiha Waves (Superfine, Highly Subtle & Deep Twilight) */}
         <div
-          className="fixed inset-0 -z-20 pointer-events-none opacity-[0.65]"
+          className="fixed inset-0 -z-20 pointer-events-none opacity-[0.35]"
           style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='50' viewBox='0 0 100 50'%3E%3Crect width='100' height='50' fill='%23F8F6F0'/%3E%3Cdefs%3E%3Cg id='w'%3E%3Ccircle cx='0' cy='0' r='48' fill='%23F8F6F0' stroke='%23DCD3C0' stroke-width='2.5'/%3E%3Ccircle cx='0' cy='0' r='40' fill='%23F8F6F0' stroke='%23DCD3C0' stroke-width='2.5'/%3E%3Ccircle cx='0' cy='0' r='32' fill='%23F8F6F0' stroke='%23DCD3C0' stroke-width='2.5'/%3E%3Ccircle cx='0' cy='0' r='24' fill='%23F8F6F0' stroke='%23DCD3C0' stroke-width='2.5'/%3E%3Ccircle cx='0' cy='0' r='16' fill='%23F8F6F0' stroke='%23DCD3C0' stroke-width='2.5'/%3E%3Ccircle cx='0' cy='0' r='8' fill='%23F8F6F0' stroke='%23DCD3C0' stroke-width='2.5'/%3E%3C/g%3E%3C/defs%3E%3Cuse href='%23w' x='-50' y='-25'/%3E%3Cuse href='%23w' x='50' y='-25'/%3E%3Cuse href='%23w' x='150' y='-25'/%3E%3Cuse href='%23w' x='0' y='0'/%3E%3Cuse href='%23w' x='100' y='0'/%3E%3Cuse href='%23w' x='-50' y='25'/%3E%3Cuse href='%23w' x='50' y='25'/%3E%3Cuse href='%23w' x='150' y='25'/%3E%3Cuse href='%23w' x='0' y='50'/%3E%3Cuse href='%23w' x='100' y='50'/%3E%3Cuse href='%23w' x='-50' y='75'/%3E%3Cuse href='%23w' x='50' y='75'/%3E%3Cuse href='%23w' x='150' y='75'/%3E%3C/svg%3E")`,
-            backgroundSize: '90px 45px',
+            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='50' viewBox='0 0 100 50'%3E%3Crect width='100' height='50' fill='%2312324F'/%3E%3Cdefs%3E%3Cg id='w'%3E%3Ccircle cx='0' cy='0' r='48' fill='%2312324F' stroke='%231E4366' stroke-width='2.5'/%3E%3Ccircle cx='0' cy='0' r='40' fill='%2312324F' stroke='%231E4366' stroke-width='2.5'/%3E%3Ccircle cx='0' cy='0' r='32' fill='%2312324F' stroke='%231E4366' stroke-width='2.5'/%3E%3Ccircle cx='0' cy='0' r='24' fill='%2312324F' stroke='%231E4366' stroke-width='2.5'/%3E%3Ccircle cx='0' cy='0' r='16' fill='%2312324F' stroke='%231E4366' stroke-width='2.5'/%3E%3Ccircle cx='0' cy='0' r='8' fill='%2312324F' stroke='%231E4366' stroke-width='2.5'/%3E%3C/g%3E%3C/defs%3E%3Cuse href='%23w' x='-50' y='-25'/%3E%3Cuse href='%23w' x='50' y='-25'/%3E%3Cuse href='%23w' x='150' y='-25'/%3E%3Cuse href='%23w' x='0' y='0'/%3E%3Cuse href='%23w' x='100' y='0'/%3E%3Cuse href='%23w' x='-50' y='25'/%3E%3Cuse href='%23w' x='50' y='25'/%3E%3Cuse href='%23w' x='150' y='25'/%3E%3Cuse href='%23w' x='0' y='50'/%3E%3Cuse href='%23w' x='100' y='50'/%3E%3Cuse href='%23w' x='-50' y='75'/%3E%3Cuse href='%23w' x='50' y='75'/%3E%3Cuse href='%23w' x='150' y='75'/%3E%3C/svg%3E")`,
+            backgroundSize: '76px 38px',
             backgroundRepeat: 'repeat'
           }}
         />

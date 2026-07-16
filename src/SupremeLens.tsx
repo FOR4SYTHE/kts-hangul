@@ -261,9 +261,29 @@ export default function SupremeLens({ onClose, onCapturedChange }: SupremeLensPr
 
   return (
     <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 50 }}
-      className="fixed inset-0 z-50 flex flex-col font-sans bg-[#796CE3] overflow-hidden"
-      style={{ backgroundImage: 'radial-gradient(circle, rgba(255, 255, 255, 0.15) 3px, transparent 3px)', backgroundSize: '30px 30px' }}
+      className="fixed inset-0 z-50 flex flex-col font-sans overflow-hidden"
     >
+      {/* LAYER 1: Deep Twilight Indigo-Purple Base */}
+      <div className="absolute inset-0 -z-30 bg-[#12324F]" />
+
+      {/* LAYER 2: Seigaiha Wave Overlay */}
+      <div
+        className="absolute inset-0 -z-20 opacity-[0.35]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='50' viewBox='0 0 100 50'%3E%3Crect width='100' height='50' fill='%2312324F'/%3E%3Cdefs%3E%3Cg id='w'%3E%3Ccircle cx='0' cy='0' r='48' fill='%2312324F' stroke='%231E4366' stroke-width='2.5'/%3E%3Ccircle cx='0' cy='0' r='40' fill='%2312324F' stroke='%231E4366' stroke-width='2.5'/%3E%3Ccircle cx='0' cy='0' r='32' fill='%2312324F' stroke='%231E4366' stroke-width='2.5'/%3E%3Ccircle cx='0' cy='0' r='24' fill='%2312324F' stroke='%231E4366' stroke-width='2.5'/%3E%3Ccircle cx='0' cy='0' r='16' fill='%2312324F' stroke='%231E4366' stroke-width='2.5'/%3E%3Ccircle cx='0' cy='0' r='8' fill='%2312324F' stroke='%231E4366' stroke-width='2.5'/%3E%3C/g%3E%3C/defs%3E%3Cuse href='%23w' x='-50' y='-25'/%3E%3Cuse href='%23w' x='50' y='-25'/%3E%3Cuse href='%23w' x='150' y='-25'/%3E%3Cuse href='%23w' x='0' y='0'/%3E%3Cuse href='%23w' x='100' y='0'/%3E%3Cuse href='%23w' x='-50' y='25'/%3E%3Cuse href='%23w' x='50' y='25'/%3E%3Cuse href='%23w' x='150' y='25'/%3E%3Cuse href='%23w' x='0' y='50'/%3E%3Cuse href='%23w' x='100' y='50'/%3E%3Cuse href='%23w' x='-50' y='75'/%3E%3Cuse href='%23w' x='50' y='75'/%3E%3Cuse href='%23w' x='150' y='75'/%3E%3C/svg%3E")`,
+          backgroundSize: '76px 38px',
+          backgroundRepeat: 'repeat'
+        }}
+      />
+
+      {/* LAYER 3: Film Grain Overlay */}
+      <div
+        className="absolute inset-0 -z-10 opacity-[0.18] mix-blend-overlay pointer-events-none"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.80' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`
+        }}
+      />
+
 
       {/* CARTOON TOP DASHBOARD */}
       <div className="w-full flex justify-between items-center p-4 pt-10 relative z-30">
