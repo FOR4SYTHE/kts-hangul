@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Gaegu:wght@400;700&family=Jua&family=East+Sea+Dokdo&family=Black+Han+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Gaegu:wght@400;700&family=Jua&family=East+Sea+Dokdo&family=Black+Han+Sans&family=Sniglet:wght@400;800&display=swap');
 @import "tailwindcss";
 
 @font-face {
@@ -15,6 +15,7 @@
   --font-bubbly: 'Do Hyeon', sans-serif;
   --font-joseon: 'East Sea Dokdo', cursive;
   --font-qtpi: 'QTPI', 'Gaegu', sans-serif;
+  --font-sniglet: 'Sniglet', 'Jua', sans-serif;
 }
 
 @layer utilities {

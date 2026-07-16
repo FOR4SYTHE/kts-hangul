@@ -1487,7 +1487,7 @@ export default function App() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
                     htmlFor="english-input"
-                    className="text-2xl font-bubbly font-extrabold text-white tracking-widest uppercase"
+                    className="text-2xl font-sniglet font-extrabold text-white tracking-widest uppercase"
                     style={{ textShadow: '4px 4px 0px #1A1A1A', WebkitTextStroke: '2px #1A1A1A' }}
                   >
                     {direction === 'en-ko' ? 'English Word' : 'Korean Word'}
@@ -1589,7 +1589,7 @@ export default function App() {
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
-                      className="text-2xl font-bubbly font-extrabold text-white tracking-widest uppercase"
+                      className="text-2xl font-sniglet font-extrabold text-white tracking-widest uppercase"
                       style={{ textShadow: '4px 4px 0px #1A1A1A', WebkitTextStroke: '2px #1A1A1A' }}
                     >
                       {direction === 'en-ko' ? 'Korean Translation' : 'English Translation'}
@@ -1664,7 +1664,7 @@ export default function App() {
                       <div className="w-[12px] h-[24px] bg-[#DBC27C] border-y-[6px] border-[#1A1A1A]"></div>
                       <div className="w-[6px] h-[24px] bg-[#DBC27C]"></div>
                     </div>
-                    <span className="absolute -top-4 left-6 bg-[#1A1A1A] text-[#DBC27C] text-lg font-bubbly font-extrabold uppercase tracking-widest px-4 py-1.5 rounded-none shadow-[3px_3px_0px_0px_#DBC27C] flex items-center gap-2">
+                    <span className="absolute -top-4 left-6 bg-[#1A1A1A] text-[#DBC27C] text-lg font-sniglet font-extrabold uppercase tracking-widest px-4 py-1.5 rounded-none shadow-[3px_3px_0px_0px_#DBC27C] flex items-center gap-2">
                       <Lightbulb className="w-4 h-4 stroke-[3]" /> DID YOU KNOW?
                     </span>
                     {isLoadingFunFact ? (
@@ -1723,7 +1723,7 @@ export default function App() {
                 {example && (
                   <div className="w-full space-y-3 z-10 relative mb-8 animate-in zoom-in-95 duration-300">
                     <div className="flex items-center justify-between px-2">
-                      <span className="text-2xl font-bubbly font-extrabold text-white tracking-widest uppercase" style={{ textShadow: '4px 4px 0px #1A1A1A', WebkitTextStroke: '2px #1A1A1A' }}>
+                      <span className="text-2xl font-sniglet font-extrabold text-white tracking-widest uppercase" style={{ textShadow: '4px 4px 0px #1A1A1A', WebkitTextStroke: '2px #1A1A1A' }}>
                         Context
                       </span>
                     </div>
@@ -1734,10 +1734,10 @@ export default function App() {
                           <div className="w-[24px] h-[12px] bg-[#D3D6CB] border-x-[6px] border-[#1A1A1A]"></div>
                           <div className="w-[24px] h-[6px] bg-[#D3D6CB]"></div>
                         </div>
-                        <p className="text-3xl font-bubbly font-normal mb-6 break-words text-[#1A1A1A] text-center w-full leading-tight uppercase">
+                        <p className="text-3xl font-sniglet font-normal mb-6 break-words text-[#1A1A1A] text-center w-full leading-tight uppercase">
                           {example.koreanSentence}
                         </p>
-                        <p className="text-3xl font-bubbly font-normal mb-8 text-[#1A1A1A] text-center w-full bg-[#E8E6D9] px-4 py-2 border-[4px] border-[#1A1A1A] rounded-none shadow-[4px_4px_0px_0px_#1A1A1A]">
+                        <p className="text-3xl font-sniglet font-normal mb-8 text-[#1A1A1A] text-center w-full bg-[#E8E6D9] px-4 py-2 border-[4px] border-[#1A1A1A] rounded-none shadow-[4px_4px_0px_0px_#1A1A1A]">
                           "{example.englishTranslation}"
                         </p>
                         <div className="flex items-center gap-4 flex-wrap justify-center">
