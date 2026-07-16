@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Mic, Volume2, Loader2, Copy, Check, History, X, ArrowLeftRight, Download, Lightbulb, Camera } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import html2canvas from 'html2canvas';
@@ -203,12 +203,20 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
 
   const stampWidth = 260;
   const stampHeight = 340;
-  const stampPath = generateStampPath(stampWidth, stampHeight);
+  // Was recalculated on every render (punch state changes, tab switches, modal open/close).
+  // The shape never changes, so build it once.
+  const stampPath = useMemo(() => generateStampPath(stampWidth, stampHeight), []);
 
   const [archive, setArchive] = useState<{ date: string, data: string }[]>(() => {
     try { const saved = localStorage.getItem('supreme_stamps_archive'); return saved ? JSON.parse(saved) : []; }
     catch { return []; }
   });
+
+  // Doodle decorations only depend on each item's position in the archive, so they only
+  // need to be recomputed when the archive itself changes — not on every re-render
+  // (opening the stamp modal, switching tabs, etc. were previously re-running all the
+  // seeded-random doodle generation for every saved stamp).
+  const archiveDoodles = useMemo(() => archive.map((_, idx) => renderDoodles(idx)), [archive]);
 
   useEffect(() => {
     if (activeTab === 'archive') {
@@ -224,12 +232,19 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
     let stream: MediaStream | null = null;
     const startCamera = async () => {
       try {
+        let hadActiveStream = false;
         if (videoRef.current?.srcObject) {
+          hadActiveStream = true;
           const oldStream = videoRef.current.srcObject as MediaStream;
           oldStream.getTracks().forEach(track => track.stop());
           videoRef.current.srcObject = null;
         }
-        await new Promise(resolve => setTimeout(resolve, 100));
+        // Only settle-delay when we just tore down a live stream (e.g. retake).
+        // On first mount, or when returning from the Book tab where the stream
+        // was already released, skip straight to re-acquiring the camera.
+        if (hadActiveStream) {
+          await new Promise(resolve => setTimeout(resolve, 100));
+        }
         stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } } });
         if (videoRef.current) videoRef.current.srcObject = stream;
       } catch (err) {
@@ -355,7 +370,7 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
             >
               <div
                 className="relative w-[260px] h-[340px] bg-[#0a0a0a] rounded shadow-[inset_0_15px_40px_rgba(0,0,0,1)] border-[2px] border-[#1f2937] overflow-hidden group"
-                style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)', transform: 'translateZ(0)' }}
+                style={{ transform: 'translateZ(0)' }}
               >
                 {hasCameraError ? (
                   <label className="cursor-pointer text-gray-500 font-black text-center p-6 hover:text-white transition-colors w-full h-full flex flex-col items-center justify-center gap-3">
@@ -368,6 +383,7 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
                     {hqImage && punchState === 'punching' && (
                       <img src={hqImage} className="absolute inset-0 w-full h-full object-cover z-10" alt="frozen frame" />
                     )}
+                    <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle, transparent 55%, #0a0a0a 100%)' }} />
                     <div className="absolute inset-0 z-20 drop-shadow-[0_4px_10px_rgba(0,0,0,0.9)] pointer-events-none">
                       <svg width="100%" height="100%" viewBox={`0 0 ${stampWidth} ${stampHeight}`} className="absolute inset-0 w-full h-full">
                         <path fill="#2a2a2a" fillRule="evenodd" d={`M -100,-100 L ${stampWidth + 100},-100 L ${stampWidth + 100},${stampHeight + 100} L -100,${stampHeight + 100} Z ${stampPath}`} />
@@ -484,7 +500,7 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
                     </div>
                   )}
                   <div className="flex flex-col items-center relative z-10">
-                    {renderDoodles(idx)}
+                    {archiveDoodles[idx]}
                     <motion.div
                       initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }}
                       onClick={() => setSelectedStampIndex(idx)}
@@ -498,7 +514,7 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
                         <path fill="#F6F5F2" d={stampPath} />
                       </svg>
                       <div className="relative z-10 w-[84%] h-[88%] border-[2px] border-[#1A1A1A] overflow-hidden bg-white">
-                        <img src={entry.data} className="w-full h-full object-cover grayscale-[0.1] contrast-[1.1]" />
+                        <img src={entry.data} alt="" decoding="async" loading="lazy" className="w-full h-full object-cover grayscale-[0.1] contrast-[1.1]" />
                       </div>
                     </motion.div>
                   </div>
@@ -564,7 +580,7 @@ const StampMachine = ({ onClose }: { onClose: () => void }) => {
                       <path fill="#F6F5F2" d={stampPath} />
                     </svg>
                     <div className="relative z-10 w-[220px] h-[300px] border-[2px] border-[#1A1A1A] overflow-hidden bg-white shadow-inner">
-                      <img src={archive[selectedStampIndex].data} className="w-full h-full object-cover" crossOrigin="anonymous" />
+                      <img src={archive[selectedStampIndex].data} decoding="async" className="w-full h-full object-cover" crossOrigin="anonymous" />
                     </div>
                   </div>
                 </div>
@@ -1251,124 +1267,124 @@ export default function App() {
             {(translation || isLoading) && (
               <div className="w-full space-y-3 z-10 relative mb-12 animate-in fade-in slide-in-from-bottom-6 duration-300">
                 <div className="flex items-center justify-between px-2 mb-2">
-                <AnimatePresence mode="wait">
-                  <motion.span
-                    key={direction}
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    className="text-2xl font-sniglet font-extrabold text-white tracking-widest uppercase"
-                    style={{ textShadow: '4px 4px 0px #1A1A1A', WebkitTextStroke: '2px #1A1A1A' }}
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      key={direction}
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      className="text-2xl font-sniglet font-extrabold text-white tracking-widest uppercase"
+                      style={{ textShadow: '4px 4px 0px #1A1A1A', WebkitTextStroke: '2px #1A1A1A' }}
+                    >
+                      {direction === 'en-ko' ? 'Korean Translation' : 'English Translation'}
+                    </motion.span>
+                  </AnimatePresence>
+                </div>
+
+                <div className="relative drop-shadow-[8px_8px_0px_#1A1A1A] w-full">
+                  <div className="absolute -left-[72px] top-6 -z-10">
+                    <LeftWing />
+                  </div>
+                  <div className="absolute -right-[72px] top-6 -z-10">
+                    <RightWing />
+                  </div>
+
+                  <motion.div
+                    key={translation ? `result-${translation.substring(0, 10)}` : 'empty'}
+                    initial={translation && !isLoading ? { scale: 0.8, backgroundColor: "#FED141", opacity: 0 } : { opacity: 1, backgroundColor: "#D3D6CB" }}
+                    animate={{ scale: 1, backgroundColor: "#D3D6CB", opacity: 1 }}
+                    transition={translation && !isLoading ? {
+                      scale: { type: "spring", stiffness: 400, damping: 15 },
+                      backgroundColor: { duration: 0.5, ease: "easeOut", delay: 0.1 },
+                      opacity: { duration: 0.2 }
+                    } : { duration: 0.2 }}
+                    className="relative border-[6px] border-[#1A1A1A] rounded-[32px] p-8 flex flex-col items-center justify-center min-h-[180px] z-10"
                   >
-                    {direction === 'en-ko' ? 'Korean Translation' : 'English Translation'}
-                  </motion.span>
-                </AnimatePresence>
-              </div>
-
-              <div className="relative drop-shadow-[8px_8px_0px_#1A1A1A] w-full">
-                <div className="absolute -left-[72px] top-6 -z-10">
-                  <LeftWing />
-                </div>
-                <div className="absolute -right-[72px] top-6 -z-10">
-                  <RightWing />
-                </div>
-
-                <motion.div
-                  key={translation ? `result-${translation.substring(0, 10)}` : 'empty'}
-                  initial={translation && !isLoading ? { scale: 0.8, backgroundColor: "#FED141", opacity: 0 } : { opacity: 1, backgroundColor: "#D3D6CB" }}
-                  animate={{ scale: 1, backgroundColor: "#D3D6CB", opacity: 1 }}
-                  transition={translation && !isLoading ? {
-                    scale: { type: "spring", stiffness: 400, damping: 15 },
-                    backgroundColor: { duration: 0.5, ease: "easeOut", delay: 0.1 },
-                    opacity: { duration: 0.2 }
-                  } : { duration: 0.2 }}
-                  className="relative border-[6px] border-[#1A1A1A] rounded-[32px] p-8 flex flex-col items-center justify-center min-h-[180px] z-10"
-                >
-                  {isLoading ? (
-                    <div className="flex flex-col items-center justify-center w-full animate-pulse">
-                      <div className="h-12 bg-gray-300 border-[4px] border-[#1A1A1A] rounded-none w-3/4 mb-6 opacity-50"></div>
-                      <div className="h-12 bg-gray-300 border-[4px] border-[#1A1A1A] rounded-none w-32 opacity-50"></div>
-                    </div>
-                  ) : (
-                    <>
-                      <div className={`w-full ${inputMode === 'conversation' ? 'max-h-[250px] overflow-y-auto pr-4 mb-6' : 'mb-8'}`}>
-                        <span className={`${inputMode === 'conversation' ? 'text-2xl md:text-3xl font-qtpi normal-case text-left block' : 'text-4xl md:text-5xl font-qtpi uppercase text-center'} text-[#1A1A1A] break-words whitespace-pre-wrap w-full`}>
-                          {translation}
-                        </span>
+                    {isLoading ? (
+                      <div className="flex flex-col items-center justify-center w-full animate-pulse">
+                        <div className="h-12 bg-gray-300 border-[4px] border-[#1A1A1A] rounded-none w-3/4 mb-6 opacity-50"></div>
+                        <div className="h-12 bg-gray-300 border-[4px] border-[#1A1A1A] rounded-none w-32 opacity-50"></div>
                       </div>
-                      <div className="flex items-center gap-4 flex-wrap justify-center">
-                        {inputMode === 'word' && (
+                    ) : (
+                      <>
+                        <div className={`w-full ${inputMode === 'conversation' ? 'max-h-[250px] overflow-y-auto pr-4 mb-6' : 'mb-8'}`}>
+                          <span className={`${inputMode === 'conversation' ? 'text-2xl md:text-3xl font-qtpi normal-case text-left block' : 'text-4xl md:text-5xl font-qtpi uppercase text-center'} text-[#1A1A1A] break-words whitespace-pre-wrap w-full`}>
+                            {translation}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-4 flex-wrap justify-center">
+                          {inputMode === 'word' && (
+                            <button
+                              onClick={() => handleSpeak(audioUrl)}
+                              disabled={!audioUrl}
+                              className="flex items-center gap-3 bg-[#E8E6D9] hover:bg-[#D9D7C8] text-[#1A1A1A] px-6 py-3 border-[5px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] rounded-none text-xl font-bubbly font-extrabold uppercase transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none disabled:opacity-50 disabled:cursor-wait min-h-[56px]"
+                            >
+                              <Volume2 className="w-6 h-6 stroke-[4]" />
+                              SPEAK
+                            </button>
+                          )}
                           <button
-                            onClick={() => handleSpeak(audioUrl)}
-                            disabled={!audioUrl}
-                            className="flex items-center gap-3 bg-[#E8E6D9] hover:bg-[#D9D7C8] text-[#1A1A1A] px-6 py-3 border-[5px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] rounded-none text-xl font-bubbly font-extrabold uppercase transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none disabled:opacity-50 disabled:cursor-wait min-h-[56px]"
+                            onClick={handleCopy}
+                            className="flex items-center justify-center w-14 h-14 bg-[#E8E6D9] hover:bg-[#D9D7C8] text-[#1A1A1A] border-[5px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] rounded-none transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
+                            title="Copy to clipboard"
                           >
-                            <Volume2 className="w-6 h-6 stroke-[4]" />
-                            SPEAK
+                            {isCopied ? <Check className="w-6 h-6 stroke-[4] text-green-500" /> : <Copy className="w-6 h-6 stroke-[4]" />}
                           </button>
-                        )}
-                        <button
-                          onClick={handleCopy}
-                          className="flex items-center justify-center w-14 h-14 bg-[#E8E6D9] hover:bg-[#D9D7C8] text-[#1A1A1A] border-[5px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] rounded-none transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
-                          title="Copy to clipboard"
-                        >
-                          {isCopied ? <Check className="w-6 h-6 stroke-[4] text-green-500" /> : <Copy className="w-6 h-6 stroke-[4]" />}
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </motion.div>
-              </div>
-            </div>
-          )}
-
-          {inputMode === 'conversation' && conversationContext && !isLoading && (
-            <div className="w-full z-10 relative mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div className="drop-shadow-[8px_8px_0px_#1A1A1A] w-full">
-                <div className="bg-[#B9D2B5] border-[6px] border-[#1A1A1A] rounded-none p-6 pt-8 relative z-10">
-                  <div className="absolute right-[100%] bottom-10 flex flex-row items-end z-10">
-                    <div className="w-[6px] h-[12px] bg-[#1A1A1A] mb-[12px]"></div>
-                    <div className="w-[12px] h-[24px] bg-[#B9D2B5] border-y-[6px] border-[#1A1A1A]"></div>
-                    <div className="w-[6px] h-[24px] bg-[#B9D2B5]"></div>
-                  </div>
-                  <span className="absolute -top-4 left-6 bg-[#1A1A1A] text-[#B9D2B5] text-lg font-sniglet font-extrabold uppercase tracking-widest px-4 py-1.5 rounded-none shadow-[3px_3px_0px_0px_#B9D2B5] inline-flex w-max items-center gap-2">
-                    <svg width="14" height="14" viewBox="0 0 100 100" className="shrink-0"><path d="M 50 10 C 50 40, 60 50, 90 50 C 60 50, 50 60, 50 90 C 50 60, 40 50, 10 50 C 40 50, 50 40, 50 10 Z" fill="#B9D2B5" stroke="#B9D2B5" strokeWidth="5" strokeLinejoin="round" /></svg> CONTEXT
-                  </span>
-                  <p className="text-2xl font-qtpi text-[#1A1A1A] leading-snug whitespace-pre-wrap">
-                    {conversationContext}
-                  </p>
+                        </div>
+                      </>
+                    )}
+                  </motion.div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {inputMode === 'word' && (funFact || isLoadingFunFact) && !isLoading && (
-            <div className="w-full z-10 relative mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div className="drop-shadow-[8px_8px_0px_#1A1A1A] w-full">
-                <div className="bg-[#DBC27C] border-[6px] border-[#1A1A1A] rounded-none p-6 pt-8 relative z-10">
-                  <div className="absolute right-[100%] bottom-10 flex flex-row items-end z-10">
-                    <div className="w-[6px] h-[12px] bg-[#1A1A1A] mb-[12px]"></div>
-                    <div className="w-[12px] h-[24px] bg-[#DBC27C] border-y-[6px] border-[#1A1A1A]"></div>
-                    <div className="w-[6px] h-[24px] bg-[#DBC27C]"></div>
-                  </div>
-                  <span className="absolute -top-4 left-6 bg-[#1A1A1A] text-[#DBC27C] text-lg font-sniglet font-extrabold uppercase tracking-widest px-4 py-1.5 rounded-none shadow-[3px_3px_0px_0px_#DBC27C] inline-flex w-max items-center gap-2">
-                    <Lightbulb className="w-4 h-4 stroke-[3]" /> DID YOU KNOW?
-                  </span>
-                  {isLoadingFunFact ? (
-                    <div className="animate-pulse space-y-2 mt-2">
-                      <div className="h-3.5 bg-[#1A1A1A]/20 rounded-full w-full"></div>
-                      <div className="h-3.5 bg-[#1A1A1A]/20 rounded-full w-5/6"></div>
-                      <div className="h-3.5 bg-[#1A1A1A]/20 rounded-full w-3/4"></div>
+            {inputMode === 'conversation' && conversationContext && !isLoading && (
+              <div className="w-full z-10 relative mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="drop-shadow-[8px_8px_0px_#1A1A1A] w-full">
+                  <div className="bg-[#B9D2B5] border-[6px] border-[#1A1A1A] rounded-none p-6 pt-8 relative z-10">
+                    <div className="absolute right-[100%] bottom-10 flex flex-row items-end z-10">
+                      <div className="w-[6px] h-[12px] bg-[#1A1A1A] mb-[12px]"></div>
+                      <div className="w-[12px] h-[24px] bg-[#B9D2B5] border-y-[6px] border-[#1A1A1A]"></div>
+                      <div className="w-[6px] h-[24px] bg-[#B9D2B5]"></div>
                     </div>
-                  ) : (
-                    <p className="text-3xl font-qtpi text-[#1A1A1A] leading-snug">
-                      {funFact}
+                    <span className="absolute -top-4 left-6 bg-[#1A1A1A] text-[#B9D2B5] text-lg font-sniglet font-extrabold uppercase tracking-widest px-4 py-1.5 rounded-none shadow-[3px_3px_0px_0px_#B9D2B5] inline-flex w-max items-center gap-2">
+                      <svg width="14" height="14" viewBox="0 0 100 100" className="shrink-0"><path d="M 50 10 C 50 40, 60 50, 90 50 C 60 50, 50 60, 50 90 C 50 60, 40 50, 10 50 C 40 50, 50 40, 50 10 Z" fill="#B9D2B5" stroke="#B9D2B5" strokeWidth="5" strokeLinejoin="round" /></svg> CONTEXT
+                    </span>
+                    <p className="text-2xl font-qtpi text-[#1A1A1A] leading-snug whitespace-pre-wrap">
+                      {conversationContext}
                     </p>
-                  )}
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+
+            {inputMode === 'word' && (funFact || isLoadingFunFact) && !isLoading && (
+              <div className="w-full z-10 relative mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="drop-shadow-[8px_8px_0px_#1A1A1A] w-full">
+                  <div className="bg-[#DBC27C] border-[6px] border-[#1A1A1A] rounded-none p-6 pt-8 relative z-10">
+                    <div className="absolute right-[100%] bottom-10 flex flex-row items-end z-10">
+                      <div className="w-[6px] h-[12px] bg-[#1A1A1A] mb-[12px]"></div>
+                      <div className="w-[12px] h-[24px] bg-[#DBC27C] border-y-[6px] border-[#1A1A1A]"></div>
+                      <div className="w-[6px] h-[24px] bg-[#DBC27C]"></div>
+                    </div>
+                    <span className="absolute -top-4 left-6 bg-[#1A1A1A] text-[#DBC27C] text-lg font-sniglet font-extrabold uppercase tracking-widest px-4 py-1.5 rounded-none shadow-[3px_3px_0px_0px_#DBC27C] inline-flex w-max items-center gap-2">
+                      <Lightbulb className="w-4 h-4 stroke-[3]" /> DID YOU KNOW?
+                    </span>
+                    {isLoadingFunFact ? (
+                      <div className="animate-pulse space-y-2 mt-2">
+                        <div className="h-3.5 bg-[#1A1A1A]/20 rounded-full w-full"></div>
+                        <div className="h-3.5 bg-[#1A1A1A]/20 rounded-full w-5/6"></div>
+                        <div className="h-3.5 bg-[#1A1A1A]/20 rounded-full w-3/4"></div>
+                      </div>
+                    ) : (
+                      <p className="text-3xl font-qtpi text-[#1A1A1A] leading-snug">
+                        {funFact}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {inputMode === 'word' && translation && !isLoading && (
@@ -1409,44 +1425,44 @@ export default function App() {
                 {example && (
                   <div className="w-full space-y-3 z-10 relative mb-8 animate-in zoom-in-95 duration-300">
                     <div className="flex items-center justify-between px-2">
-                    <span className="text-2xl font-sniglet font-extrabold text-white tracking-widest uppercase" style={{ textShadow: '4px 4px 0px #1A1A1A', WebkitTextStroke: '2px #1A1A1A' }}>
-                      Context
-                    </span>
-                  </div>
-                  <div className="drop-shadow-[8px_8px_0px_#1A1A1A] w-full">
-                    <div className="bg-[#D3D6CB] border-[6px] border-[#1A1A1A] rounded-none p-8 flex flex-col items-center justify-center relative min-h-[160px] z-10">
-                      <div className="absolute bottom-[100%] left-10 flex flex-col items-start z-10">
-                        <div className="w-[12px] h-[6px] bg-[#1A1A1A] ml-[12px]"></div>
-                        <div className="w-[24px] h-[12px] bg-[#D3D6CB] border-x-[6px] border-[#1A1A1A]"></div>
-                        <div className="w-[24px] h-[6px] bg-[#D3D6CB]"></div>
-                      </div>
-                      <p className="text-3xl font-sniglet font-normal mb-6 break-words text-[#1A1A1A] text-center w-full leading-tight uppercase">
-                        {example.koreanSentence}
-                      </p>
-                      <p className="text-3xl font-sniglet font-normal mb-8 text-[#1A1A1A] text-center w-full bg-[#E8E6D9] px-4 py-2 border-[4px] border-[#1A1A1A] rounded-none shadow-[4px_4px_0px_0px_#1A1A1A]">
-                        "{example.englishTranslation}"
-                      </p>
-                      <div className="flex items-center gap-4 flex-wrap justify-center">
-                        <button
-                          onClick={() => handleSpeak(exampleAudioUrl)}
-                          disabled={!exampleAudioUrl}
-                          className="flex items-center gap-3 bg-[#E8E6D9] hover:bg-[#D9D7C8] text-[#1A1A1A] px-6 py-3 border-[5px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] rounded-none text-xl font-bubbly font-extrabold uppercase transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none disabled:opacity-50 disabled:cursor-wait min-h-[56px]"
-                        >
-                          <Volume2 className="w-6 h-6 stroke-[4]" />
-                          SPEAK
-                        </button>
-                        <button
-                          onClick={handleCopyExample}
-                          className="flex items-center justify-center w-14 h-14 bg-[#E8E6D9] hover:bg-[#D9D7C8] text-[#1A1A1A] border-[5px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] rounded-none transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
-                          title="Copy to clipboard"
-                        >
-                          {isExampleCopied ? <Check className="w-6 h-6 stroke-[4] text-green-500" /> : <Copy className="w-6 h-6 stroke-[4]" />}
-                        </button>
+                      <span className="text-2xl font-sniglet font-extrabold text-white tracking-widest uppercase" style={{ textShadow: '4px 4px 0px #1A1A1A', WebkitTextStroke: '2px #1A1A1A' }}>
+                        Context
+                      </span>
+                    </div>
+                    <div className="drop-shadow-[8px_8px_0px_#1A1A1A] w-full">
+                      <div className="bg-[#D3D6CB] border-[6px] border-[#1A1A1A] rounded-none p-8 flex flex-col items-center justify-center relative min-h-[160px] z-10">
+                        <div className="absolute bottom-[100%] left-10 flex flex-col items-start z-10">
+                          <div className="w-[12px] h-[6px] bg-[#1A1A1A] ml-[12px]"></div>
+                          <div className="w-[24px] h-[12px] bg-[#D3D6CB] border-x-[6px] border-[#1A1A1A]"></div>
+                          <div className="w-[24px] h-[6px] bg-[#D3D6CB]"></div>
+                        </div>
+                        <p className="text-3xl font-sniglet font-normal mb-6 break-words text-[#1A1A1A] text-center w-full leading-tight uppercase">
+                          {example.koreanSentence}
+                        </p>
+                        <p className="text-3xl font-sniglet font-normal mb-8 text-[#1A1A1A] text-center w-full bg-[#E8E6D9] px-4 py-2 border-[4px] border-[#1A1A1A] rounded-none shadow-[4px_4px_0px_0px_#1A1A1A]">
+                          "{example.englishTranslation}"
+                        </p>
+                        <div className="flex items-center gap-4 flex-wrap justify-center">
+                          <button
+                            onClick={() => handleSpeak(exampleAudioUrl)}
+                            disabled={!exampleAudioUrl}
+                            className="flex items-center gap-3 bg-[#E8E6D9] hover:bg-[#D9D7C8] text-[#1A1A1A] px-6 py-3 border-[5px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] rounded-none text-xl font-bubbly font-extrabold uppercase transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none disabled:opacity-50 disabled:cursor-wait min-h-[56px]"
+                          >
+                            <Volume2 className="w-6 h-6 stroke-[4]" />
+                            SPEAK
+                          </button>
+                          <button
+                            onClick={handleCopyExample}
+                            className="flex items-center justify-center w-14 h-14 bg-[#E8E6D9] hover:bg-[#D9D7C8] text-[#1A1A1A] border-[5px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] rounded-none transition-all duration-150 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
+                            title="Copy to clipboard"
+                          >
+                            {isExampleCopied ? <Check className="w-6 h-6 stroke-[4] text-green-500" /> : <Copy className="w-6 h-6 stroke-[4]" />}
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
               </div>
             </div>
           )}
