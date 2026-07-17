@@ -19,9 +19,8 @@ export default async function handler(req: Request) {
     // 1. SUPREME LENS VISION PIPELINE
     if (image && mode) {
       let promptText = "";
-      if (mode === 'EN') promptText = "Extract the text in this image, then translate it to English and add one brief, engaging sentence describing what's shown. Respond with ONLY that translated text and description, written as plain, flowing sentences. Do NOT include any header, label, or preamble (for example, do not write things like 'Extracted text:' or 'Translation:' or 'Image text extraction'). Do NOT use markdown, asterisks, or bullet points.";
-      if (mode === 'KO') promptText = "Extract the text in this image, then translate it to modern, natural Korean and add one brief, engaging sentence describing what's shown, also in Korean. Respond with ONLY that translated text and description, written as plain, flowing Korean sentences. Do NOT include any header, label, or preamble in any language (for example, do not write things like '이미지 텍스트 추출' or 'Extracted text:' or 'Translation:'). Do NOT reproduce the original untranslated source text on its own — always give the Korean rendering. Do NOT use markdown, asterisks, or bullet points.";
-      if (mode === 'HAN') promptText = "Extract the text in this image and translate it into simple, Romanized Korean words (standard alphabet, no special characters). Respond with ONLY the literal Romanized Korean words — no description, no header, no label, no preamble.";
+      if (mode === 'EN') promptText = "Extract and translate any text visible in this image to natural English. Judge the framing: if the frame shows a short, specific piece of text (a sign, label, single phrase, menu item, or similar) and the person is clearly trying to translate just that text, respond with ONLY the direct English translation — no description. If the frame shows a broader scene, object, or cover with more visual context (for example a book cover, poster, or product packaging), give the translation followed by one brief, engaging sentence describing what's shown. Respond in plain, flowing sentences only. Do NOT include any header, label, or preamble (for example, do not write 'Extracted text:' or 'Translation:'). Do NOT use markdown, asterisks, or bullet points.";
+      if (mode === 'KO') promptText = "Extract and translate any text visible in this image to modern, natural Korean. Judge the framing: if the frame shows a short, specific piece of text (a sign, label, single phrase, menu item, or similar) and the person is clearly trying to translate just that text, respond with ONLY the direct Korean translation — no description. If the frame shows a broader scene, object, or cover with more visual context (for example a book cover, poster, or product packaging), give the translation followed by one brief, engaging sentence describing what's shown, also in Korean. Respond in plain, flowing Korean sentences only. Do NOT include any header, label, or preamble in any language (for example, do not write '이미지 텍스트 추출' or 'Extracted text:' or 'Translation:'). Do NOT reproduce the original untranslated source text on its own — always give the Korean rendering. Do NOT use markdown, asterisks, or bullet points.";
 
       const cleanBase64 = image.replace(/^data:image\/\w+;base64,/, "");
 
@@ -108,7 +107,7 @@ ${word}`;
     }
 
     if (error.message?.includes('429') || error.status === 429) {
-      return new Response(JSON.stringify({ error: 'rate_limited', retryAfter: 3600 }), { status: 429, headers: { 'Content-Type': 'application/json' } });
+      return new Response(JSON.stringify({ error: 'rate_limited', retryAfter: 90 }), { status: 429, headers: { 'Content-Type': 'application/json' } });
     }
 
     return new Response(JSON.stringify({ error: "Failed to process request" }), { status: 500, headers: { 'Content-Type': 'application/json' } });
