@@ -16,10 +16,9 @@ interface SupremeLensProps {
   onClose: () => void;
   onCapturedChange?: (captured: boolean) => void;
   onInfoToggle?: (open: boolean) => void;
-  onOpenGallery?: () => void;
 }
 
-export default function SupremeLens({ onClose, onCapturedChange, onInfoToggle, onOpenGallery }: SupremeLensProps) {
+export default function SupremeLens({ onClose, onCapturedChange, onInfoToggle }: SupremeLensProps) {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -47,6 +46,7 @@ export default function SupremeLens({ onClose, onCapturedChange, onInfoToggle, o
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const scanlineRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (mode !== 'EN' && mode !== 'KO') {
@@ -161,34 +161,8 @@ export default function SupremeLens({ onClose, onCapturedChange, onInfoToggle, o
     return data.translation;
   };
 
-  const handleCapture = async () => {
-    if (!videoRef.current || !canvasRef.current) return;
-
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-
-    // --- BEYOND PLUS ULTRA DOWNSCALING ---
-    const MAX_WIDTH = 600;
-    const scale = MAX_WIDTH / video.videoWidth;
-
-    canvas.width = MAX_WIDTH;
-    canvas.height = video.videoHeight * scale;
-    const ctx = canvas.getContext('2d');
-
-    // Draw the image using the original video dimensions for the source, 
-    // and the scaled canvas dimensions for the destination.
-    if (zoomLevel > 1) {
-      const srcW = video.videoWidth / zoomLevel;
-      const srcH = video.videoHeight / zoomLevel;
-      const srcX = (video.videoWidth - srcW) / 2;
-      const srcY = (video.videoHeight - srcH) / 2;
-      ctx?.drawImage(video, srcX, srcY, srcW, srcH, 0, 0, canvas.width, canvas.height);
-    } else {
-      ctx?.drawImage(video, 0, 0, canvas.width, canvas.height);
-    }
-
-    // Heavy compression guarantees the Vercel payload is tiny
-    const base64Image = canvas.toDataURL('image/jpeg', 0.4);
+  // Shared POST helper — used by both handleCapture (camera) and handleFileUpload (picker)
+  const submitImageToAPI = async (base64Image: string) => {
     setCapturedImage(base64Image);
     setIsProcessing(true);
 
@@ -209,7 +183,7 @@ export default function SupremeLens({ onClose, onCapturedChange, onInfoToggle, o
       if (response.status === 429) {
         const data = await response.json();
         setLensCooldown(data.retryAfter ?? 3600);
-        return; // Stop execution, cooldown triggered
+        return;
       }
 
       if (!response.ok) throw new Error("API error");
@@ -217,23 +191,80 @@ export default function SupremeLens({ onClose, onCapturedChange, onInfoToggle, o
       const data = await response.json();
       let text = data.translation || data.text || "";
 
-      // BEYOND PLUS ULTRA: Strip markdown asterisks and hashtags for a premium, clean look
+      // Strip markdown asterisks and hashtags for a clean look
       text = text.replace(/[*#]/g, '');
 
       const extractedLang = mode;
       setScanData({ text, lang: extractedLang });
-
       setResultText(text);
     } catch (error) {
       setResultText("Error communicating with the oracle.");
     } finally {
       setIsProcessing(false);
-      // Let the useEffect handle the GSAP cleanup automatically, or force kill it here:
       if (scanlineRef.current) {
         gsap.killTweensOf(scanlineRef.current);
         gsap.set(scanlineRef.current, { clearProps: "all" });
       }
     }
+  };
+
+  const handleCapture = async () => {
+    if (!videoRef.current || !canvasRef.current) return;
+
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+
+    // --- BEYOND PLUS ULTRA DOWNSCALING ---
+    const MAX_WIDTH = 600;
+    const scale = MAX_WIDTH / video.videoWidth;
+
+    canvas.width = MAX_WIDTH;
+    canvas.height = video.videoHeight * scale;
+    const ctx = canvas.getContext('2d');
+
+    if (zoomLevel > 1) {
+      const srcW = video.videoWidth / zoomLevel;
+      const srcH = video.videoHeight / zoomLevel;
+      const srcX = (video.videoWidth - srcW) / 2;
+      const srcY = (video.videoHeight - srcH) / 2;
+      ctx?.drawImage(video, srcX, srcY, srcW, srcH, 0, 0, canvas.width, canvas.height);
+    } else {
+      ctx?.drawImage(video, 0, 0, canvas.width, canvas.height);
+    }
+
+    const base64Image = canvas.toDataURL('image/jpeg', 0.4);
+    await submitImageToAPI(base64Image);
+  };
+
+  // File-picker upload: reads user's file, resizes it to MAX_WIDTH on a canvas,
+  // then sends the same base64 payload to the translate vision endpoint.
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      const dataUrl = evt.target?.result as string;
+      if (!dataUrl) return;
+
+      // Resize to MAX_WIDTH on an off-screen canvas to keep payload tiny
+      const img = new Image();
+      img.onload = () => {
+        const MAX_WIDTH = 600;
+        const scale = MAX_WIDTH / img.width;
+        const offscreen = document.createElement('canvas');
+        offscreen.width = MAX_WIDTH;
+        offscreen.height = img.height * scale;
+        const ctx = offscreen.getContext('2d');
+        ctx?.drawImage(img, 0, 0, offscreen.width, offscreen.height);
+        const base64Image = offscreen.toDataURL('image/jpeg', 0.4);
+        submitImageToAPI(base64Image);
+      };
+      img.src = dataUrl;
+    };
+    reader.readAsDataURL(file);
+    // Reset so the same file can be re-selected if needed
+    e.target.value = '';
   };
 
   const handleCopyLens = async () => {
@@ -588,10 +619,10 @@ export default function SupremeLens({ onClose, onCapturedChange, onInfoToggle, o
                 <li className="flex flex-col items-start gap-2">
                   <div className="flex items-center gap-4">
                     <Sparkles strokeWidth={4} size={22} className="text-[#FED141] fill-[#FED141]" />
-                    <span>Stamp Cam (Fun Feature)</span>
+                    <span>Upload Photo</span>
                   </div>
                   <div className="pl-10 text-xs font-sans font-extrabold text-[#1A1A1A]/70 normal-case tracking-normal">
-                    An extra feature you can try for fun! Snap custom photos and turn them into printable postage stamps to save in your collection book.
+                    Tap the gallery icon to pick any photo from your device — the same translate engine processes it instantly.
                   </div>
                 </li>
               </ul>
@@ -601,13 +632,22 @@ export default function SupremeLens({ onClose, onCapturedChange, onInfoToggle, o
         )}
       </AnimatePresence>
 
-      {!capturedImage && onOpenGallery && (
+      {/* Hidden file input for uploading photos from the device */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleFileUpload}
+      />
+
+      {!capturedImage && (
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          onClick={onOpenGallery}
+          onClick={() => fileInputRef.current?.click()}
           className="absolute bottom-12 left-8 z-30 bg-[#E5E7EB] text-[#1A1A1A] w-[68px] h-[68px] rounded-xl border-[3px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] flex items-center justify-center overflow-hidden hover:bg-[#D1D5DB] transition-colors"
-          title="Open Stamp Gallery"
+          title="Upload photo from device"
         >
           <div className="absolute inset-1 border-[2px] border-dashed border-[#9CA3AF] rounded-md pointer-events-none"></div>
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="z-10 text-[#4B5563]">
