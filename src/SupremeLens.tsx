@@ -37,6 +37,15 @@ export default function SupremeLens({ onClose, onCapturedChange, onInfoToggle }:
   const [mode, setMode] = useState<'EN' | 'KO'>('EN');
   const [showInfo, setShowInfo] = useState(false);
 
+  const [onboardingStep, setOnboardingStep] = useState<0 | 1 | 2>(0);
+
+  useEffect(() => {
+    const hasSeenOnboarding = localStorage.getItem('supreme_lens_intro_seen');
+    if (!hasSeenOnboarding) {
+      setOnboardingStep(1);
+    }
+  }, []);
+
   useEffect(() => {
     if (onInfoToggle) {
       onInfoToggle(showInfo);
@@ -657,6 +666,73 @@ export default function SupremeLens({ onClose, onCapturedChange, onInfoToggle }:
           </svg>
         </motion.button>
       )}
+
+      {/* ONBOARDING OVERLAYS */}
+      <AnimatePresence>
+        {onboardingStep === 1 && (
+          <motion.div
+            key="onboarding-step-1"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-[60] bg-black/40 backdrop-blur-sm flex items-center justify-center p-6"
+            style={{ pointerEvents: 'auto' }}
+          >
+            <div className="bg-[#F6F5F2] border-[6px] border-[#1A1A1A] p-8 rounded-[32px] shadow-[8px_8px_0px_0px_#1A1A1A] max-w-sm w-full flex flex-col items-center text-center relative">
+              <h2 className="text-3xl font-title uppercase mb-4 text-[#1A1A1A]">Welcome!</h2>
+              <p className="text-lg font-bubbly font-extrabold text-[#1A1A1A] uppercase tracking-tight mb-8">
+                Welcome to Supreme Lens — your daily scan-to-translate buddy. Snap any text and watch it transform instantly.
+              </p>
+              <button
+                onClick={() => setOnboardingStep(2)}
+                className="w-full py-4 bg-[#FED141] hover:bg-[#E5BC3A] rounded-2xl border-[4px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all font-title text-2xl uppercase tracking-widest text-[#1A1A1A]"
+              >
+                Next
+              </button>
+            </div>
+          </motion.div>
+        )}
+        
+        {onboardingStep === 2 && (
+          <motion.div
+            key="onboarding-step-2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-[60] pointer-events-auto overflow-hidden"
+          >
+            {/* The dimming background with a hole for the Info button */}
+            <div 
+              className="absolute pointer-events-none"
+              style={{
+                top: '24px', 
+                left: '16px', 
+                width: '48px', 
+                height: '48px',
+                borderRadius: '24px',
+                boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.6)'
+              }}
+            />
+            {/* Callout box */}
+            <div 
+              className="absolute left-6 top-[88px] bg-[#F6F5F2] border-[4px] border-[#1A1A1A] p-6 rounded-[24px] shadow-[6px_6px_0px_0px_#1A1A1A] max-w-[280px]"
+            >
+              <p className="text-lg font-bubbly font-extrabold text-[#1A1A1A] uppercase tracking-tight mb-6">
+                Tap here anytime for the full Lens Guide.
+              </p>
+              <button
+                onClick={() => {
+                  localStorage.setItem('supreme_lens_intro_seen', 'true');
+                  setOnboardingStep(0);
+                }}
+                className="w-full py-3 bg-[#FED141] hover:bg-[#E5BC3A] rounded-xl border-[3px] border-[#1A1A1A] shadow-[3px_3px_0px_0px_#1A1A1A] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all font-title text-xl uppercase tracking-widest text-[#1A1A1A]"
+              >
+                Got it
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
     </motion.div>
   );
