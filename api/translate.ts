@@ -19,9 +19,9 @@ export default async function handler(req: Request) {
     // 1. SUPREME LENS VISION PIPELINE
     if (image && mode) {
       let promptText = "";
-      if (mode === 'EN') promptText = "Extract the text in this image and translate it to English. Give a brief, cool description. CRITICAL: DO NOT use markdown, asterisks, or bullet points. Format as clean, readable plain text.";
-      if (mode === 'KO') promptText = "Extract the text in this image and translate it to modern Korean. Give a brief description in Korean. CRITICAL: DO NOT use markdown, asterisks, or bullet points. Format as clean, readable plain text.";
-      if (mode === 'HAN') promptText = "Extract the text in this image and translate it into simple, Romanized Korean words (standard alphabet, no special characters). Do not describe it, just give the literal Korean words.";
+      if (mode === 'EN') promptText = "Extract the text in this image, then translate it to English and add one brief, engaging sentence describing what's shown. Respond with ONLY that translated text and description, written as plain, flowing sentences. Do NOT include any header, label, or preamble (for example, do not write things like 'Extracted text:' or 'Translation:' or 'Image text extraction'). Do NOT use markdown, asterisks, or bullet points.";
+      if (mode === 'KO') promptText = "Extract the text in this image, then translate it to modern, natural Korean and add one brief, engaging sentence describing what's shown, also in Korean. Respond with ONLY that translated text and description, written as plain, flowing Korean sentences. Do NOT include any header, label, or preamble in any language (for example, do not write things like '이미지 텍스트 추출' or 'Extracted text:' or 'Translation:'). Do NOT reproduce the original untranslated source text on its own — always give the Korean rendering. Do NOT use markdown, asterisks, or bullet points.";
+      if (mode === 'HAN') promptText = "Extract the text in this image and translate it into simple, Romanized Korean words (standard alphabet, no special characters). Respond with ONLY the literal Romanized Korean words — no description, no header, no label, no preamble.";
 
       const cleanBase64 = image.replace(/^data:image\/\w+;base64,/, "");
 
