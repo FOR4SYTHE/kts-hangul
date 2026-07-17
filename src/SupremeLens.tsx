@@ -56,6 +56,29 @@ export default function SupremeLens({ onClose, onCapturedChange, onInfoToggle }:
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const scanlineRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const infoButtonRef = useRef<HTMLButtonElement>(null);
+
+  const [spotlightRect, setSpotlightRect] = useState<{ top: number, left: number, width: number, height: number, borderRadius: string } | null>(null);
+
+  useEffect(() => {
+    if (onboardingStep === 2 && infoButtonRef.current) {
+      const measure = () => {
+        if (!infoButtonRef.current) return;
+        const rect = infoButtonRef.current.getBoundingClientRect();
+        const computedStyle = window.getComputedStyle(infoButtonRef.current);
+        setSpotlightRect({
+          top: rect.top,
+          left: rect.left,
+          width: rect.width,
+          height: rect.height,
+          borderRadius: computedStyle.borderRadius || '24px'
+        });
+      };
+      measure();
+      window.addEventListener('resize', measure);
+      return () => window.removeEventListener('resize', measure);
+    }
+  }, [onboardingStep]);
 
   useEffect(() => {
     if (mode !== 'EN' && mode !== 'KO') {
@@ -342,7 +365,7 @@ export default function SupremeLens({ onClose, onCapturedChange, onInfoToggle }:
 
         {/* Left Side: Info & Flash */}
         <div className="flex gap-1 sm:gap-3 w-1/3 justify-start">
-          <button onClick={() => setShowInfo(true)} className="w-12 h-12 shrink-0 bg-[#F6F5F2] rounded-3xl border-[4px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all flex items-center justify-center text-[#1A1A1A]">
+          <button ref={infoButtonRef} onClick={() => setShowInfo(true)} className="w-12 h-12 shrink-0 bg-[#F6F5F2] rounded-3xl border-[4px] border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all flex items-center justify-center text-[#1A1A1A]">
             <Info strokeWidth={4} size={22} />
           </button>
 
@@ -702,34 +725,44 @@ export default function SupremeLens({ onClose, onCapturedChange, onInfoToggle }:
             className="absolute inset-0 z-[60] pointer-events-auto overflow-hidden"
           >
             {/* The dimming background with a hole for the Info button */}
-            <div 
-              className="absolute pointer-events-none"
-              style={{
-                top: '24px', 
-                left: '16px', 
-                width: '48px', 
-                height: '48px',
-                borderRadius: '24px',
-                boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.6)'
-              }}
-            />
-            {/* Callout box */}
-            <div 
-              className="absolute left-6 top-[88px] bg-[#F6F5F2] border-[4px] border-[#1A1A1A] p-6 rounded-[24px] shadow-[6px_6px_0px_0px_#1A1A1A] max-w-[280px]"
-            >
-              <p className="text-lg font-bubbly font-extrabold text-[#1A1A1A] uppercase tracking-tight mb-6">
-                Tap here anytime for the full Lens Guide.
-              </p>
-              <button
-                onClick={() => {
-                  localStorage.setItem('supreme_lens_intro_seen', 'true');
-                  setOnboardingStep(0);
-                }}
-                className="w-full py-3 bg-[#FED141] hover:bg-[#E5BC3A] rounded-xl border-[3px] border-[#1A1A1A] shadow-[3px_3px_0px_0px_#1A1A1A] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all font-title text-xl uppercase tracking-widest text-[#1A1A1A]"
-              >
-                Got it
-              </button>
-            </div>
+            {spotlightRect ? (
+              <>
+                <div 
+                  className="absolute pointer-events-none transition-all duration-200"
+                  style={{
+                    top: spotlightRect.top, 
+                    left: spotlightRect.left, 
+                    width: spotlightRect.width, 
+                    height: spotlightRect.height,
+                    borderRadius: spotlightRect.borderRadius,
+                    boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.6)'
+                  }}
+                />
+                {/* Callout box */}
+                <div 
+                  className="absolute bg-[#F6F5F2] border-[4px] border-[#1A1A1A] p-6 rounded-[24px] shadow-[6px_6px_0px_0px_#1A1A1A] max-w-[280px] transition-all duration-200"
+                  style={{
+                    top: spotlightRect.top + spotlightRect.height + 16,
+                    left: Math.max(16, spotlightRect.left - 8)
+                  }}
+                >
+                  <p className="text-lg font-bubbly font-extrabold text-[#1A1A1A] uppercase tracking-tight mb-6">
+                    Tap here anytime for the full Lens Guide.
+                  </p>
+                  <button
+                    onClick={() => {
+                      localStorage.setItem('supreme_lens_intro_seen', 'true');
+                      setOnboardingStep(0);
+                    }}
+                    className="w-full py-3 bg-[#FED141] hover:bg-[#E5BC3A] rounded-xl border-[3px] border-[#1A1A1A] shadow-[3px_3px_0px_0px_#1A1A1A] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all font-title text-xl uppercase tracking-widest text-[#1A1A1A]"
+                  >
+                    Got it
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="absolute inset-0 bg-black/60 pointer-events-none opacity-0" />
+            )}
           </motion.div>
         )}
       </AnimatePresence>
